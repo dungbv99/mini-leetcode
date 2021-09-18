@@ -1,9 +1,9 @@
 package com.hust.minileetcode.rest.user;
 
 
-import com.hust.minileetcode.entity.PartyType;
-import com.hust.minileetcode.entity.Person;
-import com.hust.minileetcode.entity.Status;
+import com.hust.minileetcode.rest.entity.PartyType;
+import com.hust.minileetcode.rest.entity.Person;
+import com.hust.minileetcode.rest.entity.Status;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

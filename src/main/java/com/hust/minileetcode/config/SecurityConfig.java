@@ -1,7 +1,7 @@
 package com.hust.minileetcode.config;
 
-import com.hust.minileetcode.entity.UserLogin;
-import com.hust.minileetcode.service.BaseWebUserDetailService;
+import com.hust.minileetcode.rest.entity.UserLogin;
+import com.hust.minileetcode.rest.service.BaseWebUserDetailService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

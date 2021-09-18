@@ -2,8 +2,8 @@ package com.hust.minileetcode.rest.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import com.hust.minileetcode.entity.Party;
-import com.hust.minileetcode.entity.SecurityGroup;
+import com.hust.minileetcode.rest.entity.Party;
+import com.hust.minileetcode.rest.entity.SecurityGroup;
 import lombok.Data;
 
 import javax.persistence.*;

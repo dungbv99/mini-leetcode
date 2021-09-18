@@ -1,8 +1,8 @@
-package com.hust.minileetcode.service;
+package com.hust.minileetcode.rest.service;
 
-import com.hust.minileetcode.entity.SecurityGroup;
-import com.hust.minileetcode.entity.UserLogin;
-import com.hust.minileetcode.repo.UserLoginRepo;
+import com.hust.minileetcode.rest.entity.SecurityGroup;
+import com.hust.minileetcode.rest.entity.UserLogin;
+import com.hust.minileetcode.rest.repo.UserLoginRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;

@@ -1,8 +1,8 @@
-package com.hust.minileetcode.repo;
+package com.hust.minileetcode.rest.repo;
 
 
-import com.hust.minileetcode.entity.Party;
-import com.hust.minileetcode.entity.UserLogin;
+import com.hust.minileetcode.rest.entity.Party;
+import com.hust.minileetcode.rest.entity.UserLogin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;

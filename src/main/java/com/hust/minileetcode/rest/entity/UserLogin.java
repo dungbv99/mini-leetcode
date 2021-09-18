@@ -1,4 +1,4 @@
-package com.hust.minileetcode.entity;
+package com.hust.minileetcode.rest.entity;
 
 import lombok.Getter;
 import lombok.Setter;
