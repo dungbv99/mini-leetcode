@@ -1,7 +1,7 @@
 package com.hust.minileetcode.config;
 
 import com.hust.minileetcode.rest.entity.UserLogin;
-import com.hust.minileetcode.rest.service.BaseWebUserDetailService;
+import com.hust.minileetcode.rest.service.MiniLeetCodeUserDetailService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -21,7 +21,7 @@ import org.springframework.web.filter.CorsFilter;
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private BaseWebUserDetailService userDetailsService;
+    private MiniLeetCodeUserDetailService userDetailsService;
     private BasicAuthenticationEndPoint basicAuthenticationEndPoint;
 
     @Override

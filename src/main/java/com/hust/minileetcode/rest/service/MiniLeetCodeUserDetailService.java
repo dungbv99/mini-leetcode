@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class BaseWebUserDetailService implements UserDetailsService {
+public class MiniLeetCodeUserDetailService implements UserDetailsService {
 
     private UserLoginRepo userLoginRepo;
 
