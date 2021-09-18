@@ -1,0 +1,35 @@
+SERVICE_HOST: localhost
+SERVICE_PORT: 8080
+SQL_DB_HOST: localhost
+SQL_DB_PORT: 5432
+SQL_DB_USER: postgres
+SQL_DB_PASS: 123456
+POSTGRES_DB: baseweb
+
+server.servlet.context-path: '/api'
+
+spring:
+    redis:
+        host: localhost
+        port: 6379
+    servlet:
+        multipart:
+            max-file-size: 100MB
+            max-request-size: 100MB
+    mvc:
+        throw-exception-if-no-handler-found: true
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://${SQL_DB_HOST}:${SQL_DB_PORT}/${POSTGRES_DB}
+        username: ${SQL_DB_USER}
+        password: ${SQL_DB_PASS}
+        hikari: # reference: https://github:com/brettwooldridge/HikariCP#configuration-knobs-baby:
+            maxLifetime: 30000
+            leakDetectionThreshold: 30000
+    jpa:
+        properties:
+            hibernate:
+                format_sql: true # not recommended for production
+                order_inserts: true
+                jdbc:
+                    batch_size: 50
