@@ -1,7 +1,12 @@
 package com.hust.minileetcode.utils;
 
 public class ComputerLanguage {
-    enum Languages{
-        
+
+
+    public enum Languages{
+        CPP,
+        PYTHON3,
+        JAVA,
+        GOLANG
     }
 }

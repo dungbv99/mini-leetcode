@@ -5,7 +5,7 @@ SQL_DB_PORT: 5432
 SQL_DB_USER: postgres
 SQL_DB_PASS: 123456
 POSTGRES_DB: baseweb
-
+DOCKER_SERVER_HOST: http://localhost:12375
 server.servlet.context-path: '/api'
 
 spring:
@@ -23,9 +23,9 @@ spring:
         url: jdbc:postgresql://${SQL_DB_HOST}:${SQL_DB_PORT}/${POSTGRES_DB}
         username: ${SQL_DB_USER}
         password: ${SQL_DB_PASS}
-        hikari: # reference: https://github:com/brettwooldridge/HikariCP#configuration-knobs-baby:
-            maxLifetime: 30000
-            leakDetectionThreshold: 30000
+#        hikari: # reference: https://github:com/brettwooldridge/HikariCP#configuration-knobs-baby:
+#            maxLifetime: 30000
+#            leakDetectionThreshold: 30000
     jpa:
         properties:
             hibernate:
@@ -43,3 +43,4 @@ spring:
     jackson:
         serialization:
             FAIL_ON_EMPTY_BEANS: false
+

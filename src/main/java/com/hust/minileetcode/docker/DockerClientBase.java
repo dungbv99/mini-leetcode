@@ -1,27 +1,44 @@
 package com.hust.minileetcode.docker;
 
-import lombok.Getter;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.ApplicationContext;
+import com.spotify.docker.client.DefaultDockerClient;
+import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.exceptions.DockerException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.net.URI;
+
 @Configuration
+public class DockerClientBase {
 
-public class DockerClient {
+    private static DockerClient dockerClient;
 
-    private static int t = 0;
+    @Value("${DOCKER_SERVER_HOST}")
+    private String DOCKER_SERVER_HOST;
 
-    public DockerClient() {
+    public DockerClientBase() {
     }
 
     @Bean
-    public void init(){
-        this.t = 0;
+    public void initDockerClientBase(){
+        dockerClient = DefaultDockerClient.builder()
+                .uri(URI.create("http://localhost:12375"))
+                .connectionPoolSize(100)
+                .build();
+        try {
+            System.out.println("ping " + dockerClient.ping());
+        } catch (DockerException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void println(){
-        System.out.println("t: "+t);
-        t++;
+    public DockerClient getDockerClient(){
+        return dockerClient;
     }
+
+
+
 }
