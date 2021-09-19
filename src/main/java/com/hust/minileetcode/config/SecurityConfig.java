@@ -1,6 +1,7 @@
 package com.hust.minileetcode.config;
 
 import com.hust.minileetcode.rest.entity.UserLogin;
+import com.hust.minileetcode.rest.exception.CustomAccessDeniedHandler;
 import com.hust.minileetcode.rest.service.MiniLeetCodeUserDetailService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(basicAuthenticationEndPoint)
                 .and()
                 .exceptionHandling()
-//                .accessDeniedHandler(accessDeniedHandler())
+                .accessDeniedHandler(accessDeniedHandler())
                 .and()
                 .csrf()
                 .disable()
@@ -76,10 +77,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-//    @Bean
-//    public CustomAccessDeniedHandler accessDeniedHandler() {
-//        return new CustomAccessDeniedHandler();
-//    }
+    @Bean
+    public CustomAccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
+    }
 
     @Bean
     @SuppressWarnings("unchecked")
