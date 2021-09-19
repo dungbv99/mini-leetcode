@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+./temp_dir
+demo.txt
