@@ -2,6 +2,7 @@ package com.hust.minileetcode.utils;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -41,13 +42,17 @@ public class TempDir {
         return startName + "-" + generateRandom;
     }
 
-    public void createScriptFile(String source, ComputerLanguage.Languages languages, String fileName ) throws IOException {
+    public String createDirInContainer(String startName){
+        return startName+"/"+startName+".sh";
+    }
+
+    public void createScriptFile(String source, ComputerLanguage.Languages languages, String tmpName ) throws IOException {
         String suffixes = "";
         String cmd = "";
         switch (languages){
             case CPP:
                 suffixes = ".cpp";
-                cmd = "g++ -o main main.cpp" + "\n" +"./main" +"\n";
+                cmd = "g++ -o main main.cpp" + "\n" +"timeout 5s ./main" +"\n";
                 break;
             case JAVA:
                 suffixes = ".java";
@@ -64,14 +69,20 @@ public class TempDir {
         }
 
         String sourceSh = SHFileStart
+                + "cd " + tmpName +"\n"
                 + "cat <<EOF >> main"  + suffixes + "\n"
                 + source + "\n"
                 + "EOF" + "\n"
                 + cmd + "\n";
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter(TEMPDIR+fileName+".sh"));
+        File theDir = new File(TEMPDIR+tmpName);
+        theDir.mkdirs();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(TEMPDIR + tmpName+"/"+tmpName+".sh"));
         writer.write(sourceSh);
         writer.close();
+    }
+
+    public void removeDir(String dirName){
+        FileSystemUtils.deleteRecursively(new File("./temp_dir/"+dirName));
     }
 
 }

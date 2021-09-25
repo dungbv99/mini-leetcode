@@ -1,7 +1,9 @@
 package com.hust.minileetcode.controller;
 
+import com.hust.minileetcode.docker.DockerClientBase;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
+import com.spotify.docker.client.exceptions.DockerException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,7 +11,7 @@ import java.io.IOException;
 
 @RestController
 public class HelloController {
-
+    private DockerClientBase dockerClientBase = new DockerClientBase();
     private TempDir tempDir = new TempDir();
 
     @GetMapping("/hello")
@@ -34,16 +36,27 @@ public class HelloController {
                 "  return 0;\n" +
                 "}" ;
 
-        String fileName = tempDir.createRandomScriptFileName("test");
+        String tempName = tempDir.createRandomScriptFileName("test");
 
         try {
-            tempDir.createScriptFile(source, ComputerLanguage.Languages.CPP, fileName);
+            tempDir.createScriptFile(source, ComputerLanguage.Languages.CPP, tempName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String targetFile = tempDir.createDirInContainer(tempName);
+        String response = new String("err");
+        try {
+            response = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP, targetFile, tempName);
+//            tempDir.removeDir(tempName);
+        } catch (DockerException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
-        return "Greetings from Spring Boot!";
+        return response;
     }
 
 }

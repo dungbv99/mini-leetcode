@@ -34,3 +34,4 @@ build/
 
 ./temp_dir/*
 demo.txt
+./temp_dir
