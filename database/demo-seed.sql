@@ -10,7 +10,7 @@ VALUES ('PARTY_ENABLED', 'PARTY_STATUS', 'ENABLED', 0, 'Đã kích hoạt', NOW(
 INSERT INTO user_login (user_login_id, current_password, password_hint, is_system, enabled, has_logged_out,
                         require_password_change, disabled_date_time, successive_failed_logins, last_updated_stamp,
                         created_stamp, party_id)
-VALUES ('admin', '$2a$10$Y4FXX6TalapgQ3rJoe.QHe9.RutM4l81pAm2S1XzDuUR83qLvDxyO', NULL, FALSE, TRUE, FALSE, FALSE, NULL,
+VALUES ('admin', '$2a$10$0IOYLdfBGy5whZGnBaqmK.KYvFGcLZPIgtexl8YR9f7FZ79loFk36', NULL, FALSE, TRUE, FALSE, FALSE, NULL,
         NULL, NOW(), NOW(), 'bd6322f2-2121-11ea-81a8-979e2f76b5a4');
 
 INSERT INTO user_login_security_group (user_login_id, group_id, last_updated_stamp, created_stamp)

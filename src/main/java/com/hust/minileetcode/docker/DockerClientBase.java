@@ -14,16 +14,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.spotify.docker.client.DockerClient.*;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.File;
 @Configuration
 public class DockerClientBase {
     @Value("${DOCKER_SERVER_HOST}")
@@ -96,9 +91,7 @@ public class DockerClientBase {
     }
 
     public String runExecutable(Languages languages, String dirName) throws DockerException, InterruptedException, IOException {
-//        String[] mkdirCommand = {"mkdir", "-p", dirName};
         String[] runCommand = {"bash", dirName+".sh"};
-//        String[] rmCommand= {"rm","-rf", dirName};
         String containerId = "";
         switch (languages){
             case CPP:
@@ -108,17 +101,12 @@ public class DockerClientBase {
                 System.out.println("language err");
                 return "err";
         }
-//        ExecCreation mkdirExecCreation = dockerClient.execCreate(
-//                containerId, mkdirCommand);
-//        dockerClient.execStart(mkdirExecCreation.id()).close();
         dockerClient.copyToContainer(new java.io.File("./temp_dir/"+dirName).toPath(), containerId, "/workdir/");
         ExecCreation runExecCreation = dockerClient.execCreate(
                 containerId, runCommand, DockerClient.ExecCreateParam.attachStdout(),
                 DockerClient.ExecCreateParam.attachStderr());
         LogStream output = dockerClient.execStart(runExecCreation.id());
         String execOutput = output.readFully();
-//        ExecCreation rmdirExecCreation = dockerClient.execCreate(containerId, rmCommand);
-//        dockerClient.execStart(rmdirExecCreation.id()).close();
         return execOutput;
     }
 

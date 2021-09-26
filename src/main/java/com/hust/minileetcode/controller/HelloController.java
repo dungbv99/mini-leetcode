@@ -15,6 +15,11 @@ public class HelloController {
     private TempDir tempDir = new TempDir();
 
     @GetMapping("/hello")
+    public String hello(){
+        return "Hello World!";
+    }
+
+    @GetMapping("/test1")
     public String index() {
         String source = "// vector::at\n" +
                 "#include <iostream>\n" +
