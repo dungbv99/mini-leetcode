@@ -69,11 +69,16 @@ public class TempDir {
         }
 
         String sourceSh = SHFileStart
+                + "mkdir -p " + tmpName +"\n"
                 + "cd " + tmpName +"\n"
                 + "cat <<EOF >> main"  + suffixes + "\n"
                 + source + "\n"
                 + "EOF" + "\n"
-                + cmd + "\n";
+                + cmd + "\n"
+                + "cd .. \n"
+                + "rm -rf " + tmpName + "\n"
+                + "rm -rf " + tmpName+".sh"
+                ;
         File theDir = new File(TEMPDIR+tmpName);
         theDir.mkdirs();
         BufferedWriter writer = new BufferedWriter(new FileWriter(TEMPDIR + tmpName+"/"+tmpName+".sh"));

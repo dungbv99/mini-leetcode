@@ -95,10 +95,10 @@ public class DockerClientBase {
         return dockerClient;
     }
 
-    public String runExecutable(Languages languages, String targetFile, String dirName) throws DockerException, InterruptedException, IOException {
-        String[] mkdirCommand = {"mkdir", "-p", dirName};
-        String[] runCommand = {"bash", targetFile};
-        String[] rmCommand= {"rm","-rf", dirName};
+    public String runExecutable(Languages languages, String dirName) throws DockerException, InterruptedException, IOException {
+//        String[] mkdirCommand = {"mkdir", "-p", dirName};
+        String[] runCommand = {"bash", dirName+".sh"};
+//        String[] rmCommand= {"rm","-rf", dirName};
         String containerId = "";
         switch (languages){
             case CPP:
@@ -108,17 +108,17 @@ public class DockerClientBase {
                 System.out.println("language err");
                 return "err";
         }
-        ExecCreation mkdirExecCreation = dockerClient.execCreate(
-                containerId, mkdirCommand);
-        dockerClient.execStart(mkdirExecCreation.id()).close();
-        dockerClient.copyToContainer(new java.io.File("./temp_dir/"+dirName).toPath(), containerId, "/workdir/"+dirName);
+//        ExecCreation mkdirExecCreation = dockerClient.execCreate(
+//                containerId, mkdirCommand);
+//        dockerClient.execStart(mkdirExecCreation.id()).close();
+        dockerClient.copyToContainer(new java.io.File("./temp_dir/"+dirName).toPath(), containerId, "/workdir/");
         ExecCreation runExecCreation = dockerClient.execCreate(
                 containerId, runCommand, DockerClient.ExecCreateParam.attachStdout(),
                 DockerClient.ExecCreateParam.attachStderr());
         LogStream output = dockerClient.execStart(runExecCreation.id());
         String execOutput = output.readFully();
-        ExecCreation rmdirExecCreation = dockerClient.execCreate(containerId, rmCommand);
-        dockerClient.execStart(rmdirExecCreation.id()).close();
+//        ExecCreation rmdirExecCreation = dockerClient.execCreate(containerId, rmCommand);
+//        dockerClient.execStart(rmdirExecCreation.id()).close();
         return execOutput;
     }
 

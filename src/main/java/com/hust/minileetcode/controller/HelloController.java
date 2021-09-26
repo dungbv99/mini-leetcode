@@ -43,10 +43,9 @@ public class HelloController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String targetFile = tempDir.createDirInContainer(tempName);
         String response = new String("err");
         try {
-            response = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP, targetFile, tempName);
+            response = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP,  tempName);
 //            tempDir.removeDir(tempName);
         } catch (DockerException e) {
             e.printStackTrace();
