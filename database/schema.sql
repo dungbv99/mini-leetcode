@@ -4,7 +4,7 @@ CREATE DATABASE "leetcode"
     LC_COLLATE = 'en_US.UTF-8'
     LC_CTYPE = 'en_US.UTF-8'
     TEMPLATE template0;
-
+-- user defind
 CREATE OR REPLACE FUNCTION public.uuid_generate_v1()
  RETURNS uuid
  LANGUAGE c
@@ -155,3 +155,53 @@ create TABLE person
     CONSTRAINT pk_person PRIMARY KEY (party_id),
     CONSTRAINT person_party FOREIGN KEY (party_id) REFERENCES party (party_id)
 );
+
+-- contest defind
+create table problem_source_code
+(
+    problem_source_code_id uuid not null default uuid_generate_v1(),
+    base_source text,
+    main_source text,
+    problem_function_default_source text,
+    problem_function_solution text,
+    last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
+    created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
+    constraint pk_source_code primary key(problem_source_code_id)
+);
+
+create table contest_problem
+(
+    problem_id varchar(60) not null,
+    problem_source_code_id uuid,
+    problem_name varchar(200),
+    problem_description text, -- problem_statement
+    created_by_user_login_id varchar(60),
+    time_limit  int,
+    memory_limit int,
+    level_id varchar(60),
+    category_id varchar(60),
+    last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
+    created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
+    constraint pk_contest_problem primary key (problem_id),
+    constraint fk_contest_problem foreign key (created_by_user_login_id) references user_login(user_login_id),
+    constraint fk_contest_problem_source_code foreign key(problem_source_code_id) references problem_source_code(problem_source_code_id)
+);
+
+
+
+create table test_case
+(
+    test_case_id uuid not null default uuid_generate_v1(),
+    test_case_point int,
+    correct_answer text,
+    contest_problem_id varchar(60),
+--     problem_source_code_id uuid,
+    last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
+    created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
+    constraint pk_contest_problem_test_case primary key (problem_test_case_id),
+    constraint fk_contest_problem_test_case_problem_id foreign key (contest_problem_id) references contest_problem(problem_id),
+--     constraint fk_contest_problem_test_case_problem_source_code_id foreign key (problem_source_code_id) references problem_source_code(problem_source_code_id)
+);
+
+
+
