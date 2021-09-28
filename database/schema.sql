@@ -159,11 +159,12 @@ create TABLE person
 -- contest defind
 create table problem_source_code
 (
-    problem_source_code_id uuid not null default uuid_generate_v1(),
+    problem_source_code_id varchar (70),
     base_source text,
     main_source text,
     problem_function_default_source text,
     problem_function_solution text,
+    language varchar (10),
     last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
     created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
     constraint pk_source_code primary key(problem_source_code_id)
@@ -172,7 +173,6 @@ create table problem_source_code
 create table contest_problem
 (
     problem_id varchar(60) not null,
-    problem_source_code_id uuid,
     problem_name varchar(200),
     problem_description text, -- problem_statement
     created_by_user_login_id varchar(60),
@@ -183,24 +183,28 @@ create table contest_problem
     last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
     created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
     constraint pk_contest_problem primary key (problem_id),
-    constraint fk_contest_problem foreign key (created_by_user_login_id) references user_login(user_login_id),
-    constraint fk_contest_problem_source_code foreign key(problem_source_code_id) references problem_source_code(problem_source_code_id)
+    constraint fk_contest_problem foreign key (created_by_user_login_id) references user_login(user_login_id)
 );
 
-
+create table contest_problem_problem_source_code
+(
+    problem_source_code_id varchar (70),
+    problem_id varchar(60) not null,
+    constraint fk_problem_source_code foreign key (problem_source_code_id) references problem_source_code(problem_source_code_id),
+    constraint fk_contest_problem foreign key (problem_id) references contest_problem(problem_id)
+);
 
 create table test_case
 (
     test_case_id uuid not null default uuid_generate_v1(),
     test_case_point int,
+    test_case text,
     correct_answer text,
     contest_problem_id varchar(60),
---     problem_source_code_id uuid,
     last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
     created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
-    constraint pk_contest_problem_test_case primary key (problem_test_case_id),
-    constraint fk_contest_problem_test_case_problem_id foreign key (contest_problem_id) references contest_problem(problem_id),
---     constraint fk_contest_problem_test_case_problem_source_code_id foreign key (problem_source_code_id) references problem_source_code(problem_source_code_id)
+    constraint pk_contest_problem_test_case primary key (test_case_id),
+    constraint fk_contest_problem_test_case_problem_id foreign key (contest_problem_id) references contest_problem(problem_id)
 );
 
 

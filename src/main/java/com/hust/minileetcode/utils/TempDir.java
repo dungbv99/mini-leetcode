@@ -1,5 +1,6 @@
 package com.hust.minileetcode.utils;
 
+import com.hust.minileetcode.utils.executor.GccExecutor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.FileSystemUtils;
@@ -27,6 +28,7 @@ public class TempDir {
 
     private OfInt r = new Random().ints(minVal, maxVal).iterator();
 
+    private GccExecutor gccExecutor = new GccExecutor();
 
 
     @Bean
@@ -46,41 +48,29 @@ public class TempDir {
         return startName+"/"+startName+".sh";
     }
 
-    public void createScriptFile(String source, ComputerLanguage.Languages languages, String tmpName ) throws IOException {
+    public void createScriptFile(String source, String testCase, int timeLimit, ComputerLanguage.Languages languages, String tmpName ) throws IOException {
         String suffixes = "";
         String cmd = "";
-        switch (languages){
-            case CPP:
-                suffixes = ".cpp";
-                cmd = "g++ -o main main.cpp" + "\n" +"timeout 5s ./main" +"\n";
-                break;
-            case JAVA:
-                suffixes = ".java";
-                break;
-            case PYTHON3:
-                suffixes = ".py";
-                break;
-            case GOLANG:
-                suffixes = ".go";
-                break;
-            default:
-                suffixes = "";
-                break;
-        }
-
-        String sourceSh = SHFileStart
-                + "mkdir -p " + tmpName +"\n"
-                + "cd " + tmpName +"\n"
-                + "cat <<EOF >> main"  + suffixes + "\n"
-                + source + "\n"
-                + "EOF" + "\n"
-                + cmd + "\n"
-                + "cd .. \n"
-                + "rm -rf " + tmpName + "\n"
-                + "rm -rf " + tmpName+".sh"
-                ;
         File theDir = new File(TEMPDIR+tmpName);
         theDir.mkdirs();
+        String sourceSh;
+        switch (languages){
+            case CPP:
+                sourceSh = gccExecutor.generateScriptFileWithTestCaseAndCorrectSolution(source, testCase, tmpName, timeLimit);
+                break;
+//            case JAVA:
+//                suffixes = ".java";
+//                break;
+//            case PYTHON3:
+//                suffixes = ".py";
+//                break;
+//            case GOLANG:
+//                suffixes = ".go";
+//                break;
+            default:
+                sourceSh = null;
+        }
+
         BufferedWriter writer = new BufferedWriter(new FileWriter(TEMPDIR + tmpName+"/"+tmpName+".sh"));
         writer.write(sourceSh);
         writer.close();
@@ -89,5 +79,7 @@ public class TempDir {
     public void removeDir(String dirName){
         FileSystemUtils.deleteRecursively(new File("./temp_dir/"+dirName));
     }
+
+
 
 }

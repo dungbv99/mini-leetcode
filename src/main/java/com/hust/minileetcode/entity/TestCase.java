@@ -19,11 +19,14 @@ public class TestCase {
     @Column(name = "test_case_point")
     private int testCasePoint;
 
+    @Column(name = "test_case")
+    private String testCase;
+
     @Column(name = "correct_answer")
     private String correctAnswer;
 
-    @ManyToOne
-    @JoinColumn(name = "contest_problem_id", referencedColumnName = "contest_problem_id")
+    @JoinColumn(name = "contest_problem_id", referencedColumnName = "problem_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private ContestProblem contestProblem;
 
 }

@@ -42,9 +42,10 @@ public class HelloController {
                 "}" ;
 
         String tempName = tempDir.createRandomScriptFileName("test");
-
+        String testCase = "";
+        int timeLimit = 1;
         try {
-            tempDir.createScriptFile(source, ComputerLanguage.Languages.CPP, tempName);
+            tempDir.createScriptFile(source, testCase, timeLimit, ComputerLanguage.Languages.CPP, tempName);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface ProblemSourceCodeRepo extends JpaRepository<ProblemSourceCode, UUID> {
+public interface ProblemSourceCodeRepo extends JpaRepository<ProblemSourceCode, String> {
 }
