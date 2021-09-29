@@ -21,7 +21,7 @@ public class GccExecutor {
                 + source + "\n"
                 + "EOF" + "\n"
                 + "cat <<EOF >> testcase.txt \n"
-                + testCase
+                + testCase +"\n"
                 + "EOF" + "\n"
                 + buildCmd +"\n"
                 + "cat testcase.txt | timeout " + timeLimit +"s " +"./main" + "\n"

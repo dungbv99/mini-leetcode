@@ -23,9 +23,9 @@ public class JpaAuditConfig {
         return new SpringSecurityAuditorAware();
     }
 
-    @Bean(name = "jpa_transaction_manager")
-    @Primary
-    PlatformTransactionManager jpaTransactionManager() {
-        return new JpaTransactionManager(entityManagerFactory);
-    }
+//    @Bean(name = "jpa_transaction_manager")
+//    @Primary
+//    PlatformTransactionManager jpaTransactionManager() {
+//        return new JpaTransactionManager(entityManagerFactory);
+//    }
 }

@@ -2,9 +2,11 @@ package com.hust.minileetcode.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class ModelCreateContestProblem {
     private String problemId;
     private String problemName;

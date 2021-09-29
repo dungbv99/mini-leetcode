@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+//@ToString
 @Table(name = "problem_source_code")
 public class ProblemSourceCode {
     @Id
@@ -34,7 +35,7 @@ public class ProblemSourceCode {
             joinColumns = @JoinColumn(name = "problem_source_code_id", referencedColumnName = "problem_source_code_id"),
             inverseJoinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
     )
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     private ContestProblem contestProblem;
 
     public String createSolutionSourceCode(){

@@ -5,6 +5,7 @@ import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
 import com.spotify.docker.client.exceptions.DockerException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class HelloController {
     }
 
     @GetMapping("/test1")
-    public String index() {
+    public String index() throws DockerException, IOException, InterruptedException {
         String source = "// vector::at\n" +
                 "#include <iostream>\n" +
                 "#include <vector>\n" +
@@ -50,18 +51,11 @@ public class HelloController {
             e.printStackTrace();
         }
         String response = new String("err");
-        try {
-            response = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP,  tempName);
-//            tempDir.removeDir(tempName);
-        } catch (DockerException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        response = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP,  tempName);
+        tempDir.removeDir(tempName);
 
         return response;
     }
+
 
 }
