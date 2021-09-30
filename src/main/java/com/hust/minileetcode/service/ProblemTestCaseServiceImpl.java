@@ -3,9 +3,11 @@ package com.hust.minileetcode.service;
 import com.hust.minileetcode.docker.DockerClientBase;
 import com.hust.minileetcode.entity.ContestProblem;
 import com.hust.minileetcode.entity.ProblemSourceCode;
+import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.model.ModelAddProblemLanguageSourceCode;
 import com.hust.minileetcode.model.ModelCreateContestProblem;
 import com.hust.minileetcode.model.ModelCreateTestCase;
+import com.hust.minileetcode.repo.ContestProblemPagingAndSortingRepo;
 import com.hust.minileetcode.repo.ContestProblemRepo;
 import com.hust.minileetcode.repo.ProblemSourceCodeRepo;
 import com.hust.minileetcode.repo.TestCaseRepo;
@@ -15,9 +17,15 @@ import javassist.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
 import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 @Service
@@ -26,8 +34,10 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private ContestProblemRepo contestProblemRepo;
     private TestCaseRepo testCaseRepo;
     private ProblemSourceCodeRepo problemSourceCodeRepo;
-    private DockerClientBase dockerClientBase = new DockerClientBase();
-    private TempDir tempDir = new TempDir();
+    private DockerClientBase dockerClientBase;
+    private TempDir tempDir;
+    private ContestProblemPagingAndSortingRepo contestProblemPagingAndSortingRepo;
+
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
         ContestProblem contestProblem = new ContestProblem();
@@ -99,4 +109,30 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         }
         return response;
     }
+
+    @Override
+    public Page<ContestProblem> getContestProblemPaging(Pageable pageable) {
+        return contestProblemPagingAndSortingRepo.findAll(pageable);
+    }
+
+    @Override
+    public ContestProblem findContestProblemByProblemId(String problemId) throws Exception {
+        try {
+            ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+            return contestProblem;
+        }catch (Exception e){
+            throw new Exception(e.toString());
+        }
+    }
+
+    @Override
+    public void saveTestCase(TestCase testCase) throws Exception {
+        try {
+            testCaseRepo.save(testCase);
+        }catch (Exception e){
+            throw new Exception(e.toString());
+        }
+    }
+
+
 }

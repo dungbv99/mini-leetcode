@@ -1,17 +1,30 @@
 package com.hust.minileetcode.controller;
 
 import com.hust.minileetcode.docker.DockerClientBase;
+import com.hust.minileetcode.repo.ContestProblemPagingAndSortingRepo;
+import com.hust.minileetcode.repo.ContestProblemRepo;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
 import com.spotify.docker.client.exceptions.DockerException;
+import lombok.AllArgsConstructor;
+import org.apache.catalina.LifecycleState;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class HelloController {
+    private ContestProblemPagingAndSortingRepo contestProblemPagingAndSortingRepo;
+    private ContestProblemRepo contestProblemRepo;
     private DockerClientBase dockerClientBase = new DockerClientBase();
     private TempDir tempDir = new TempDir();
 
@@ -56,6 +69,17 @@ public class HelloController {
 
         return response;
     }
+
+    @GetMapping("/test")
+    public void test(Pageable pageable){
+        System.out.println("page " + pageable.toString());
+        ArrayList<String> problemNames = contestProblemPagingAndSortingRepo.getProblemNamePaging(pageable);
+        for(int i = 0; i< problemNames.size(); i++){
+            System.out.println(problemNames.get(i));
+        }
+    }
+
+
 
 
 }
