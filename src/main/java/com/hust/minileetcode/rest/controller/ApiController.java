@@ -1,8 +1,9 @@
-package com.hust.minileetcode.controller;
+package com.hust.minileetcode.rest.controller;
 
 import com.hust.minileetcode.rest.entity.Party;
 import com.hust.minileetcode.rest.entity.Person;
 import com.hust.minileetcode.rest.entity.UserLogin;
+import com.hust.minileetcode.rest.service.ApplicationService;
 import com.hust.minileetcode.rest.service.PersonService;
 import com.hust.minileetcode.rest.service.UserService;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class ApiController {
 
     private UserService userService;
     private PersonService personService;
+    private ApplicationService applicationService;
 
     @GetMapping("/")
     public ResponseEntity<Map> home(@CurrentSecurityContext(expression = "authentication.name") String name) {
@@ -38,7 +40,6 @@ public class ApiController {
 
     @GetMapping("/my-account")
     public ResponseEntity<?> getAccount(Principal principal) {
-        System.out.println("this is temp");
         UserLogin userLogin = userService.findById(principal.getName());
         Party party = userLogin.getParty();
         Person person = personService.findByPartyId(party.getPartyId());
@@ -47,5 +48,10 @@ public class ApiController {
         response.put("partyId", person.getPartyId().toString());
         response.put("user", principal.getName());
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("screen-security")
+    public ResponseEntity<?> getScrSecurInfo(Principal principal) {
+        return ResponseEntity.ok().body(applicationService.getScrSecurInfo(principal.getName()));
     }
 }

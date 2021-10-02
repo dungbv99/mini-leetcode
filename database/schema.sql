@@ -156,6 +156,31 @@ create TABLE person
     CONSTRAINT person_party FOREIGN KEY (party_id) REFERENCES party (party_id)
 );
 
+create TABLE application_type
+(
+    application_type_id VARCHAR(60) NOT NULL,
+    description         TEXT,
+    last_updated_stamp  TIMESTAMP,
+    created_stamp       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT pk_application_type PRIMARY KEY (application_type_id)
+);
+
+create TABLE application
+(
+    application_id      VARCHAR(255) NOT NULL,
+    application_type_id VARCHAR(255) NOT NULL,
+    module_id           VARCHAR(255),
+    permission_id       VARCHAR(255),
+    description         TEXT,
+    last_updated_stamp  TIMESTAMP,
+    created_stamp       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT pk_application PRIMARY KEY (application_id),
+    CONSTRAINT application_application_type FOREIGN KEY (application_type_id) REFERENCES application_type (application_type_id),
+    CONSTRAINT application_application_module FOREIGN KEY (module_id) REFERENCES application (application_id),
+    CONSTRAINT application_permission FOREIGN KEY (permission_id) REFERENCES security_permission (permission_id)
+);
+
+
 -- contest defind
 create table problem_source_code
 (

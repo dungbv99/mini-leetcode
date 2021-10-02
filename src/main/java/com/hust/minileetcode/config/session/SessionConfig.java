@@ -12,8 +12,8 @@ import org.springframework.session.data.redis.RedisSessionRepository;
 import org.springframework.session.web.http.HeaderHttpSessionIdResolver;
 import org.springframework.session.web.http.HttpSessionIdResolver;
 
-//@Configuration
-//@EnableSpringHttpSession
+@Configuration
+@EnableSpringHttpSession
 public class SessionConfig {
 
     @Value("${spring.redis.host}")

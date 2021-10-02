@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @Log4j2
 public class ContestProblemController {
     ProblemTestCaseService problemTestCaseService;
-    AnswerChecking answerChecking;
+//    AnswerChecking answerChecking;
 
     @PostMapping("/create-contest-problem")
     public ResponseEntity<?> createContestProblem(@RequestBody ModelCreateContestProblem modelCreateContestProblem) throws Exception{
@@ -51,7 +51,7 @@ public class ContestProblemController {
     public ResponseEntity<?> createTestCase(@RequestBody ModelCreateTestCase modelCreateTestCase, @PathVariable("problemId") String problemId) throws Exception{
         try{
             String correctAnswer = problemTestCaseService.createTestCase(modelCreateTestCase,problemId);
-            if(answerChecking.checkAnswerGenerate(correctAnswer)){
+            if(true){
                 TestCase testCase = new TestCase();
                 testCase.setTestCase(modelCreateTestCase.getTestCase());
                 testCase.setTestCasePoint(modelCreateTestCase.getTestCasePoint());
