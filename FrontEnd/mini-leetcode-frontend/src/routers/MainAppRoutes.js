@@ -10,10 +10,11 @@ import { useNotificationState } from "../state/NotificationState";
 import NotFound from "../views/errors/NotFound";
 
 
-const EduRoute = lazy(() => import("./EduRoute"));
+// const EduRoute = lazy(() => import("./EduRoute"));
 const UserLoginRoute = lazy(() => import("./UserLoginRoute"));
-const TestGroupRoute = lazy(() => import("./TestGroupRoute"));
-const UserGroupRoute = lazy(() => import("./UserGroupRoute"));
+// const TestGroupRoute = lazy(() => import("./TestGroupRoute"));
+// const UserGroupRoute = lazy(() => import("./UserGroupRoute"));
+const ProgrammingContestRoutes = lazy(() => import("./ProgrammingContestRoutes"));
 
 function MainAppRoute(props) {
   const location = useLocation();
@@ -61,7 +62,9 @@ function MainAppRoute(props) {
 
           <PrivateRoute component={UserLoginRoute} path="/userlogin" />
 
-          <PrivateRoute component={EduRoute} path="/edu" />
+          <PrivateRoute component={ProgrammingContestRoutes} path="/programming-contest" />
+
+          {/* <PrivateRoute component={EduRoute} path="/edu" /> */}
 
           <Route component={NotFound} />
         </Switch>

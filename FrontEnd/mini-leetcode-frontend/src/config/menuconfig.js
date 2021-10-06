@@ -5,17 +5,17 @@ import React from "react";
 import { GiTeacher } from "react-icons/gi";
 import TeachingIcon from "../assets/icons/mathematics.svg";
 import { buildMapPathMenu } from "../utils/MenuUtils";
-import { eduLearningManagement } from "./menuconfig/classmanagement/student";
-import { eduTeachingManagement } from "./menuconfig/classmanagement/teacher";
+// import { eduLearningManagement } from "./menuconfig/classmanagement/student";
+// import { eduTeachingManagement } from "./menuconfig/classmanagement/teacher";
 import { general } from "./menuconfig/general";
 import { user } from "./menuconfig/user";
-
+import { ProgrammingContest } from "./menuconfig/classmanagement/ProgramingContest";
 
 export const MENU_LIST = [];
 MENU_LIST.push(general);
-MENU_LIST.push(eduTeachingManagement);
-MENU_LIST.push(eduLearningManagement);
-
+// MENU_LIST.push(eduTeachingManagement);
+// MENU_LIST.push(eduLearningManagement);
+MENU_LIST.push(ProgrammingContest);
 
 export const menuIconMap = new Map();
 menuIconMap.set(

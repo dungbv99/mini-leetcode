@@ -197,8 +197,8 @@ create table problem_source_code
 
 create table contest_problem
 (
-    problem_id varchar(60) not null,
-    problem_name varchar(200),
+    problem_id varchar(100) not null,
+    problem_name varchar(100) unique ,
     problem_description text, -- problem_statement
     created_by_user_login_id varchar(60),
     time_limit  int,

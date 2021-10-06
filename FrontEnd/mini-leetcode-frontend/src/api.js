@@ -20,7 +20,7 @@ export const authPost = (dispatch, token, url, body) => {
           dispatch(failed());
           throw Error("Unauthorized");
         } else {
-          console.log(res);
+          console.log("res", res);
           try {
             res.json().then((res1) => console.log(res1));
           } catch (err) {}

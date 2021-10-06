@@ -499,7 +499,7 @@ export default function NewRegister() {
                       },
                       pattern: {
                         value:
-                          /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                         message: "Email không hợp lệ",
                       },
                     })}
@@ -529,7 +529,7 @@ export default function NewRegister() {
                       rules={{
                         validate: {
                           required: (roles) => {
-                            if (roles.length == 0) {
+                            if (roles.length === 0) {
                               return "Vui lòng chọn ít nhất một vai trò";
                             }
                             return true;

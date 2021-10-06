@@ -24,7 +24,7 @@ public class ContestProblem {
     @OneToMany(fetch = FetchType.LAZY)
     private List<ProblemSourceCode> problemSourceCode;
 
-    @Column(name = "problem_name")
+    @Column(name = "problem_name", unique = true)
     private String problemName;
 
     @Column(name = "problem_description")

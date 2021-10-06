@@ -5,6 +5,7 @@ import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.model.ModelAddProblemLanguageSourceCode;
 import com.hust.minileetcode.model.ModelCreateContestProblem;
 import com.hust.minileetcode.model.ModelCreateTestCase;
+import com.hust.minileetcode.model.ModelRunCodeFromIDE;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,4 +23,6 @@ public interface ProblemTestCaseService {
     ContestProblem findContestProblemByProblemId(String problemId) throws Exception;
 
     void saveTestCase(TestCase testCase) throws Exception;
+
+    String executableIDECode(ModelRunCodeFromIDE modelRunCodeFromIDE, String userName, String computerLanguage) throws Exception;
 }

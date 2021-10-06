@@ -73,7 +73,7 @@ public class DockerClientBase {
         Map<String,String> m = new HashMap<String,String>();
         m.put("names", "leetcode");
         ContainerConfig gccContainerConfig = ContainerConfig.builder()
-                .image("gcc:8.5-buster")
+                    .image("gcc:8.5-buster")
                 .workingDir("/workdir")
                 .hostname("test1")
                 .cmd("sh", "-c", "while :; do sleep 1; done")

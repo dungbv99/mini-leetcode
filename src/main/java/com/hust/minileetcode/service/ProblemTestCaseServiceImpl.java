@@ -7,6 +7,7 @@ import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.model.ModelAddProblemLanguageSourceCode;
 import com.hust.minileetcode.model.ModelCreateContestProblem;
 import com.hust.minileetcode.model.ModelCreateTestCase;
+import com.hust.minileetcode.model.ModelRunCodeFromIDE;
 import com.hust.minileetcode.repo.ContestProblemPagingAndSortingRepo;
 import com.hust.minileetcode.repo.ContestProblemRepo;
 import com.hust.minileetcode.repo.ProblemSourceCodeRepo;
@@ -132,6 +133,24 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         }catch (Exception e){
             throw new Exception(e.toString());
         }
+    }
+
+    @Override
+    public String executableIDECode(ModelRunCodeFromIDE modelRunCodeFromIDE, String userName, String computerLanguage) throws Exception {
+        String tempName = tempDir.createRandomScriptFileName(userName);
+        String response = null;
+        switch (computerLanguage){
+            case "CPP":
+                tempDir.createScriptFile(modelRunCodeFromIDE.getSource(), modelRunCodeFromIDE.getInput(), 10, ComputerLanguage.Languages.CPP, tempName);
+                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP,  tempName);
+                break;
+            default:
+                System.out.println("default");
+                break;
+        }
+        tempDir.removeDir(tempName);
+        System.out.println(response);
+        return response;
     }
 
 
