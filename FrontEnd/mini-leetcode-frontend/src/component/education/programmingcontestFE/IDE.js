@@ -13,7 +13,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {authPost} from "../../../api";
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
-// import { python } from '@codemirror/legacy-modes/mode/python';
+import ContentLoader from "react-content-loader"
+
 function IDE(){
   const dispatch = useDispatch();
   const [computerLanguage, setComputerLanguage] = useState("CPP");
@@ -22,15 +23,14 @@ function IDE(){
   const [screenHeight, setScreenHeight] = useState((window.innerHeight-200) + "px");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
-  const colorList = ["White", "Black"];
-  const m = new Map();
-  m.set("White", "");
-  m.set("Black", "material")
-  const [color, setColor] = useState("White");
+  const colorList = ["light", "dark"];
+  const [load, setLoad] = useState(false);
+  const [color, setColor] = useState("light");
   const token = useSelector((state) => state.auth.token);
   async function handleRun() {
     // console.log("input", input);
     // console.log("source", source);
+    setLoad(true);
     let body = {
       source: source,
       input: input,
@@ -40,9 +40,9 @@ function IDE(){
         console.log("done");
         console.log("res", res);
         setOutput(res.output);
+        setLoad(false);
       }
     );
-
 
     // await fetch(API_URL + "/ide/"+computerLanguage, {
     //   method: "POST",
@@ -108,25 +108,24 @@ function IDE(){
         ))}
       </TextField>
 
-      {/*<TextField*/}
-
-      {/*  variant="outlined"*/}
-      {/*  size="small"*/}
-      {/*  autoFocus*/}
-      {/*  // required*/}
-      {/*  value={color}*/}
-      {/*  select*/}
-      {/*  id="color"*/}
-      {/*  onChange={(event) => {*/}
-      {/*    setColor(event.target.value);*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  {colorList.map((item) => (*/}
-      {/*    <MenuItem key={item} value={item}>*/}
-      {/*      {item}*/}
-      {/*    </MenuItem>*/}
-      {/*  ))}*/}
-      {/*</TextField>*/}
+      <TextField
+        variant="outlined"
+        size="small"
+        autoFocus
+        // required
+        value={color}
+        select
+        id="color"
+        onChange={(event) => {
+          setColor(event.target.value);
+        }}
+      >
+        {colorList.map((item) => (
+          <MenuItem key={item} value={item}>
+            {item}
+          </MenuItem>
+        ))}
+      </TextField>
 
 
 
@@ -140,7 +139,7 @@ function IDE(){
               setSource(value);
             }}
             autoFocus={true}
-            theme='light'
+            theme={color}
           />
         </Grid>
         <Grid item xs={4}>
@@ -158,22 +157,20 @@ function IDE(){
                   setInput(value);
                 }}
                 autoFocus={true}
-                // theme={""}
+                theme={color}
               />
             </Grid>
             <Grid container spacing={12}>
               <Grid item xs={2}></Grid>
               <Grid item xs={10}>
                 <Typography>Output</Typography>
-                <CodeMirror
-                  value={output}
-                  height={"100px"}
-                  width="100%"
-                  extensions={getExtension()}
-                  autoFocus={true}
-                  editable={false}
-                  // theme={""}
+                <OutputWithLoading
+                  load={load}
+                  output={output}
+                  extension={getExtension()}
+                  color={color}
                 />
+
               </Grid>
               <Grid item xs={2}></Grid>
               <Button
@@ -197,3 +194,38 @@ function IDE(){
 }
 
 export default IDE;
+
+function OutputWithLoading(props){
+  const load = props.load;
+  const output = props.output;
+  const extension = props.extension;
+  const color = props.color;
+  if(load){
+    return <ContentLoader
+      speed={2}
+      width={"100%"}
+      height={160}
+      viewBox="0 0 400 160"
+      backgroundColor="#f3f3f3"
+      foregroundColor="#ecebeb"
+
+    >
+      <rect x="48" y="8" rx="3" ry="3" width="88" height="6" />
+      <rect x="48" y="26" rx="3" ry="3" width="52" height="6" />
+      <rect x="0" y="56" rx="3" ry="3" width="410" height="6" />
+      <rect x="0" y="72" rx="3" ry="3" width="380" height="6" />
+      <rect x="0" y="88" rx="3" ry="3" width="178" height="6" />
+      <circle cx="20" cy="20" r="20" />
+    </ContentLoader>;
+  }else{
+    return <CodeMirror
+      value={output}
+      height={"100px"}
+      width="100%"
+      extensions={extension}
+      autoFocus={true}
+      editable={false}
+      theme={color}
+    />
+  }
+}
