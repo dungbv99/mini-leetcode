@@ -5,6 +5,8 @@ import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.model.*;
 import com.hust.minileetcode.service.ProblemTestCaseService;
 import com.hust.minileetcode.utils.AnswerChecking;
+import com.hust.minileetcode.utils.ComputerLanguage;
+import com.hust.minileetcode.utils.TempDir;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import java.security.Principal;
 public class ContestProblemController {
     ProblemTestCaseService problemTestCaseService;
 //    AnswerChecking answerChecking;
+    TempDir tempDir = new TempDir();
 
     @PostMapping("/create-contest-problem")
     public ResponseEntity<?> createContestProblem(@RequestBody ModelCreateContestProblem modelCreateContestProblem) throws Exception{
@@ -82,17 +85,21 @@ public class ContestProblemController {
 
     @PostMapping("/ide/{computerLanguage}")
     public ResponseEntity<?> runCode(@PathVariable("computerLanguage") String computerLanguage, @RequestBody ModelRunCodeFromIDE modelRunCodeFromIDE, Principal principal) throws Exception{
-//        System.out.println(principal.getName());
+//        System.out.println(principal.getName());\
+//        System.out.println("ide "+ computerLanguage);
         String response = null;
-        switch (computerLanguage){
-            case "CPP":
-//                System.out.println("CPP");
-                response = problemTestCaseService.executableIDECode(modelRunCodeFromIDE,principal.getName(), computerLanguage);
-                break;
-            default:
-//                System.out.println("default");
-                break;
-        }
+        response = problemTestCaseService.executableIDECode(modelRunCodeFromIDE,principal.getName(), computerLanguage);
+//        switch (computerLanguage){
+//            case "CPP":
+////                System.out.println("CPP");
+//                response = problemTestCaseService.executableIDECode(modelRunCodeFromIDE,principal.getName(), computerLanguage);
+//                break;
+//            case "JAVA":
+//
+//            default:
+////                System.out.println("default");
+//                break;
+//        }
         ModelRunCodeFromIDEOutput modelRunCodeFromIDEOutput = new ModelRunCodeFromIDEOutput();
         modelRunCodeFromIDEOutput.setOutput(response);
         return ResponseEntity.status(200).body(modelRunCodeFromIDEOutput);

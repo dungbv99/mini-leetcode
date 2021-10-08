@@ -64,6 +64,13 @@ public class DockerClientBase {
             m.put(container.names().get(0), container.id());
             dockerClient.startContainer(container.id());
         }
+        List<Container> listContainersCreated = dockerClient.listContainers(
+                ListContainersParam.withStatusCreated(),
+                ListContainersParam.filter("label", "names=leetcode"));
+        for(Container container : listContainersCreated){
+            m.put(container.names().get(0), container.id());
+            dockerClient.startContainer(container.id());
+        }
         System.out.println(m.toString());
 
     }
@@ -96,6 +103,15 @@ public class DockerClientBase {
         switch (languages){
             case CPP:
                 containerId = m.get("/gcc");
+                break;
+            case JAVA:
+                containerId = m.get("/java");
+                break;
+            case PYTHON3:
+                containerId = m.get("/python3");
+                break;
+            case GOLANG:
+                containerId = m.get("/golang");
                 break;
             default:
                 System.out.println("language err");

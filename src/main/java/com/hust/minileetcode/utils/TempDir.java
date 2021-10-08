@@ -1,7 +1,9 @@
 package com.hust.minileetcode.utils;
 
 import com.hust.minileetcode.utils.executor.GccExecutor;
-import lombok.SneakyThrows;
+import com.hust.minileetcode.utils.executor.GolangExecutor;
+import com.hust.minileetcode.utils.executor.JavaExecutor;
+import com.hust.minileetcode.utils.executor.Python3Executor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.FileSystemUtils;
@@ -12,9 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.PrimitiveIterator.OfInt;
 import java.util.Random;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
 
 
 @Configuration
@@ -33,6 +33,12 @@ public class TempDir {
     private OfInt r = new Random().ints(minVal, maxVal).iterator();
 
     private GccExecutor gccExecutor = new GccExecutor();
+
+    private JavaExecutor javaExecutor = new JavaExecutor();
+
+    private Python3Executor python3Executor = new Python3Executor();
+
+    private GolangExecutor golangExecutor = new GolangExecutor();
 
     public static ConcurrentLinkedQueue<String> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
 
@@ -74,15 +80,15 @@ public class TempDir {
             case CPP:
                 sourceSh = gccExecutor.generateScriptFileWithTestCaseAndCorrectSolution(source, testCase, tmpName, timeLimit);
                 break;
-//            case JAVA:
-//                suffixes = ".java";
-//                break;
-//            case PYTHON3:
-//                suffixes = ".py";
-//                break;
-//            case GOLANG:
-//                suffixes = ".go";
-//                break;
+            case JAVA:
+                sourceSh = javaExecutor.generateScriptFileWithTestCaseAndCorrectSolution(source, testCase, tmpName, timeLimit);
+                break;
+            case PYTHON3:
+                sourceSh = python3Executor.generateScriptFileWithTestCaseAndCorrectSolution(source, testCase, tmpName, timeLimit);
+                break;
+            case GOLANG:
+                sourceSh = golangExecutor.generateScriptFileWithTestCaseAndCorrectSolution(source, testCase, tmpName, timeLimit);
+                break;
             default:
                 sourceSh = null;
         }

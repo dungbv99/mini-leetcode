@@ -137,12 +137,25 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public String executableIDECode(ModelRunCodeFromIDE modelRunCodeFromIDE, String userName, String computerLanguage) throws Exception {
-        String tempName = tempDir.createRandomScriptFileName(userName);
+        String tempName = tempDir.createRandomScriptFileName(userName + "-" + computerLanguage);
         String response = null;
+        System.out.println("computerLanguage " + computerLanguage);
         switch (computerLanguage){
             case "CPP":
                 tempDir.createScriptFile(modelRunCodeFromIDE.getSource(), modelRunCodeFromIDE.getInput(), 10, ComputerLanguage.Languages.CPP, tempName);
                 response = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP,  tempName);
+                break;
+            case "JAVA":
+                tempDir.createScriptFile(modelRunCodeFromIDE.getSource(), modelRunCodeFromIDE.getInput(), 10, ComputerLanguage.Languages.JAVA, tempName);
+                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.JAVA, tempName);
+                break;
+            case "PYTHON3":
+                tempDir.createScriptFile(modelRunCodeFromIDE.getSource(), modelRunCodeFromIDE.getInput(), 10, ComputerLanguage.Languages.PYTHON3, tempName);
+                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.PYTHON3, tempName);
+                break;
+            case "GOLANG":
+                tempDir.createScriptFile(modelRunCodeFromIDE.getSource(), modelRunCodeFromIDE.getInput(), 10, ComputerLanguage.Languages.GOLANG, tempName);
+                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.GOLANG, tempName);
                 break;
             default:
                 System.out.println("default");
