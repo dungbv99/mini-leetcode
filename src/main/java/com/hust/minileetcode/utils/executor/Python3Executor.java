@@ -18,11 +18,13 @@ public class Python3Executor {
                 + "cat <<EOF >> testcase.txt \n"
                 + testCase +"\n"
                 + "EOF" + "\n"
-                + "cat testcase.txt | timeout " + timeLimit +"s " +"python3 main.py" + "\n"
+                + "FILE=main.py" +"\n"
+                +"if test -f \"$FILE\"; then" +"\n"
+                + "    cat testcase.txt | timeout " + timeLimit +"s " +" python3 main.py || echo Time Limit Exceeded" + "\n"
+                + "fi" + "\n"
                 + "cd .. \n"
                 + "rm -rf " + tmpName + " & "+"\n"
-                + "rm -rf " + tmpName+".sh" + " & "+"\n"
-                ;
+                + "rm -rf " + tmpName+".sh" + " & "+"\n";
         return sourceSH;
     }
 }

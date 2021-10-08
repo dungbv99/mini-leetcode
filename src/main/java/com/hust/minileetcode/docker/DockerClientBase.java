@@ -72,6 +72,14 @@ public class DockerClientBase {
             dockerClient.startContainer(container.id());
         }
         System.out.println(m.toString());
+//        String containerId = m.get("/gcc");
+//        String[] runCommand = {"sh", "-c", "while :; do sleep 1; done"};
+//        ExecCreation runExecCreation = dockerClient.execCreate(
+//                containerId, runCommand, DockerClient.ExecCreateParam.attachStdout(),
+//                DockerClient.ExecCreateParam.attachStderr());
+//        LogStream output = dockerClient.execStart(runExecCreation.id());
+//        String execOutput = output.readFully();
+//        System.out.println("exec output " + execOutput);
 
     }
 
@@ -99,7 +107,7 @@ public class DockerClientBase {
 
     public String runExecutable(Languages languages, String dirName) throws DockerException, InterruptedException, IOException {
         String[] runCommand = {"bash", dirName+".sh"};
-        String containerId = "";
+        String containerId;
         switch (languages){
             case CPP:
                 containerId = m.get("/gcc");
@@ -125,6 +133,7 @@ public class DockerClientBase {
         String execOutput = output.readFully();
         return execOutput;
     }
+
 
 
 }

@@ -20,11 +20,13 @@ public class JavaExecutor {
                 + testCase +"\n"
                 + "EOF" + "\n"
                 + buildCmd +"\n"
-                + "cat testcase.txt | timeout " + timeLimit +"s " +"java Main" + "\n"
+                + "FILE=Main.class" +"\n"
+                +"if test -f \"$FILE\"; then" +"\n"
+                + "    cat testcase.txt | timeout " + timeLimit +"s " +"java Main || echo Time Limit Exceeded" + "\n"
+                + "fi" + "\n"
                 + "cd .. \n"
                 + "rm -rf " + tmpName + " & "+"\n"
-                + "rm -rf " + tmpName+".sh" + " & "+"\n"
-                ;
+                + "rm -rf " + tmpName+".sh" + " & "+"\n";
         return sourceSH;
     }
 }

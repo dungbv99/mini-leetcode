@@ -24,11 +24,14 @@ public class GccExecutor {
                 + testCase +"\n"
                 + "EOF" + "\n"
                 + buildCmd +"\n"
-                + "cat testcase.txt | timeout " + timeLimit +"s " +"./main" + "\n"
+                + "FILE=main" +"\n"
+                +"if test -f \"$FILE\"; then" +"\n"
+                + "    cat testcase.txt | timeout " + timeLimit +"s " +"./main || echo Time Limit Exceeded" + "\n"
+                + "fi" + "\n"
                 + "cd .. \n"
                 + "rm -rf " + tmpName + " & "+"\n"
-                + "rm -rf " + tmpName+".sh" + " & "+"\n"
-                ;
+                + "rm -rf " + tmpName+".sh" + " & "+"\n";
+
         return sourceSH;
     }
 }

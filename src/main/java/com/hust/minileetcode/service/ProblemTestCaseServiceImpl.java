@@ -162,7 +162,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 break;
         }
 //        tempDir.removeDir(tempName);
-        tempDir.pushToConcurrentLinkedQueue(tempName);
+//        tempDir.pushToConcurrentLinkedQueue(tempName);
         System.out.println(response);
         return response;
     }

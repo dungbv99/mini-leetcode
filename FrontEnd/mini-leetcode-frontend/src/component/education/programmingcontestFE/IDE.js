@@ -29,14 +29,15 @@ function IDE(){
   const [color, setColor] = useState("White");
   const token = useSelector((state) => state.auth.token);
   async function handleRun() {
-    console.log("input", input);
-    console.log("source", source);
+    // console.log("input", input);
+    // console.log("source", source);
     let body = {
       source: source,
       input: input,
     }
-    let out = await authPost(dispatch, token, "/ide/"+computerLanguage,body).then(
+    await authPost(dispatch, token, "/ide/"+computerLanguage,body).then(
       (res) =>{
+        console.log("done");
         console.log("res", res);
         setOutput(res.output);
       }
