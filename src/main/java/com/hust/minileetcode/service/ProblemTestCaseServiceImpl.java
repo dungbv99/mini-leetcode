@@ -148,7 +148,8 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 System.out.println("default");
                 break;
         }
-        tempDir.removeDir(tempName);
+//        tempDir.removeDir(tempName);
+        tempDir.pushToConcurrentLinkedQueue(tempName);
         System.out.println(response);
         return response;
     }

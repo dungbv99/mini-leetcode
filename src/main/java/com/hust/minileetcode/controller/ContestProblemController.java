@@ -82,15 +82,15 @@ public class ContestProblemController {
 
     @PostMapping("/ide/{computerLanguage}")
     public ResponseEntity<?> runCode(@PathVariable("computerLanguage") String computerLanguage, @RequestBody ModelRunCodeFromIDE modelRunCodeFromIDE, Principal principal) throws Exception{
-        System.out.println(principal.getName());
+//        System.out.println(principal.getName());
         String response = null;
         switch (computerLanguage){
             case "CPP":
-                System.out.println("CPP");
+//                System.out.println("CPP");
                 response = problemTestCaseService.executableIDECode(modelRunCodeFromIDE,principal.getName(), computerLanguage);
                 break;
             default:
-                System.out.println("default");
+//                System.out.println("default");
                 break;
         }
         ModelRunCodeFromIDEOutput modelRunCodeFromIDEOutput = new ModelRunCodeFromIDEOutput();

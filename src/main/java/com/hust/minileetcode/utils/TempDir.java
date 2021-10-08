@@ -1,6 +1,7 @@
 package com.hust.minileetcode.utils;
 
 import com.hust.minileetcode.utils.executor.GccExecutor;
+import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.FileSystemUtils;
@@ -11,6 +12,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.PrimitiveIterator.OfInt;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 
 @Configuration
@@ -30,6 +34,7 @@ public class TempDir {
 
     private GccExecutor gccExecutor = new GccExecutor();
 
+    public static ConcurrentLinkedQueue<String> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
 
     @Bean
     public void initTmepDir(){
@@ -37,6 +42,17 @@ public class TempDir {
         if (!theDir.exists()){
             theDir.mkdirs();
         }
+    }
+
+    @Bean
+    public void startRemoveTempDirThread(){
+        RmTempDirTheard rmTempDirTheard = new RmTempDirTheard();
+        rmTempDirTheard.start();
+        System.out.println("-------------------------------  done start ---------------------------");
+    }
+
+    public void pushToConcurrentLinkedQueue(String dirName){
+        concurrentLinkedQueue.add(dirName);
     }
 
     public String createRandomScriptFileName(String startName){
@@ -81,5 +97,15 @@ public class TempDir {
     }
 
 
-
+    class RmTempDirTheard extends Thread{
+        public void run(){
+            String dirName;
+            while(true){
+                while ((dirName = concurrentLinkedQueue.poll()) != null){
+//                    System.out.println("rm dir " + dirName);
+                    FileSystemUtils.deleteRecursively(new File("./temp_dir/"+dirName));
+                }
+            }
+        }
+    }
 }

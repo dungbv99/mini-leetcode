@@ -26,8 +26,8 @@ public class GccExecutor {
                 + buildCmd +"\n"
                 + "cat testcase.txt | timeout " + timeLimit +"s " +"./main" + "\n"
                 + "cd .. \n"
-                + "rm -rf " + tmpName + "\n"
-                + "rm -rf " + tmpName+".sh" +"\n"
+                + "rm -rf " + tmpName + " & "+"\n"
+                + "rm -rf " + tmpName+".sh" + " & "+"\n"
                 ;
         return sourceSH;
     }
