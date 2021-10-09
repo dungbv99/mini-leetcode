@@ -44,6 +44,8 @@ function IDE(){
       }
     );
 
+
+
     // await fetch(API_URL + "/ide/"+computerLanguage, {
     //   method: "POST",
     //   headers: {
@@ -70,7 +72,10 @@ function IDE(){
     //   }
     // )
   }
-
+  useEffect(() => {
+    console.log("use effect");
+    console.log("token ", token);
+  }, [])
   const getExtension = () =>{
     switch (computerLanguage){
       case "CPP":
@@ -175,11 +180,11 @@ function IDE(){
               <Grid item xs={2}></Grid>
               <Button
                 variant="contained"
-                color="primary"
-                style={{marginLeft:"45px"}}
+                color="light"
+                // style={{marginLeft:"90px"}}
                 onClick={handleRun}
               >
-                Run
+                Run Code
               </Button>
             </Grid>
           </Grid>
@@ -208,7 +213,6 @@ function OutputWithLoading(props){
       viewBox="0 0 400 160"
       backgroundColor="#f3f3f3"
       foregroundColor="#ecebeb"
-
     >
       <rect x="48" y="8" rx="3" ry="3" width="88" height="6" />
       <rect x="48" y="26" rx="3" ry="3" width="52" height="6" />

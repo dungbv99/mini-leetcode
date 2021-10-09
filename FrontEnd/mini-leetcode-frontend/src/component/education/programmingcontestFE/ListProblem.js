@@ -5,6 +5,7 @@ import {authGet} from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import TableRow from "@material-ui/core/TableRow";
 import {win} from "leaflet/src/core/Browser";
+import {Link} from "react-router-dom";
 
 
 function ListProblem(){
@@ -86,7 +87,10 @@ function ListProblem(){
 
                   </TableCell>
                   <TableCell width={"70%"}>
-                    {problem.problemName}
+                    <Link to={"/programming-contest/problem-detail/"+problem.problemId}>
+                      {problem.problemName}
+                    </Link>
+
                   </TableCell>
                   <TableCell width={"10%"}>
 

@@ -2,6 +2,7 @@ import { Route, Switch, useRouteMatch } from "react-router";
 import ListProblem from "../component/education/programmingcontestFE/ListProblem";
 import CreateProblem from "../component/education/programmingcontestFE/CreateProblem";
 import IDE from "../component/education/programmingcontestFE/IDE";
+import ProblemDetail from "../component/education/programmingcontestFE/ProblemDetail";
 
 export default function ProgrammingContestRoutes(){
   let { path } = useRouteMatch();
@@ -20,6 +21,10 @@ export default function ProgrammingContestRoutes(){
           component={IDE}
           path={`${path}/ide`}
           />
+        <Route
+          component={ProblemDetail}
+          path={`${path}/problem-detail/:problemId`}
+        />
       </Switch>
     </div>
   )
