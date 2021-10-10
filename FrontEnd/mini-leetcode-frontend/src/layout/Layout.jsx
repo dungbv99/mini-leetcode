@@ -51,7 +51,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "flex-end",
     padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
+    minHeight:"41px",
+    // ...theme.mixins.toolbar,
+
   },
   maxWidthContent: {
     maxWidth: `calc(100% - ${miniDrawerWidth}px)`,
@@ -171,6 +173,8 @@ function Layout(props) {
           // [classes.contentShift]: !open,
         })}
       >
+
+
         <div id="back-to-top-anchor" className={classes.toolbar} />
         {/* <LayoutBreadcrumbs /> */}
         {children}

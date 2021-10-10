@@ -110,7 +110,9 @@ function ListProblem(){
         <Grid item xs={6}>
 
           <TextField
+            variant={"outlined"}
             autoFocus
+            size={"small"}
             required
             select
             id="pageSize"

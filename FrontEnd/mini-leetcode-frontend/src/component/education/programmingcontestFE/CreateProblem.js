@@ -57,7 +57,7 @@ const descriptionStyles = makeStyles((theme) => ({
 
 const editorStyle = {
   toolbar: {
-    background: "#90caf9",
+    background: "#FFFFFF",
   },
   editor: {
     border: "1px solid black",
