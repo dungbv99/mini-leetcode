@@ -1,12 +1,9 @@
 import * as React from "react";
-import 'react-tabs/style/react-tabs.css';
 
-import {useEffect, useState} from "react";
 import Typography from "@mui/material/Typography";
 import { Tab} from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import CodeMirror from "@uiw/react-codemirror";
-import Toolbar from "@material-ui/core/Toolbar";
 import ContentLoader from "react-content-loader";
 import Box from '@mui/material/Box';
 import {ScrollBox} from 'react-scroll-box'; // ES6
