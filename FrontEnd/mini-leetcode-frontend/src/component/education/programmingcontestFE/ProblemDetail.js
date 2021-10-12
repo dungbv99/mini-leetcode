@@ -15,9 +15,12 @@ import {
   Toolbar,
   Box,
   TextField,
-  Grid, MenuItem, Button,
+  Grid, MenuItem, Button, TextareaAutosize,
 } from "@material-ui/core";
 import { MuiThemeProvider, createTheme, makeStyles } from "@material-ui/core/styles";
+import {Console} from "./Console";
+import {ScrollBox} from 'react-scroll-box'; // ES6
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -31,12 +34,14 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
+        <Box sx={{ p: 0 }}>
           <Typography>{children}</Typography>
-
+        </Box>
       )}
     </div>
   );
 }
+
 // TabPanel.propTypes = {
 //   children: PropTypes.node,
 //   index: PropTypes.any.isRequired,
@@ -47,7 +52,6 @@ function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
-
   };
 }
 
@@ -89,10 +93,42 @@ export default function ProblemDetail(){
   const computerLanguageList = ["CPP", "GOLANG", "JAVA", "PYTHON3"];
   const classes = useStyles();
   const [source, setSource] = useState();
+  const [showConsole, setShowConsole] = useState(false);
+  const [screenHeight, setScreenHeight] = useState((window.innerHeight-180) + "px");
+  const [runCodeLoading, setRunCodeLoading] = useState(false);
+  const [output, setOutput] = useState("");
+  const [input, setInput] = useState();
+  const [consoleTabIndex, setConsoleTabIndex] = useState(0);
+  const [timeLimit, setTimeLimit] = useState(false);
+  const [accept, setAccept] = useState(false);
+  const [run, setRun] = useState(false);
+  const [expected, setExpected] = useState();
+  const onInputChange = (input) =>{
+    setInput(input);
+  }
+  const onChangeConsoleTabIndex = (value)=>{
+    setConsoleTabIndex(value)
+  }
+  const handleScroll = () =>{
+    if(showConsole){
+      setScreenHeight((window.innerHeight-180) + "px");
+      setShowConsole(false);
+    }else{
+      setScreenHeight((window.innerHeight-455) + "px");
+      setShowConsole(true);
+    }
+
+  }
+
+  const handleRunCode = () =>{
+    setConsoleTabIndex(1);
+    setShowConsole(true);
+    setScreenHeight((window.innerHeight-455) + "px");
+
+  }
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const [screenHeight, setScreenHeight] = useState((window.innerHeight-190) + "px");
   const getExtension = () =>{
     switch (computerLanguage){
       case "CPP":
@@ -111,28 +147,34 @@ export default function ProblemDetail(){
   return (
     <div onScroll={false}>
 
-      <AppBar position="static" color={"default"} variant={"outlined"} style={{width: "100%", height: "65px", marginTop:"0px"}} >
+      {/*<AppBar position="static" color={"default"} variant={"outlined"} style={{width: "100%", height: "65px", marginTop:"0px"}} >*/}
 
-        <Box >
-          <Toolbar>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Toolbar style={{height:"0px", marginTop:"-12px", marginBottom:"-8px", border:"1px solid transparent", position: "relative", width:"100%"}} color={"default"} >
             <Tabs
               value={value}
               onChange={handleChange}
               indicatorColor={"primary"}
               autoFocus
-              style={{width:"41.667%"}}
-              variant={"fullWidth"}
-
+              style={{
+                width:"50%",
+                display:"inline-table",
+                border: "1px solid transparent ",
+                position: "relative",
+                borderBottom:"none",
+              }}
+              // variant={"fullWidth"}
+              aria-label="basic tabs example"
             >
-              <Tab label="Description" {...a11yProps(0)} />
-              <Tab label="Solution" {...a11yProps(1)}/>
-              <Tab label="Discuss" {...a11yProps(2)}/>
-              <Tab label="Submissions" {...a11yProps(3)}/>
+              <Tab label="Description" {...a11yProps(0)} style={{width:"25%"}}/>
+              <Tab label="Solution" {...a11yProps(1)} style={{width:"25%"}}/>
+              <Tab label="Discuss" {...a11yProps(2)} style={{width:"25%"}}/>
+              <Tab label="Submissions" {...a11yProps(3)} style={{width:"25%"}}/>
             </Tabs>
             <div>
 
               <TextField
-                style={{width:"125px", margin:20}}
+                style={{width:0.075*window.innerWidth, margin:20}}
                 variant={"outlined"}
                 size={"small"}
                 autoFocus
@@ -170,18 +212,22 @@ export default function ProblemDetail(){
               </TextField>
             </div>
           </Toolbar>
-
-
         </Box>
-      </AppBar>
+      {/*</AppBar>*/}
       {/*</MuiThemeProvider>*/}
 
 
 
 
       <Grid container spacing={12}>
-        <Grid item xs={5}>
+        <Grid item xs={6}>
           <TabPanel value={value} index={0}>
+            <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
+              <Typography variant={"h4"} color={"#d6d6d6"}  >
+
+              </Typography>
+            </ScrollBox>
+
           </TabPanel>
           <TabPanel value={value} index={1}>
           </TabPanel>
@@ -190,7 +236,7 @@ export default function ProblemDetail(){
           <TabPanel value={value} index={3}>
           </TabPanel>
         </Grid>
-        <Grid item xs={7}>
+        <Grid item xs={6}>
           <CodeMirror
             height={screenHeight}
             width="100%"
@@ -201,9 +247,24 @@ export default function ProblemDetail(){
             autoFocus={false}
             theme={color}
           />
-
+          <Console
+            showConsole={showConsole}
+            load={runCodeLoading}
+            output={output}
+            color={color}
+            extension={getExtension()}
+            input={input}
+            onInputChange={onInputChange}
+            consoleTabIndex={consoleTabIndex}
+            onChangeConsoleTabIndex={onChangeConsoleTabIndex}
+            accept={accept}
+            run={run}
+            timeLimit={timeLimit}
+            expected={expected}
+          />
         </Grid>
       </Grid>
+
 
 
 
@@ -232,7 +293,7 @@ export default function ProblemDetail(){
         variant="contained"
         color="light"
         // style={{marginLeft:"90px"}}
-        // onClick={handleRun}
+        onClick={handleRunCode}
         // style={{position}}
         style={{left:"82%"}}
       >
@@ -242,9 +303,9 @@ export default function ProblemDetail(){
         variant="contained"
         color="light"
         // style={{marginLeft:"90px"}}
-        // onClick={handleRun}
+        onClick={handleScroll}
         // style={{position}}
-        style={{left:"35%"}}
+        style={{left:"40%"}}
       >
         Console
       </Button>

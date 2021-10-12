@@ -1,17 +1,18 @@
 import ContentLoader from "react-content-loader";
 import CodeMirror from "@uiw/react-codemirror";
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 export function OutputWithLoading(props){
   const load = props.load;
   const output = props.output;
   const extension = props.extension;
   const color = props.color;
+
   if(load){
     return <ContentLoader
       speed={2}
       width={"100%"}
-      height={160}
+      height={"150px"}
       viewBox="0 0 400 160"
       backgroundColor="#f3f3f3"
       foregroundColor="#ecebeb"
@@ -26,7 +27,7 @@ export function OutputWithLoading(props){
   }else{
     return <CodeMirror
       value={output}
-      height={"100px"}
+      height={"150px"}
       width="100%"
       extensions={extension}
       autoFocus={true}
