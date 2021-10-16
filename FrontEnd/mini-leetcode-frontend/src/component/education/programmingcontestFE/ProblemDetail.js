@@ -9,7 +9,6 @@ import { javascript } from '@codemirror/lang-javascript';
 import { StreamLanguage } from '@codemirror/stream-parser';
 import CodeMirror from "@uiw/react-codemirror";
 import {
-  AppBar,
   Tabs,
   Tab,
   Toolbar,
@@ -19,7 +18,8 @@ import {
 } from "@material-ui/core";
 import { MuiThemeProvider, createTheme, makeStyles } from "@material-ui/core/styles";
 import {Console} from "./Console";
-import {ScrollBox} from 'react-scroll-box'; // ES6
+import {ScrollBox} from 'react-scroll-box';
+import PropTypes from "prop-types"; // ES6
 
 
 function TabPanel(props) {
@@ -42,11 +42,11 @@ function TabPanel(props) {
   );
 }
 
-// TabPanel.propTypes = {
-//   children: PropTypes.node,
-//   index: PropTypes.any.isRequired,
-//   value: PropTypes.any.isRequired,
-// };
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
 
 function a11yProps(index) {
   return {
@@ -268,16 +268,6 @@ export default function ProblemDetail(){
 
 
 
-      {/*<Button*/}
-      {/*  variant="contained"*/}
-      {/*  color="light"*/}
-      {/*  // style={{marginLeft:"90px"}}*/}
-      {/*  // onClick={handleRun}*/}
-      {/*  // style={{position}}*/}
-      {/*  style={{left:"41.6%"}}*/}
-      {/*>*/}
-      {/*  Run Code*/}
-      {/*</Button>*/}
 
       <Button
         variant="contained"

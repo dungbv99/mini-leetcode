@@ -2,21 +2,23 @@ package com.hust.minileetcode.service;
 
 import com.hust.minileetcode.entity.ContestProblem;
 import com.hust.minileetcode.entity.TestCase;
-import com.hust.minileetcode.model.ModelAddProblemLanguageSourceCode;
-import com.hust.minileetcode.model.ModelCreateContestProblem;
-import com.hust.minileetcode.model.ModelCreateTestCase;
-import com.hust.minileetcode.model.ModelRunCodeFromIDE;
+import com.hust.minileetcode.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ProblemTestCaseService {
     void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception;
 
+    void updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception;
+
     void updateProblemSourceCode(ModelAddProblemLanguageSourceCode modelAddProblemLanguageSourceCode, String problemId);
 
-    String createTestCase(ModelCreateTestCase modelCreateTestCase, String problemId) throws Exception;
+    TestCase createTestCase(ModelCreateTestCase modelCreateTestCase, String problemId) throws Exception;
+
+    TestCase updateTestCase(ModelCreateTestCase modelCreateTestCase, UUID testCaseId) throws Exception;
 
     Page<ContestProblem> getContestProblemPaging(Pageable pageable);
 
@@ -25,4 +27,8 @@ public interface ProblemTestCaseService {
     void saveTestCase(TestCase testCase) throws Exception;
 
     String executableIDECode(ModelRunCodeFromIDE modelRunCodeFromIDE, String userName, String computerLanguage) throws Exception;
+
+    ContestProblem getContestProblem(String problemId) throws Exception;
+
+    ModelProblemDetailRnCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception;
 }

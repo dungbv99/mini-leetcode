@@ -3,13 +3,15 @@ package com.hust.minileetcode.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Entity
+@Builder
 //@ToString
 @Table(name = "contest_problem")
 public class ContestProblem {
@@ -45,4 +47,16 @@ public class ContestProblem {
 
     @Column(name = "category_id")
     private String categoryId;
+
+    @Column(name = "correct_solution_source_code")
+    private String correctSolutionSourceCode;
+
+    @Column(name = "correct_solution_language")
+    private String correctSolutionLanguage;
+
+    @Column(name = "solution")
+    private String solution;
+
+    @OneToMany(mappedBy = "contestProblem")
+    private Set<TestCase> testCases;
 }

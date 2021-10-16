@@ -207,6 +207,9 @@ create table contest_problem
     category_id varchar(60),
     last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
     created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
+    solution text,
+    correct_solution_source_code text,
+    correct_solution_language varchar(10),
     constraint pk_contest_problem primary key (problem_id),
     constraint fk_contest_problem foreign key (created_by_user_login_id) references user_login(user_login_id)
 );
@@ -215,13 +218,15 @@ create table contest_problem_problem_source_code
 (
     problem_source_code_id varchar (70),
     problem_id varchar(60) not null,
+    last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
+    created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
     constraint fk_problem_source_code foreign key (problem_source_code_id) references problem_source_code(problem_source_code_id),
     constraint fk_contest_problem foreign key (problem_id) references contest_problem(problem_id)
 );
 
 create table test_case
 (
-    test_case_id uuid not null default uuid_generate_v1(),
+    test_case_id varchar (100) not null,
     test_case_point int,
     test_case text,
     correct_answer text,
@@ -232,5 +237,18 @@ create table test_case
     constraint fk_contest_problem_test_case_problem_id foreign key (contest_problem_id) references contest_problem(problem_id)
 );
 
-
+create table problem_submission
+(
+    problem_id  varchar(100) not null,
+    submitted_by_user_login_id varchar(60),
+    submission_source_code text,
+    submission_source_code_language varchar (10),
+    submission_status varchar(20),
+    submission_score int,
+    submission_runtime float ,
+    submission_memory_usage float ,
+    created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
+    constraint fk_problem_id foreign key (problem_id) references contest_problem(problem_id),
+    constraint fk_user_login_id foreign key (submitted_by_user_login_id) references user_login(user_login_id)
+);
 

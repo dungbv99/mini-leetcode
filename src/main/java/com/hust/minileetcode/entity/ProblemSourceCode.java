@@ -6,10 +6,8 @@ import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Entity
-//@ToString
 @Table(name = "problem_source_code")
 public class ProblemSourceCode {
     @Id

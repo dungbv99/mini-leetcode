@@ -7,10 +7,9 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
+@Builder
 @Entity
-//@ToString
 @Table(name = "contest_problem_test_case")
 public class TestCase {
     @Id

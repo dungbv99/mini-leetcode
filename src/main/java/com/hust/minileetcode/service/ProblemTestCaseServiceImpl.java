@@ -4,10 +4,7 @@ import com.hust.minileetcode.docker.DockerClientBase;
 import com.hust.minileetcode.entity.ContestProblem;
 import com.hust.minileetcode.entity.ProblemSourceCode;
 import com.hust.minileetcode.entity.TestCase;
-import com.hust.minileetcode.model.ModelAddProblemLanguageSourceCode;
-import com.hust.minileetcode.model.ModelCreateContestProblem;
-import com.hust.minileetcode.model.ModelCreateTestCase;
-import com.hust.minileetcode.model.ModelRunCodeFromIDE;
+import com.hust.minileetcode.model.*;
 import com.hust.minileetcode.repo.ContestProblemPagingAndSortingRepo;
 import com.hust.minileetcode.repo.ContestProblemRepo;
 import com.hust.minileetcode.repo.ProblemSourceCodeRepo;
@@ -19,14 +16,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @Log4j2
 @Service
@@ -41,20 +36,46 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
-        ContestProblem contestProblem = new ContestProblem();
         if(contestProblemRepo.findByProblemId(modelCreateContestProblem.getProblemId()) != null){
             throw new Exception("problem id already exist");
         }
-        contestProblem.setProblemId(modelCreateContestProblem.getProblemId());
-        contestProblem.setProblemName(modelCreateContestProblem.getProblemName());
-        contestProblem.setProblemDescription(modelCreateContestProblem.getProblemDescription());
-        contestProblem.setCategoryId(modelCreateContestProblem.getCategoryId());
-        contestProblem.setLevelId(modelCreateContestProblem.getLevelId());
-        contestProblem.setMemoryLimit(modelCreateContestProblem.getMemoryLimit());
-        contestProblem.setTimeLimit(modelCreateContestProblem.getTimeLimit());
-        contestProblem.setProblemSourceCode(null);
+        ContestProblem contestProblem = ContestProblem.builder()
+                .problemId(modelCreateContestProblem.getProblemId())
+                .problemName(modelCreateContestProblem.getProblemName())
+                .problemDescription(modelCreateContestProblem.getProblemDescription())
+                .categoryId(modelCreateContestProblem.getCategoryId())
+                .memoryLimit(modelCreateContestProblem.getMemoryLimit())
+                .timeLimit(modelCreateContestProblem.getTimeLimit())
+                .levelId(modelCreateContestProblem.getLevelId())
+                .correctSolutionLanguage(modelCreateContestProblem.getCorrectSolutionLanguage())
+                .correctSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode())
+                .solution(modelCreateContestProblem.getSolution())
+                .build();
         contestProblemRepo.save(contestProblem);
     }
+
+    @Override
+    public void updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception {
+        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+        if(contestProblem == null){
+            throw new Exception("problem id not found");
+        }
+        contestProblem = ContestProblem.builder()
+                .problemId(modelCreateContestProblem.getProblemId())
+                .problemName(modelCreateContestProblem.getProblemName())
+                .problemDescription(modelCreateContestProblem.getProblemDescription())
+                .categoryId(modelCreateContestProblem.getCategoryId())
+                .memoryLimit(modelCreateContestProblem.getMemoryLimit())
+                .timeLimit(modelCreateContestProblem.getTimeLimit())
+                .levelId(modelCreateContestProblem.getLevelId())
+                .correctSolutionLanguage(modelCreateContestProblem.getCorrectSolutionLanguage())
+                .correctSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode())
+                .solution(modelCreateContestProblem.getSolution())
+                .build();
+        contestProblemRepo.save(contestProblem);
+    }
+
+
 
     @Override
     public void updateProblemSourceCode(ModelAddProblemLanguageSourceCode modelAddProblemLanguageSourceCode, String problemId) {
@@ -78,37 +99,37 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public String createTestCase(ModelCreateTestCase modelCreateTestCase, String problemId) throws Exception {
+    public TestCase createTestCase(ModelCreateTestCase modelCreateTestCase, String problemId) throws Exception {
         ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
         if(contestProblem.getProblemSourceCode() == null){
             throw new NullPointerException("problem does not have solution");
         }
-        ProblemSourceCode problemSourceCode = contestProblem.getProblemSourceCode().get(0);
-        System.out.println("problemSourceCode " +problemSourceCode.toString());
-        String solution = problemSourceCode.createSolutionSourceCode();
+        String solution = contestProblem.getCorrectSolutionSourceCode();
         String tempName = tempDir.createRandomScriptFileName(problemId+"-solution");
-        String response = null;
-        switch (problemSourceCode.getLanguage()){
-            case "CPP":
-                tempDir.createScriptFile(solution, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), ComputerLanguage.Languages.CPP, tempName);
-                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP,  tempName);
-                break;
-            case "JAVA":
-                tempDir.createScriptFile(solution, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), ComputerLanguage.Languages.JAVA, tempName);
-                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.JAVA,  tempName);
-                break;
-            case "GOLANG":
-                tempDir.createScriptFile(solution, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), ComputerLanguage.Languages.GOLANG, tempName);
-                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.GOLANG,  tempName);
-                break;
-            case "PYTHON3":
-                tempDir.createScriptFile(solution, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), ComputerLanguage.Languages.PYTHON3, tempName);
-                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.PYTHON3,  tempName);
-                break;
-            default:
-                throw new NotFoundException("not found language");
+        String response = runCode(solution, contestProblem.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), "Language Not Found");
+        TestCase testCase = TestCase.builder()
+                .contestProblem(contestProblem)
+                .testCase(modelCreateTestCase.getTestCase())
+                .testCasePoint(modelCreateTestCase.getTestCasePoint())
+                .correctAnswer(response)
+                .build();
+        testCaseRepo.save(testCase);
+        return testCase;
+    }
+
+    @Override
+    public TestCase updateTestCase(ModelCreateTestCase modelCreateTestCase, UUID testCaseId) throws Exception {
+        TestCase testCase = testCaseRepo.findTestCaseByTestCaseId(testCaseId);
+        if(testCase == null){
+            throw new Exception("testcase not found");
         }
-        return response;
+        ContestProblem contestProblem = testCase.getContestProblem();
+        String solution = contestProblem.getCorrectSolutionSourceCode();
+        String tempName = tempDir.createRandomScriptFileName(contestProblem.getProblemId()+"-solution");
+        String response = runCode(solution, contestProblem.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), "Language Not Found");
+        testCase.setTestCase(modelCreateTestCase.getTestCase());
+        testCase.setCorrectAnswer(response);
+        return testCase;
     }
 
     @Override
@@ -138,34 +159,54 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     @Override
     public String executableIDECode(ModelRunCodeFromIDE modelRunCodeFromIDE, String userName, String computerLanguage) throws Exception {
         String tempName = tempDir.createRandomScriptFileName(userName + "-" + computerLanguage);
-        String response = null;
-        System.out.println("computerLanguage " + computerLanguage);
-        switch (computerLanguage){
-            case "CPP":
-                tempDir.createScriptFile(modelRunCodeFromIDE.getSource(), modelRunCodeFromIDE.getInput(), 10, ComputerLanguage.Languages.CPP, tempName);
-                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP,  tempName);
-                break;
-            case "JAVA":
-                tempDir.createScriptFile(modelRunCodeFromIDE.getSource(), modelRunCodeFromIDE.getInput(), 10, ComputerLanguage.Languages.JAVA, tempName);
-                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.JAVA, tempName);
-                break;
-            case "PYTHON3":
-                tempDir.createScriptFile(modelRunCodeFromIDE.getSource(), modelRunCodeFromIDE.getInput(), 10, ComputerLanguage.Languages.PYTHON3, tempName);
-                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.PYTHON3, tempName);
-                break;
-            case "GOLANG":
-                tempDir.createScriptFile(modelRunCodeFromIDE.getSource(), modelRunCodeFromIDE.getInput(), 10, ComputerLanguage.Languages.GOLANG, tempName);
-                response = dockerClientBase.runExecutable(ComputerLanguage.Languages.GOLANG, tempName);
-                break;
-            default:
-                System.out.println("default");
-                break;
-        }
-//        tempDir.removeDir(tempName);
-//        tempDir.pushToConcurrentLinkedQueue(tempName);
-        System.out.println(response);
+        String response = runCode(modelRunCodeFromIDE.getSource(), computerLanguage, tempName, modelRunCodeFromIDE.getInput(), 10, "Language Not Found");
+        tempDir.pushToConcurrentLinkedQueue(tempName);
         return response;
     }
 
+    @Override
+    public ContestProblem getContestProblem(String problemId) throws Exception {
+        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+        if(contestProblem == null){
+            throw new Exception("Problem not found");
+        }
+        return contestProblem;
+    }
 
+
+
+    @Override
+    public ModelProblemDetailRnCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception {
+        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+        String tempName = tempDir.createRandomScriptFileName(contestProblem.getProblemName() + "-" + contestProblem.getCorrectSolutionLanguage());
+        String expected = runCode(contestProblem.getCorrectSolutionSourceCode(), contestProblem.getCorrectSolutionLanguage(), tempName, modelProblemDetailRunCode.getInput(), contestProblem.getTimeLimit(), "Correct Solution Language Not Found");
+        String output = runCode(modelProblemDetailRunCode.getSourceCode(), modelProblemDetailRunCode.getComputerLanguage(), tempName+"-"+userName, modelProblemDetailRunCode.getInput(), contestProblem.getTimeLimit(), "User Source Code Langua Not Found");
+        return ModelProblemDetailRnCodeResponse.builder().build();
+    }
+
+    private String runCode(String sourceCode, String computerLanguage, String tempName, String input, int timeLimit, String exception) throws Exception {
+        String ans;
+        switch (computerLanguage){
+            case "CPP":
+                tempDir.createScriptFile(sourceCode, input, timeLimit, ComputerLanguage.Languages.CPP, tempName);
+                ans = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP,  tempName);
+                break;
+            case "JAVA":
+                tempDir.createScriptFile(sourceCode, input, timeLimit, ComputerLanguage.Languages.JAVA, tempName);
+                ans = dockerClientBase.runExecutable(ComputerLanguage.Languages.JAVA, tempName);
+                break;
+            case "PYTHON3":
+                tempDir.createScriptFile(sourceCode, input, timeLimit, ComputerLanguage.Languages.PYTHON3, tempName);
+                ans = dockerClientBase.runExecutable(ComputerLanguage.Languages.PYTHON3, tempName);
+                break;
+            case "GOLANG":
+                tempDir.createScriptFile(sourceCode, input, timeLimit, ComputerLanguage.Languages.GOLANG, tempName);
+                ans = dockerClientBase.runExecutable(ComputerLanguage.Languages.GOLANG, tempName);
+                break;
+            default:
+                throw new Exception(exception);
+        }
+        tempDir.pushToConcurrentLinkedQueue(tempName);
+        return ans;
+    }
 }

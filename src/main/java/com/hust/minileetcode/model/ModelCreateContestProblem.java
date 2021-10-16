@@ -15,4 +15,7 @@ public class ModelCreateContestProblem {
     private int memoryLimit;
     private String levelId;
     private String categoryId;
+    private String correctSolutionSourceCode;
+    private String correctSolutionLanguage;
+    private String solution;
 }

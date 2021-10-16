@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin
@@ -35,8 +36,14 @@ public class ContestProblemController {
         } catch (Exception e) {
             throw new Exception(e.toString());
         }
-
     }
+
+    @PostMapping("/update-contest-problem/{problemId}")
+    public ResponseEntity<?> updateContestProblem(@RequestBody ModelCreateContestProblem modelCreateContestProblem, @PathVariable("problemId") String problemId) throws Exception{
+        problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
+        return ResponseEntity.ok(null);
+    }
+
 
     @PostMapping("/add-problem-language-source-code/{problemId}")
     public ResponseEntity<?> addProblemLanguageSourceCode(
@@ -50,26 +57,16 @@ public class ContestProblemController {
             }
     }
 
-
     @PostMapping("/update-test-case-and-generate-answer/{problemId}")
     public ResponseEntity<?> createTestCase(@RequestBody ModelCreateTestCase modelCreateTestCase, @PathVariable("problemId") String problemId) throws Exception{
-        try{
-            String correctAnswer = problemTestCaseService.createTestCase(modelCreateTestCase,problemId);
-            if(true){
-                TestCase testCase = new TestCase();
-                testCase.setTestCase(modelCreateTestCase.getTestCase());
-                testCase.setTestCasePoint(modelCreateTestCase.getTestCasePoint());
-                testCase.setCorrectAnswer(correctAnswer);
-                ContestProblem contestProblem = problemTestCaseService.findContestProblemByProblemId(problemId);
-                testCase.setContestProblem(contestProblem);
-                problemTestCaseService.saveTestCase(testCase);
-            }else{
+        TestCase testCase = problemTestCaseService.createTestCase(modelCreateTestCase, problemId);
+        return ResponseEntity.status(200).body(testCase);
+    }
 
-            }
-            return ResponseEntity.status(200).body(correctAnswer);
-        }catch (Exception e){
-            throw new Exception(e.toString());
-        }
+    @PostMapping("/edit-test-case/{testCaseId}")
+    public ResponseEntity<?> editTestCase(@PathVariable("testCaseId") UUID testCaseId, @RequestBody ModelCreateTestCase modelCreateTestCase) throws Exception {
+        TestCase testCase = problemTestCaseService.updateTestCase(modelCreateTestCase, testCaseId);
+        return ResponseEntity.status(200).body(testCase);
     }
 
     @GetMapping("/get-contest-problem-paging")
@@ -85,26 +82,22 @@ public class ContestProblemController {
 
     @PostMapping("/ide/{computerLanguage}")
     public ResponseEntity<?> runCode(@PathVariable("computerLanguage") String computerLanguage, @RequestBody ModelRunCodeFromIDE modelRunCodeFromIDE, Principal principal) throws Exception{
-//        System.out.println(principal.getName());\
-//        System.out.println("ide "+ computerLanguage);
         String response = null;
         response = problemTestCaseService.executableIDECode(modelRunCodeFromIDE,principal.getName(), computerLanguage);
-//        switch (computerLanguage){
-//            case "CPP":
-////                System.out.println("CPP");
-//                response = problemTestCaseService.executableIDECode(modelRunCodeFromIDE,principal.getName(), computerLanguage);
-//                break;
-//            case "JAVA":
-//
-//            default:
-////                System.out.println("default");
-//                break;
-//        }
         ModelRunCodeFromIDEOutput modelRunCodeFromIDEOutput = new ModelRunCodeFromIDEOutput();
         modelRunCodeFromIDEOutput.setOutput(response);
         return ResponseEntity.status(200).body(modelRunCodeFromIDEOutput);
     }
 
+    @GetMapping("/problem-details/{problemId}")
+    public ResponseEntity<?> getProblemDetails(@PathVariable("problemId") String problemId) throws Exception {
+        ContestProblem contestProblem = problemTestCaseService.getContestProblem(problemId);
+        return ResponseEntity.status(200).body(contestProblem);
+    }
 
+    @PostMapping("/problem-detail-run-code/{problemId}")
+    public ResponseEntity<?> problemDetailsRunCode(@PathVariable("problemId") String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode){
+        return ResponseEntity.ok(null);
+    }
 
 }

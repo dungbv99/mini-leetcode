@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface TestCaseRepo extends JpaRepository<TestCase, UUID> {
+    TestCase findTestCaseByTestCaseId(UUID uuid);
 }
