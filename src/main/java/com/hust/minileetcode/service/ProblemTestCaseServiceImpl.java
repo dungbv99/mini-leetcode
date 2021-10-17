@@ -80,31 +80,28 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public void updateProblemSourceCode(ModelAddProblemLanguageSourceCode modelAddProblemLanguageSourceCode, String problemId) {
-        ProblemSourceCode problemSourceCode = new ProblemSourceCode();
-        problemSourceCode.setProblemSourceCodeId(modelAddProblemLanguageSourceCode.getProblemSourceCodeId());
-        problemSourceCode.setMainSource(modelAddProblemLanguageSourceCode.getMainSource());
-        problemSourceCode.setBaseSource(modelAddProblemLanguageSourceCode.getBaseSource());
-        problemSourceCode.setLanguage(modelAddProblemLanguageSourceCode.getLanguage());
-        problemSourceCode.setProblemFunctionDefaultSource(modelAddProblemLanguageSourceCode.getProblemFunctionDefaultSource());
-        problemSourceCode.setProblemFunctionSolution(modelAddProblemLanguageSourceCode.getProblemFunctionSolution());
-        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-        if(contestProblem.getProblemSourceCode() == null){
-            ArrayList<ProblemSourceCode> problemSourceCodes = new ArrayList<ProblemSourceCode>();
-            problemSourceCodes.add(problemSourceCode);
-            contestProblem.setProblemSourceCode(problemSourceCodes);
-        }else{
-            contestProblem.getProblemSourceCode().add(problemSourceCode);
-        }
-        problemSourceCodeRepo.save(problemSourceCode);
-        contestProblemRepo.save(contestProblem);
+//        ProblemSourceCode problemSourceCode = new ProblemSourceCode();
+//        problemSourceCode.setProblemSourceCodeId(modelAddProblemLanguageSourceCode.getProblemSourceCodeId());
+//        problemSourceCode.setMainSource(modelAddProblemLanguageSourceCode.getMainSource());
+//        problemSourceCode.setBaseSource(modelAddProblemLanguageSourceCode.getBaseSource());
+//        problemSourceCode.setLanguage(modelAddProblemLanguageSourceCode.getLanguage());
+//        problemSourceCode.setProblemFunctionDefaultSource(modelAddProblemLanguageSourceCode.getProblemFunctionDefaultSource());
+//        problemSourceCode.setProblemFunctionSolution(modelAddProblemLanguageSourceCode.getProblemFunctionSolution());
+//        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+//        if(contestProblem.getProblemSourceCode() == null){
+//            ArrayList<ProblemSourceCode> problemSourceCodes = new ArrayList<ProblemSourceCode>();
+//            problemSourceCodes.add(problemSourceCode);
+//            contestProblem.setProblemSourceCode(problemSourceCodes);
+//        }else{
+//            contestProblem.getProblemSourceCode().add(problemSourceCode);
+//        }
+//        problemSourceCodeRepo.save(problemSourceCode);
+//        contestProblemRepo.save(contestProblem);
     }
 
     @Override
     public TestCase createTestCase(ModelCreateTestCase modelCreateTestCase, String problemId) throws Exception {
         ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-        if(contestProblem.getProblemSourceCode() == null){
-            throw new NullPointerException("problem does not have solution");
-        }
         String solution = contestProblem.getCorrectSolutionSourceCode();
         String tempName = tempDir.createRandomScriptFileName(problemId+"-solution");
         String response = runCode(solution, contestProblem.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), "Language Not Found");
@@ -185,7 +182,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         String output = runCode(modelProblemDetailRunCode.getSourceCode(), modelProblemDetailRunCode.getComputerLanguage(), tempName+"-"+userName, modelProblemDetailRunCode.getInput(), contestProblem.getTimeLimit(), "User Source Code Langua Not Found");
         int lastLinetIndexExpected = expected.lastIndexOf("\n");
         int lastLineIndexOutput = output.lastIndexOf("\n");
-        String status = output.substring(lastLineIndexOutput, output.length());
+        String status = output.substring(lastLineIndexOutput);
         log.info("status {}", status);
         output = output.substring(0, lastLineIndexOutput);
         expected = expected.substring(0, lastLinetIndexExpected);

@@ -25,12 +25,14 @@ public class TestCase {
     @Column(name = "correct_answer")
     private String correctAnswer;
 
-
-
-    @JoinTable(name = "contest_problem_test_case",
-            joinColumns = @JoinColumn(name = "test_case_id", referencedColumnName = "test_case_id"),
-            inverseJoinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
-    )
-    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contest_problem_id", referencedColumnName = "problem_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private ContestProblem contestProblem;
+
+//    @JoinTable(name = "contest_problem_test_case",
+//            joinColumns = @JoinColumn(name = "test_case_id", referencedColumnName = "test_case_id"),
+//            inverseJoinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
+//    )
+//    @OneToOne(fetch = FetchType.LAZY)
+//    private ContestProblem contestProblem;
 }

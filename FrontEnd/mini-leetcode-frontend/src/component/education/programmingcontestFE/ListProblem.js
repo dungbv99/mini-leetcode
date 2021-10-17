@@ -68,11 +68,17 @@ function ListProblem(){
           <TableCell width={"10%"}>
             Status
           </TableCell>
-          <TableCell width={"70%"}>
+          <TableCell width={"50%"}>
             Title
           </TableCell>
           <TableCell width={"10%"}>
             Solution
+          </TableCell>
+          <TableCell width={"10%"}>
+            Difficulty
+          </TableCell>
+          <TableCell width={"10%"}>
+            Add Testcase
           </TableCell>
           <TableCell width={"10%"}>
             Difficulty
@@ -86,17 +92,24 @@ function ListProblem(){
                   <TableCell width={"10%"}>
 
                   </TableCell>
-                  <TableCell width={"70%"}>
-                    <Link to={"/programming-contest/problem-detail/"+problem.problemId}>
+                  <TableCell width={"50%"}>
+                    <Link to={"/programming-contest/problem-detail/"+problem.problemId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
                       {problem.problemName}
                     </Link>
-
                   </TableCell>
                   <TableCell width={"10%"}>
 
                   </TableCell>
-                  <TableCell width={"10%"}>
+                  <TableCell width={"10%"} >
                     <span style={{color:getColor(`${problem.levelId}`)}}>{`${problem.levelId}`}</span>
+                  </TableCell>
+                  <TableCell width={"10%"}>
+                    <Link to={"/programming-contest/problem-detail-create-test-case/"+problem.problemId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
+                      ADD
+                    </Link>
+                  </TableCell>
+                  <TableCell width={"10%"}>
+
                   </TableCell>
                 </TableRow>
               );

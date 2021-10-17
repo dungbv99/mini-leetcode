@@ -18,12 +18,15 @@ public class ContestProblem {
     @Column(name = "problem_id")
     private String problemId;
 
-    @JoinTable(name = "contest_problem_problem_source_code",
-        joinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id"),
-        inverseJoinColumns = @JoinColumn(name = "problem_source_code_id", referencedColumnName = "problem_source_code_id")
-    )
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<ProblemSourceCode> problemSourceCode;
+//    @JoinTable(name = "contest_problem_problem_source_code",
+//        joinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id"),
+//        inverseJoinColumns = @JoinColumn(name = "problem_source_code_id", referencedColumnName = "problem_source_code_id")
+//    )
+//    @OneToMany(fetch = FetchType.LAZY)
+//    private List<ProblemSourceCode> problemSourceCode;
+
+    @OneToMany(mappedBy = "contestProblem")
+    private Set<ProblemSourceCode> problemSourceCodes;
 
     @Column(name = "problem_name", unique = true)
     private String problemName;
@@ -56,10 +59,13 @@ public class ContestProblem {
     @Column(name = "solution")
     private String solution;
 
-    @JoinTable(name = "contest_problem_test_case",
-            joinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id"),
-            inverseJoinColumns = @JoinColumn(name = "test_case_id", referencedColumnName = "test_case_id")
-    )
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<TestCase> testCases;
+    @OneToMany(mappedBy = "contestProblem")
+    private Set<TestCase> testCases;
+//    @JoinTable(name = "contest_problem_test_case",
+//            joinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id"),
+//            inverseJoinColumns = @JoinColumn(name = "test_case_id", referencedColumnName = "test_case_id")
+//    )
+//    @OneToMany(fetch = FetchType.LAZY)
+//    private List<TestCase> testCases;
+
 }

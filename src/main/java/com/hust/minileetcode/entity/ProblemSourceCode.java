@@ -29,10 +29,14 @@ public class ProblemSourceCode {
     @Column(name = "language")
     private String language;
 
-    @JoinTable(name = "contest_problem_problem_source_code",
-            joinColumns = @JoinColumn(name = "problem_source_code_id", referencedColumnName = "problem_source_code_id"),
-            inverseJoinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
-    )
+//    @JoinTable(name = "contest_problem_problem_source_code",
+//            joinColumns = @JoinColumn(name = "problem_source_code_id", referencedColumnName = "problem_source_code_id"),
+//            inverseJoinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
+//    )
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private ContestProblem contestProblem;
+
+    @JoinColumn(name = "contest_problem_id", referencedColumnName = "problem_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private ContestProblem contestProblem;
 

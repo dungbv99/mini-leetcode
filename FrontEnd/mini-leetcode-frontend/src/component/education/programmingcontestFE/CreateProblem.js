@@ -12,7 +12,7 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Editor } from "react-draft-wysiwyg";
+import { Editor, } from "react-draft-wysiwyg";
 import { ContentState, convertToRaw, EditorState } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import {authPost} from "../../../api";
