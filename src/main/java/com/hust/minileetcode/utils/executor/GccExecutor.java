@@ -36,4 +36,26 @@ public class GccExecutor {
 
         return sourceSH;
     }
+
+    public String checkCompile(String source, String tmpName){
+
+        String sourceSH = SHFileStart
+                + "mkdir -p " + tmpName +"\n"
+                + "cd " + tmpName +"\n"
+                + "cat <<EOF >> main"  + suffixes + "\n"
+                + source + "\n"
+                + "EOF" + "\n"
+                + buildCmd +"\n"
+                + "FILE=main" +"\n"
+                +"if test -f \"$FILE\"; then" +"\n"
+                + "  echo Successful\n"
+                + "else\n"
+                + "  echo Compile Error\n"
+                + "fi" + "\n"
+                + "cd .. \n"
+                + "rm -rf " + tmpName + " & "+"\n"
+                + "rm -rf " + tmpName+".sh" + " & "+"\n";
+
+        return sourceSH;
+    }
 }

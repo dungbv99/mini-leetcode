@@ -29,4 +29,22 @@ public class Python3Executor {
                 + "rm -rf " + tmpName+".sh" + " & "+"\n";
         return sourceSH;
     }
+    public String checkCompile(String source, String tmpName){
+        String sourceSH = SHFileStart
+                + "mkdir -p " + tmpName +"\n"
+                + "cd " + tmpName +"\n"
+                + "cat <<EOF >> main"  + suffixes + "\n"
+                + source + "\n"
+                + "EOF" + "\n"
+                + "python3 -m py_compile main.py" +"\n"
+                + "if  [-d __pycache__]; then" +"\n"
+                + "  echo Successful\n"
+                + "else\n"
+                + "  echo Compile Error\n"
+                + "fi" + "\n"
+                + "cd .. \n"
+                + "rm -rf " + tmpName + " & "+"\n"
+                + "rm -rf " + tmpName+".sh" + " & "+"\n";
+        return sourceSH;
+    }
 }

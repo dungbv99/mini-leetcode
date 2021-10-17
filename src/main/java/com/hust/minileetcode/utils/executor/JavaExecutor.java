@@ -31,4 +31,24 @@ public class JavaExecutor {
                 + "rm -rf " + tmpName+".sh" + " & "+"\n";
         return sourceSH;
     }
+
+    public String checkCompile(String source, String tmpName){
+        String sourceSH = SHFileStart
+                + "mkdir -p " + tmpName +"\n"
+                + "cd " + tmpName +"\n"
+                + "cat <<EOF >> Main"  + suffixes + "\n"
+                + source + "\n"
+                + "EOF" + "\n"
+                + buildCmd +"\n"
+                + "FILE=Main.class" +"\n"
+                +"if test -f \"$FILE\"; then" +"\n"
+                + "  echo Successful\n"
+                + "else\n"
+                + "  echo Compile Error\n"
+                + "fi" + "\n"
+                + "cd .. \n"
+                + "rm -rf " + tmpName + " & "+"\n"
+                + "rm -rf " + tmpName+".sh" + " & "+"\n";
+        return sourceSH;
+    }
 }
