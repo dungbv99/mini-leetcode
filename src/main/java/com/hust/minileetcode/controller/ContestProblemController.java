@@ -34,6 +34,8 @@ public class ContestProblemController {
             problemTestCaseService.createContestProblem(modelCreateContestProblem);
             return ResponseEntity.status(200).body(null);
         } catch (Exception e) {
+            log.info("err ");
+            System.out.println(e.getMessage());
             throw new Exception(e.toString());
         }
     }
@@ -96,8 +98,9 @@ public class ContestProblemController {
     }
 
     @PostMapping("/problem-detail-run-code/{problemId}")
-    public ResponseEntity<?> problemDetailsRunCode(@PathVariable("problemId") String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode){
-        return ResponseEntity.ok(null);
+    public ResponseEntity<?> problemDetailsRunCode(@PathVariable("problemId") String problemId, @RequestBody ModelProblemDetailRunCode modelProblemDetailRunCode, Principal principal) throws Exception {
+        ModelProblemDetailRunCodeResponse resp = problemTestCaseService.problemDetailRunCode(problemId, modelProblemDetailRunCode, principal.getName());
+        return ResponseEntity.ok(resp);
     }
 
 }

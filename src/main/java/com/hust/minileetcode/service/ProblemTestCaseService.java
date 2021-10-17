@@ -6,7 +6,6 @@ import com.hust.minileetcode.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ProblemTestCaseService {
@@ -30,5 +29,5 @@ public interface ProblemTestCaseService {
 
     ContestProblem getContestProblem(String problemId) throws Exception;
 
-    ModelProblemDetailRnCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception;
+    ModelProblemDetailRunCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception;
 }

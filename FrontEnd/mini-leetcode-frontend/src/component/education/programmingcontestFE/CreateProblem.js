@@ -19,6 +19,13 @@ import {authPost} from "../../../api";
 import {Button} from "@material-ui/core";
 import draftToHtml from "draftjs-to-html";
 import {API_URL} from "../../../config/config";
+import {cpp, cppLanguage} from '@codemirror/lang-cpp';
+import {java} from '@codemirror/lang-java';
+import {pythonLanguage} from '@codemirror/lang-python';
+import { go } from '@codemirror/legacy-modes/mode/go';
+import { javascript } from '@codemirror/lang-javascript';
+import { StreamLanguage } from '@codemirror/stream-parser';
+import CodeMirror from "@uiw/react-codemirror";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -80,16 +87,41 @@ function CreateProblem(){
   const listCategory = [];
   const classes = useStyles();
   const descriptionClass = descriptionStyles();
+  const [editorStateDescription, setEditorStateDescription] = useState(EditorState.createEmpty());
+  const [editorStateSolution, setEditorStateSolution] = useState(EditorState.createEmpty());
+  const [codeSolution, setCodeSolution] = useState();
+  const [languageSolution, setLanguageSolution] = useState("CPP");
+  const computerLanguageList = ["CPP", "GOLANG", "JAVA", "PYTHON3"];
 
 
-  const onChangeEditorState = (editorState) => {
+  const onChangeEditorStateDescription = (editorState) => {
     console.log(problemDescriptions);
-    setEditorState(editorState);
+    setEditorStateDescription(editorState);
   };
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const onChangeEditorStateSolution = (editorState) => {
+    setEditorStateSolution(editorState);
+  }
+
+  const getExtension = () =>{
+    switch (languageSolution){
+      case "CPP":
+        return [cppLanguage];
+      case "GoLang":
+        return StreamLanguage.define(go);
+      case "Java":
+        return java();
+      case "Python3":
+        return StreamLanguage.define(pythonLanguage);
+      default:
+        return javascript();
+    }
+  }
 
   async function handleSubmit(){
-    let description = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+    let description = draftToHtml(convertToRaw(editorStateDescription.getCurrentContent()));
+    let solution = draftToHtml(convertToRaw(editorStateSolution.getCurrentContent()));
+
     // await console.log("description", description);
     let body = {
       problemId: problemId,
@@ -99,6 +131,9 @@ function CreateProblem(){
       levelId: levelId,
       categoryId: categoryId,
       memoryLimit: memoryLimit,
+      correctSolutionLanguage: languageSolution,
+      solution: solution,
+      correctSolutionSourceCode: codeSolution,
     }
     await fetch(API_URL + "/create-contest-problem", {
       method: "POST",
@@ -219,14 +254,59 @@ function CreateProblem(){
                   <h2>Problem Description</h2>
                 </Typography>
                 <Editor
-                  editorState={editorState}
+                  editorState={editorStateDescription}
                   handlePastedText={() => false}
-                  onEditorStateChange={onChangeEditorState}
+                  onEditorStateChange={onChangeEditorStateDescription}
+                  toolbarStyle={editorStyle.toolbar}
+                  editorStyle={editorStyle.editor}
+                />
+              </div>
+              <div>
+                <Typography>
+                  <h2>Problem Solution</h2>
+                </Typography>
+                <Editor
+                  editorState={editorStateSolution}
+                  handlePastedText={() => true}
+                  onEditorStateChange={onChangeEditorStateSolution}
                   toolbarStyle={editorStyle.toolbar}
                   editorStyle={editorStyle.editor}
                 />
               </div>
             </form>
+            <Typography>
+              <h2>Correct Solution Source Code</h2>
+            </Typography>
+            <TextField
+              style={{width:0.075*window.innerWidth, margin:20}}
+              variant={"outlined"}
+              size={"small"}
+              autoFocus
+              value={languageSolution}
+              select
+              id="computerLanguage"
+              onChange={(event) => {
+                setLanguageSolution(event.target.value);
+              }}
+            >
+              {computerLanguageList.map((item) => (
+                <MenuItem key={item} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </TextField>
+            <CodeMirror
+              height={"500px"}
+              width="100%"
+              extensions={getExtension()}
+              onChange={(value, viewUpdate) => {
+                setCodeSolution(value);
+              }}
+              autoFocus={false}
+
+            />
+
+
           </CardContent>
           <CardActions>
             <Button

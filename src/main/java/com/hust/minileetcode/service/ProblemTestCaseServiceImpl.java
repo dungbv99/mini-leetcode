@@ -11,19 +11,19 @@ import com.hust.minileetcode.repo.ProblemSourceCodeRepo;
 import com.hust.minileetcode.repo.TestCaseRepo;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
-import javassist.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-@Log4j2
+@Slf4j
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
@@ -50,6 +50,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .correctSolutionLanguage(modelCreateContestProblem.getCorrectSolutionLanguage())
                 .correctSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode())
                 .solution(modelCreateContestProblem.getSolution())
+//                .testCases(null)
                 .build();
         contestProblemRepo.save(contestProblem);
     }
@@ -134,6 +135,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public Page<ContestProblem> getContestProblemPaging(Pageable pageable) {
+
         return contestProblemPagingAndSortingRepo.findAll(pageable);
     }
 
@@ -176,12 +178,22 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
 
     @Override
-    public ModelProblemDetailRnCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception {
+    public ModelProblemDetailRunCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception {
         ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
         String tempName = tempDir.createRandomScriptFileName(contestProblem.getProblemName() + "-" + contestProblem.getCorrectSolutionLanguage());
         String expected = runCode(contestProblem.getCorrectSolutionSourceCode(), contestProblem.getCorrectSolutionLanguage(), tempName, modelProblemDetailRunCode.getInput(), contestProblem.getTimeLimit(), "Correct Solution Language Not Found");
         String output = runCode(modelProblemDetailRunCode.getSourceCode(), modelProblemDetailRunCode.getComputerLanguage(), tempName+"-"+userName, modelProblemDetailRunCode.getInput(), contestProblem.getTimeLimit(), "User Source Code Langua Not Found");
-        return ModelProblemDetailRnCodeResponse.builder().build();
+        int lastLinetIndexExpected = expected.lastIndexOf("\n");
+        int lastLineIndexOutput = output.lastIndexOf("\n");
+        String status = output.substring(lastLineIndexOutput, output.length());
+        log.info("status {}", status);
+        output = output.substring(0, lastLineIndexOutput);
+        expected = expected.substring(0, lastLinetIndexExpected);
+        return ModelProblemDetailRunCodeResponse.builder()
+                .expected(expected)
+                .output(output)
+                .status(status)
+                .build();
     }
 
     private String runCode(String sourceCode, String computerLanguage, String tempName, String input, int timeLimit, String exception) throws Exception {

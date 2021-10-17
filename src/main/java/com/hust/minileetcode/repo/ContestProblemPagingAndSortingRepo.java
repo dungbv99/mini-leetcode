@@ -12,4 +12,5 @@ import java.util.List;
 public interface ContestProblemPagingAndSortingRepo extends PagingAndSortingRepository<ContestProblem, String> {
     @Query("select cp.problemName from ContestProblem cp")
     ArrayList<String> getProblemNamePaging(Pageable pageable);
+
 }

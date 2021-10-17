@@ -20,27 +20,7 @@ import { MuiThemeProvider, createTheme, makeStyles } from "@material-ui/core/sty
 import {Console} from "./Console";
 import {ScrollBox} from 'react-scroll-box';
 import PropTypes from "prop-types"; // ES6
-
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 0 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+import {a11yProps, TabPanel} from "./TabPanel";
 
 TabPanel.propTypes = {
   children: PropTypes.node,
@@ -48,12 +28,6 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {

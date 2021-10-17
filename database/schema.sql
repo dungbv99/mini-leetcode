@@ -230,11 +230,19 @@ create table test_case
     test_case_point int,
     test_case text,
     correct_answer text,
-    contest_problem_id varchar(60),
     last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
     created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
-    constraint pk_contest_problem_test_case primary key (test_case_id),
-    constraint fk_contest_problem_test_case_problem_id foreign key (contest_problem_id) references contest_problem(problem_id)
+    constraint pk_contest_problem_test_case primary key (test_case_id)
+);
+
+create table contest_problem_test_case
+(
+    problem_id varchar (60) not null ,
+    test_case_id varchar (100),
+    last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
+    created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
+    constraint fk_contest_problem foreign key (problem_id) references contest_problem(problem_id),
+    constraint fk_test_case foreign key (test_case_id) references test_case(test_case_id)
 );
 
 create table problem_submission
@@ -252,3 +260,4 @@ create table problem_submission
     constraint fk_user_login_id foreign key (submitted_by_user_login_id) references user_login(user_login_id)
 );
 
+drop table problem_submission, contest_problem_test_case, test_case, contest_problem_problem_source_code, contest_problem, problem_source_code;

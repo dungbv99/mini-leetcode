@@ -12,7 +12,6 @@ import java.util.Set;
 @Data
 @Entity
 @Builder
-//@ToString
 @Table(name = "contest_problem")
 public class ContestProblem {
     @Id
@@ -57,6 +56,10 @@ public class ContestProblem {
     @Column(name = "solution")
     private String solution;
 
-    @OneToMany(mappedBy = "contestProblem")
-    private Set<TestCase> testCases;
+    @JoinTable(name = "contest_problem_test_case",
+            joinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id"),
+            inverseJoinColumns = @JoinColumn(name = "test_case_id", referencedColumnName = "test_case_id")
+    )
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<TestCase> testCases;
 }
