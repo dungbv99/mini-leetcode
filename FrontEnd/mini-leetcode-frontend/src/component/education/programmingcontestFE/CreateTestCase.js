@@ -6,8 +6,11 @@ import {ScrollBox} from "react-scroll-box";
 import {a11yProps, TabPanel} from "./TabPanel";
 import CodeMirror from "@uiw/react-codemirror";
 import {useParams} from "react-router-dom";
-import {authGet} from "../../../api";
+import {authGet, authPost} from "../../../api";
 import {useDispatch, useSelector} from "react-redux";
+import { Markup } from 'interweave';
+import {OutputWithLoading} from "./OutputWithLoading";
+import {API_URL} from "../../../config/config";
 
 
 export default function CreateTestCase(props){
@@ -21,10 +24,26 @@ export default function CreateTestCase(props){
   const [problem, setProblem] = useState();
   const [description, setDescription] = useState();
   const [solution, setSolution] = useState();
-
+  const [load, setLoad] = useState(false);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const getTestCaseResult = () =>{
+    console.log("get test case result");
+    setLoad(true);
+    let body = {
+      testcase: input,
+    }
+
+    authPost(dispatch, token, "/get-test-case-result/"+problemId, body).then(
+      (res) =>{
+        console.log("res", res);
+        setLoad(false);
+        setResult(res.result);
+      }
+    )
+  }
 
   useEffect(() =>{
     console.log("problemId ", problemId);
@@ -70,11 +89,7 @@ export default function CreateTestCase(props){
           </Box>
           <TabPanel value={value} index={0}>
             <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
-              {/*<Typography variant={"h4"} color={"#d6d6d6"}  >*/}
-              {/*  /!*{problem.problemDescription}*!/*/}
-              {/*  description*/}
-              {/*</Typography>*/}
-              {description}
+              <Markup content={description} />
             </ScrollBox>
 
           </TabPanel>
@@ -104,17 +119,16 @@ export default function CreateTestCase(props){
           <Typography variant={"h5"}>
             Result
           </Typography>
-          <CodeMirror
-            height={"200px"}
-            width="100%"
-            value={result}
-            autoFocus={false}
-            editable={false}
+          <OutputWithLoading
+            load={load}
+            output={result}
+            extension={[]}
+            color={'light'}
           />
           <Button
             variant="contained"
             color="light"
-
+            onClick={getTestCaseResult}
             style={{marginTop:"10px", marginLeft:"50px"}}
           >
             get testcase result
@@ -122,7 +136,6 @@ export default function CreateTestCase(props){
           <Button
             variant="contained"
             color="light"
-
             style={{ marginLeft:"50px", marginTop:"10px"}}
           >
             save test case

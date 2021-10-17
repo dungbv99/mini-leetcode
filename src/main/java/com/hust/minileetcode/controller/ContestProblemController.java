@@ -9,6 +9,7 @@ import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ import java.util.UUID;
 @RestController
 @CrossOrigin
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-@Log4j2
+@Slf4j
 public class ContestProblemController {
     ProblemTestCaseService problemTestCaseService;
 //    AnswerChecking answerChecking;
@@ -63,6 +64,15 @@ public class ContestProblemController {
     public ResponseEntity<?> createTestCase(@RequestBody ModelCreateTestCase modelCreateTestCase, @PathVariable("problemId") String problemId) throws Exception{
         TestCase testCase = problemTestCaseService.createTestCase(modelCreateTestCase, problemId);
         return ResponseEntity.status(200).body(testCase);
+    }
+
+    @PostMapping("/get-test-case-result/{problemId}")
+    public ResponseEntity<?> getTestCaseResult(@PathVariable("problemId") String problemId, @RequestBody ModelGetTestCaseResult testCaseResult, Principal principal) throws Exception {
+        log.info("get test case result {}", problemId);
+        String testcaseResult = problemTestCaseService.getTestCaseResult(problemId, principal.getName(), testCaseResult);
+        log.info("testcaseResult {}", testcaseResult);
+        ModelGetTestCaseResultResponse resp = ModelGetTestCaseResultResponse.builder().result(testcaseResult).build();
+        return ResponseEntity.status(200).body(resp);
     }
 
     @PostMapping("/edit-test-case/{testCaseId}")

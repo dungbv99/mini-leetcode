@@ -30,4 +30,6 @@ public interface ProblemTestCaseService {
     ContestProblem getContestProblem(String problemId) throws Exception;
 
     ModelProblemDetailRunCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception;
+
+    String getTestCaseResult(String problemId, String userName, ModelGetTestCaseResult modelGetTestCaseResult) throws Exception;
 }

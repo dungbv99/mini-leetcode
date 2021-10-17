@@ -12,7 +12,7 @@ export function OutputWithLoading(props){
     return <ContentLoader
       speed={2}
       width={"100%"}
-      height={"150px"}
+      height={"200px"}
       viewBox="0 0 400 160"
       backgroundColor="#f3f3f3"
       foregroundColor="#ecebeb"

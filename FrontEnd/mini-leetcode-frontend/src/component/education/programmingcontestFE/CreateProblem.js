@@ -267,7 +267,7 @@ function CreateProblem(){
                 </Typography>
                 <Editor
                   editorState={editorStateSolution}
-                  handlePastedText={() => true}
+                  handlePastedText={() => false}
                   onEditorStateChange={onChangeEditorStateSolution}
                   toolbarStyle={editorStyle.toolbar}
                   editorStyle={editorStyle.editor}

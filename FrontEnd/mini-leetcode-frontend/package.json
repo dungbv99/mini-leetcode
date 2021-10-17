@@ -32,6 +32,7 @@
     "event-source-polyfill": "^1.0.24",
     "framer-motion": "^2.9.5",
     "html-react-parser": "^0.14.0",
+    "interweave": "^12.9.0",
     "leaflet": "^1.7.1",
     "material-table": "^1.69.3",
     "material-ui-dropzone": "^3.3.1",

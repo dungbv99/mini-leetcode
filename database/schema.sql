@@ -268,3 +268,4 @@ drop table problem_submission,  test_case,  contest_problem, problem_source_code
 --     constraint fk_contest_problem foreign key (problem_id) references contest_problem(problem_id),
 --     constraint fk_test_case foreign key (test_case_id) references test_case(test_case_id)
 -- );
+
