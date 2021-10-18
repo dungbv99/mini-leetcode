@@ -26,6 +26,8 @@ import { go } from '@codemirror/legacy-modes/mode/go';
 import { javascript } from '@codemirror/lang-javascript';
 import { StreamLanguage } from '@codemirror/stream-parser';
 import CodeMirror from "@uiw/react-codemirror";
+import {SubmitWarming} from "./SubmitWarming";
+import {CompileStatus} from "./CompileStatus";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -92,8 +94,9 @@ function CreateProblem(){
   const [codeSolution, setCodeSolution] = useState();
   const [languageSolution, setLanguageSolution] = useState("CPP");
   const computerLanguageList = ["CPP", "GOLANG", "JAVA", "PYTHON3"];
-
-
+  const [showSubmitWarming, setShowSubmitWarming] = useState(false);
+  const [showCompile, setShowCompile] = useState(false);
+  const [statusSuccessful, setStatusSuccessful] = useState(false);
   const onChangeEditorStateDescription = (editorState) => {
     console.log(problemDescriptions);
     setEditorStateDescription(editorState);
@@ -118,7 +121,33 @@ function CreateProblem(){
     }
   }
 
+  function checkCompile(){
+    console.log("check compile");
+    let body = {
+      source: codeSolution,
+      computerLanguage: languageSolution
+    }
+    authPost(dispatch, token, "/check-compile", body).then(
+      (res) =>{
+        console.log("res", res);
+        if(res.status == "Successful"){
+          setShowCompile(true);
+          setShowSubmitWarming(false);
+          setStatusSuccessful(true);
+        }else{
+          setShowCompile(true);
+          setStatusSuccessful(false);
+        }
+      }
+    )
+
+  }
+
   async function handleSubmit(){
+    if(!statusSuccessful){
+      setShowSubmitWarming(true);
+      return;
+    }
     let description = draftToHtml(convertToRaw(editorStateDescription.getCurrentContent()));
     let solution = draftToHtml(convertToRaw(editorStateSolution.getCurrentContent()));
 
@@ -303,12 +332,21 @@ function CreateProblem(){
                 setCodeSolution(value);
               }}
               autoFocus={false}
-
             />
-
+            <CompileStatus
+              showCompile={showCompile}
+              statusSuccessful={statusSuccessful}/>
 
           </CardContent>
           <CardActions>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{marginLeft:"45px"}}
+              onClick={checkCompile}
+            >
+              Check Solution Compile
+            </Button>
             <Button
               variant="contained"
               color="primary"
@@ -317,6 +355,8 @@ function CreateProblem(){
               >
               Save
             </Button>
+            <SubmitWarming
+              showSubmitWarming={showSubmitWarming}/>
           </CardActions>
         </Card>
       </MuiPickersUtilsProvider>

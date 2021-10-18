@@ -98,6 +98,35 @@ public class TempDir {
         writer.close();
     }
 
+    public void createScriptCompileFile(String source, ComputerLanguage.Languages languages, String tmpName ) throws IOException {
+        String suffixes = "";
+        String cmd = "";
+        File theDir = new File(TEMPDIR+tmpName);
+        theDir.mkdirs();
+        String sourceSh;
+        switch (languages){
+            case CPP:
+                sourceSh = gccExecutor.checkCompile(source, tmpName);
+                break;
+            case JAVA:
+                sourceSh = javaExecutor.checkCompile(source, tmpName);
+                break;
+            case PYTHON3:
+                sourceSh = python3Executor.checkCompile(source, tmpName);
+                break;
+            case GOLANG:
+                sourceSh = golangExecutor.checkCompile(source, tmpName);
+                break;
+            default:
+                sourceSh = null;
+        }
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(TEMPDIR + tmpName+"/"+tmpName+".sh"));
+        writer.write(sourceSh);
+        writer.close();
+    }
+
+
     public void removeDir(String dirName){
         FileSystemUtils.deleteRecursively(new File("./temp_dir/"+dirName));
     }

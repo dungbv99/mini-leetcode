@@ -3,9 +3,11 @@ package com.hust.minileetcode.service;
 import com.hust.minileetcode.entity.ContestProblem;
 import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.model.*;
+import com.spotify.docker.client.exceptions.DockerException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.io.IOException;
 import java.util.UUID;
 
 public interface ProblemTestCaseService {
@@ -32,4 +34,6 @@ public interface ProblemTestCaseService {
     ModelProblemDetailRunCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception;
 
     String getTestCaseResult(String problemId, String userName, ModelGetTestCaseResult modelGetTestCaseResult) throws Exception;
+
+    String checkCompile(ModelCheckCompile modelCheckCompile, String userName) throws Exception;
 }

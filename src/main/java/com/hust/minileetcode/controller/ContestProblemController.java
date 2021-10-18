@@ -113,4 +113,10 @@ public class ContestProblemController {
         return ResponseEntity.ok(resp);
     }
 
+    @PostMapping("/check-compile")
+    public ResponseEntity<?> checkCompile(@RequestBody ModelCheckCompile modelCheckCompile, Principal principal) throws Exception {
+        String resp = problemTestCaseService.checkCompile(modelCheckCompile, principal.getName());
+        ModelCheckCompileResponse modelCheckCompileResponse = ModelCheckCompileResponse.builder().status(resp).build();
+        return ResponseEntity.status(200).body(modelCheckCompileResponse);
+    }
 }

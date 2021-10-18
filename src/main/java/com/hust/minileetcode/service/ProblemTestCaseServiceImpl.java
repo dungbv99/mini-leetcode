@@ -11,6 +11,7 @@ import com.hust.minileetcode.repo.ProblemSourceCodeRepo;
 import com.hust.minileetcode.repo.TestCaseRepo;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
+import com.spotify.docker.client.exceptions.DockerException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -198,6 +200,34 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
         String tempName = tempDir.createRandomScriptFileName(userName + "-" +contestProblem.getProblemName() + "-" + contestProblem.getCorrectSolutionLanguage());
         return  runCode(contestProblem.getCorrectSolutionSourceCode(), contestProblem.getCorrectSolutionLanguage(), tempName, modelGetTestCaseResult.getTestcase(), contestProblem.getTimeLimit(), "Correct Solution Language Not Found");
+    }
+
+    @Override
+    public String checkCompile(ModelCheckCompile modelCheckCompile, String userName) throws Exception {
+        String tempName = tempDir.createRandomScriptFileName(userName);
+        String resp;
+        switch (modelCheckCompile.getComputerLanguage()){
+            case "CPP":
+                tempDir.createScriptCompileFile(modelCheckCompile.getSource(), ComputerLanguage.Languages.CPP, tempName);
+                resp = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP, tempName);
+                break;
+            case "JAVA":
+                tempDir.createScriptCompileFile(modelCheckCompile.getSource(), ComputerLanguage.Languages.JAVA, tempName);
+                resp = dockerClientBase.runExecutable(ComputerLanguage.Languages.JAVA, tempName);
+                break;
+            case "PYTHON3":
+                tempDir.createScriptCompileFile(modelCheckCompile.getSource(), ComputerLanguage.Languages.PYTHON3, tempName);
+                resp = dockerClientBase.runExecutable(ComputerLanguage.Languages.PYTHON3, tempName);
+                break;
+            case "GOLANG":
+                tempDir.createScriptCompileFile(modelCheckCompile.getSource(), ComputerLanguage.Languages.GOLANG, tempName);
+                resp = dockerClientBase.runExecutable(ComputerLanguage.Languages.GOLANG, tempName);
+                break;
+            default:
+                throw new Exception("Language not found");
+        }
+        int lastIdx =  resp.lastIndexOf("\n");
+        return resp.substring(lastIdx);
     }
 
 
