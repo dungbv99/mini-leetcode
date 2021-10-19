@@ -178,7 +178,7 @@ function CreateProblem(){
     )
     // console.log(contestProblem);
     // await console.log("body", body);
-    history.push("/programming-contest/list-problems")
+    // history.push("/programming-contest/list-problems")
   }
 
 
@@ -230,7 +230,6 @@ function CreateProblem(){
                 <TextField
                   autoFocus
                   required
-
                   id="memoryLimit"
                   label="Memory Limit"
                   placeholder="Memory Limit"
@@ -341,7 +340,7 @@ function CreateProblem(){
           <CardActions>
             <Button
               variant="contained"
-              color="primary"
+              color="light"
               style={{marginLeft:"45px"}}
               onClick={checkCompile}
             >
@@ -349,7 +348,7 @@ function CreateProblem(){
             </Button>
             <Button
               variant="contained"
-              color="primary"
+              color="light"
               style={{marginLeft:"45px"}}
               onClick={handleSubmit}
               >

@@ -180,14 +180,40 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     public ModelProblemDetailRunCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception {
         ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
         String tempName = tempDir.createRandomScriptFileName(contestProblem.getProblemName() + "-" + contestProblem.getCorrectSolutionLanguage());
-        String expected = runCode(contestProblem.getCorrectSolutionSourceCode(), contestProblem.getCorrectSolutionLanguage(), tempName, modelProblemDetailRunCode.getInput(), contestProblem.getTimeLimit(), "Correct Solution Language Not Found");
-        String output = runCode(modelProblemDetailRunCode.getSourceCode(), modelProblemDetailRunCode.getComputerLanguage(), tempName+"-"+userName, modelProblemDetailRunCode.getInput(), contestProblem.getTimeLimit(), "User Source Code Langua Not Found");
-        int lastLinetIndexExpected = expected.lastIndexOf("\n");
+        String output = runCode(modelProblemDetailRunCode.getSourceCode(), modelProblemDetailRunCode.getComputerLanguage(), tempName+"-"+userName+"-code", modelProblemDetailRunCode.getInput(), contestProblem.getTimeLimit(), "User Source Code Langua Not Found");
+
+        output = output.substring(0, output.length()-1);
+
         int lastLineIndexOutput = output.lastIndexOf("\n");
+        if(output.equals("Time Limit Exceeded")){
+            return ModelProblemDetailRunCodeResponse.builder()
+                    .status("Time Limit Exceeded")
+                    .build();
+        }
         String status = output.substring(lastLineIndexOutput);
+        log.info("stat {}", status);
+        if(status.contains("Compile Error")){
+            return ModelProblemDetailRunCodeResponse.builder()
+                    .output(output.substring(0, lastLineIndexOutput))
+                    .status("Compile Error")
+                    .build();
+        }
         log.info("status {}", status);
         output = output.substring(0, lastLineIndexOutput);
+        String expected = runCode(contestProblem.getCorrectSolutionSourceCode(), contestProblem.getCorrectSolutionLanguage(), tempName+"-solution", modelProblemDetailRunCode.getInput(), contestProblem.getTimeLimit(), "Correct Solution Language Not Found");
+
+        expected = expected.substring(0, expected.length()-1);
+        int lastLinetIndexExpected = expected.lastIndexOf("\n");
         expected = expected.substring(0, lastLinetIndexExpected);
+        expected = expected.replaceAll("\n", "");
+        output = output.replaceAll("\n", "");
+        if(output.equals(expected)){
+            status = "Accept";
+        }else{
+            status = "Wrong Answer";
+        }
+        log.info("output {}", output);
+        log.info("expected {}", expected);
         return ModelProblemDetailRunCodeResponse.builder()
                 .expected(expected)
                 .output(output)
@@ -226,8 +252,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
             default:
                 throw new Exception("Language not found");
         }
-        int lastIdx =  resp.lastIndexOf("\n");
-        return resp.substring(lastIdx);
+        if(resp.contains("Successful")){
+            return "Successful";
+        }else{
+            return "Compile Error";
+        }
     }
 
 

@@ -48,6 +48,7 @@ export function Console(props){
   const timeLimit=props.timeLimit;
   const expected=props.expected;
   const run=props.run;
+  const compileError=props.compileError;
   const handleChange = (event, newValue) => {
     props.onChangeConsoleTabIndex(newValue)
   };
@@ -85,6 +86,7 @@ export function Console(props){
               input={input}
               run={run}
               timeLimit={timeLimit}
+              compileError={compileError}
             />
           </TabPanel>
         </Box>
@@ -105,6 +107,7 @@ function ConsoleOutput(props){
   const run=props.run;
   const timeLimit=props.timeLimit;
   const input=props.input;
+  const compileError=props.compileError;
 
   if(load){
     return(
@@ -143,7 +146,14 @@ function ConsoleOutput(props){
     }else{
       if(timeLimit){
         return (
-          <Alert severity="warning">Time Limit Exceed</Alert>
+          <Alert severity="error">Time Limit Exceed</Alert>
+        );
+      }else if(compileError){
+        return (
+          <Alert severity="error">
+            Compile Error <br/>
+            {output}
+          </Alert>
         );
       }else{
         if(accept){
@@ -164,7 +174,7 @@ function ConsoleOutput(props){
         }else{
           return (
             <div>
-              <Alert severity="error">Wrong Answer</Alert>
+              <Alert severity="warning">Wrong Answer</Alert>
               <Box sx={{display: 'flex',  bgcolor: 'background.paper', p: 1}}>
                 <ScrollBox style={{width: '100%', overflow:"auto", height:"50px"}}  >
                   Input: {input}

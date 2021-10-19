@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Typography from '@mui/material/Typography';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {cpp, cppLanguage} from '@codemirror/lang-cpp';
 import {java} from '@codemirror/lang-java';
 import {pythonLanguage} from '@codemirror/lang-python';
@@ -21,6 +21,10 @@ import {Console} from "./Console";
 import {ScrollBox} from 'react-scroll-box';
 import PropTypes from "prop-types"; // ES6
 import {a11yProps, TabPanel} from "./TabPanel";
+import {authGet, authPost} from "../../../api";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory, useParams} from "react-router-dom";
+import {Markup} from "interweave";
 
 TabPanel.propTypes = {
   children: PropTypes.node,
@@ -60,6 +64,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function ProblemDetail(){
+  const [description, setDescription] = useState();
+  const [solution, setSolution] = useState();
+  const [problem, setProblem] = useState();
   const [value, setValue] = useState(0);
   const [color, setColor] = useState("light");
   const colorList = ["light", "dark"];
@@ -77,6 +84,12 @@ export default function ProblemDetail(){
   const [accept, setAccept] = useState(false);
   const [run, setRun] = useState(false);
   const [expected, setExpected] = useState();
+  const [compileError, setCompileError] = useState(false);
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+  const {problemId} = useParams();
+  const history = useHistory();
+
   const onInputChange = (input) =>{
     setInput(input);
   }
@@ -95,10 +108,45 @@ export default function ProblemDetail(){
   }
 
   const handleRunCode = () =>{
+    console.log("handle run code")
+    setRunCodeLoading(true);
     setConsoleTabIndex(1);
     setShowConsole(true);
     setScreenHeight((window.innerHeight-455) + "px");
+    let body =  {
+      sourceCode: source,
+      computerLanguage: computerLanguage,
+      input: input
+    }
+    authPost(dispatch, token, "/problem-detail-run-code/"+problemId,body).then(
+      (res) =>{
+        console.log("res" , res);
+        setRun(true);
+        setRunCodeLoading(false);
+        if(res.status == "Time Limit Exceeded"){
+          setTimeLimit(true);
+          setCompileError(false);
+          setAccept(false);
+        }else if(res.status == "Compile Error"){
+          setTimeLimit(false);
+          setCompileError(true);
+          console.log("111");
+        }else if(res.status == "Accept"){
+          setAccept(true);
+          setTimeLimit(false);
+          setCompileError(false);
+        }else{
+          setAccept(false);
+          setTimeLimit(false);
+          setCompileError(false);
+        }
+        setOutput(res.output);
+        setExpected(res.expected);
 
+        // setAccept(true);
+        // setTimeLimit(false);
+      }
+    )
   }
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -117,6 +165,17 @@ export default function ProblemDetail(){
         return javascript();
     }
   }
+
+  useEffect(() =>{
+    authGet(dispatch,token, "/problem-details/"+problemId).then(
+      (res) =>{
+        console.log("res ", res);
+        setProblem(res);
+        setDescription(res.problemDescription);
+        setSolution(res.solution);
+      }
+    );
+  },[])
 
   return (
     <div onScroll={false}>
@@ -197,13 +256,13 @@ export default function ProblemDetail(){
         <Grid item xs={6}>
           <TabPanel value={value} index={0}>
             <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
-              <Typography variant={"h4"} color={"#d6d6d6"}  >
-
-              </Typography>
+              <Markup content={description} />
             </ScrollBox>
-
           </TabPanel>
           <TabPanel value={value} index={1}>
+            <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
+              <Markup content={solution} />
+            </ScrollBox>
           </TabPanel>
           <TabPanel value={value} index={2}>
           </TabPanel>
@@ -235,6 +294,7 @@ export default function ProblemDetail(){
             run={run}
             timeLimit={timeLimit}
             expected={expected}
+            compileError={compileError}
           />
         </Grid>
       </Grid>
@@ -270,6 +330,7 @@ export default function ProblemDetail(){
         onClick={handleScroll}
         // style={{position}}
         style={{left:"40%"}}
+        extension={getExtension()}
       >
         Console
       </Button>

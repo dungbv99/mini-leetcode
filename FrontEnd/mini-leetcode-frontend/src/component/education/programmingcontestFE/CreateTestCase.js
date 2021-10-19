@@ -91,14 +91,11 @@ export default function CreateTestCase(props){
             <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
               <Markup content={description} />
             </ScrollBox>
-
           </TabPanel>
 
           <TabPanel value={value} index={1}>
             <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
-              <Typography variant={"h4"} color={"#d6d6d6"}  >
-                {solution}
-              </Typography>
+                <Markup content={solution} />
             </ScrollBox>
           </TabPanel>
 
