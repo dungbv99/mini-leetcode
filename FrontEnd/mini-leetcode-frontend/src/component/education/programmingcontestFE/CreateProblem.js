@@ -355,7 +355,9 @@ function CreateProblem(){
               Save
             </Button>
             <SubmitWarming
-              showSubmitWarming={showSubmitWarming}/>
+              showSubmitWarming={showSubmitWarming}
+              content={"Your source must be pass compile process"}
+            />
           </CardActions>
         </Card>
       </MuiPickersUtilsProvider>

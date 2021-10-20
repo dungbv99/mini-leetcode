@@ -221,7 +221,7 @@ create table problem_source_code
 
 create table test_case
 (
-    test_case_id varchar (100) not null,
+    test_case_id  UUID NOT NULL default uuid_generate_v1(),
     test_case_point int,
     test_case text,
     correct_answer text,

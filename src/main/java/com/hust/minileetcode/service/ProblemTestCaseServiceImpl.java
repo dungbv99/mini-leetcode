@@ -134,7 +134,9 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public Page<ContestProblem> getContestProblemPaging(Pageable pageable) {
-
+        log.info("getContestProblemPaging ");
+        Page<ContestProblem> contestProblems = contestProblemPagingAndSortingRepo.findAll(pageable);
+//        log.info("testcase size", contestProblems.getContent().get(0).getTestCases().size());
         return contestProblemPagingAndSortingRepo.findAll(pageable);
     }
 
@@ -180,7 +182,12 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     public ModelProblemDetailRunCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception {
         ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
         String tempName = tempDir.createRandomScriptFileName(contestProblem.getProblemName() + "-" + contestProblem.getCorrectSolutionLanguage());
-        String output = runCode(modelProblemDetailRunCode.getSourceCode(), modelProblemDetailRunCode.getComputerLanguage(), tempName+"-"+userName+"-code", modelProblemDetailRunCode.getInput(), contestProblem.getTimeLimit(), "User Source Code Langua Not Found");
+        String output = runCode(modelProblemDetailRunCode.getSourceCode(),
+                modelProblemDetailRunCode.getComputerLanguage(),
+                tempName+"-"+userName+"-code",
+                modelProblemDetailRunCode.getInput(),
+                contestProblem.getTimeLimit(),
+                "User Source Code Langua Not Found");
 
         output = output.substring(0, output.length()-1);
 
@@ -200,8 +207,12 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         }
         log.info("status {}", status);
         output = output.substring(0, lastLineIndexOutput);
-        String expected = runCode(contestProblem.getCorrectSolutionSourceCode(), contestProblem.getCorrectSolutionLanguage(), tempName+"-solution", modelProblemDetailRunCode.getInput(), contestProblem.getTimeLimit(), "Correct Solution Language Not Found");
-
+        String expected = runCode(contestProblem.getCorrectSolutionSourceCode(),
+                contestProblem.getCorrectSolutionLanguage(),
+                tempName+"-solution",
+                modelProblemDetailRunCode.getInput(),
+                contestProblem.getTimeLimit(),
+                "Correct Solution Language Not Found");
         expected = expected.substring(0, expected.length()-1);
         int lastLinetIndexExpected = expected.lastIndexOf("\n");
         expected = expected.substring(0, lastLinetIndexExpected);
@@ -225,7 +236,13 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     public String getTestCaseResult(String problemId, String userName, ModelGetTestCaseResult modelGetTestCaseResult) throws Exception {
         ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
         String tempName = tempDir.createRandomScriptFileName(userName + "-" +contestProblem.getProblemName() + "-" + contestProblem.getCorrectSolutionLanguage());
-        return  runCode(contestProblem.getCorrectSolutionSourceCode(), contestProblem.getCorrectSolutionLanguage(), tempName, modelGetTestCaseResult.getTestcase(), contestProblem.getTimeLimit(), "Correct Solution Language Not Found");
+        String output = runCode(contestProblem.getCorrectSolutionSourceCode(), contestProblem.getCorrectSolutionLanguage(), tempName, modelGetTestCaseResult.getTestcase(), contestProblem.getTimeLimit(), "Correct Solution Language Not Found");
+        output = output.substring(0, output.length()-1);
+        int lastLinetIndexExpected = output.lastIndexOf("\n");
+        output = output.substring(0, lastLinetIndexExpected);
+        output = output.replaceAll("\n", "");
+        log.info("output {}", output);
+        return output;
     }
 
     @Override
@@ -257,6 +274,18 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         }else{
             return "Compile Error";
         }
+    }
+
+    @Override
+    public TestCase saveTestCase(String problemId, ModelSaveTestcase modelSaveTestcase) {
+
+        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+        TestCase testCase = TestCase.builder()
+                .correctAnswer(modelSaveTestcase.getResult())
+                .testCase(modelSaveTestcase.getInput())
+                .contestProblem(contestProblem)
+                .build();
+        return testCaseRepo.save(testCase);
     }
 
 

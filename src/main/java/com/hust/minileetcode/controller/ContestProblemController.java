@@ -119,4 +119,10 @@ public class ContestProblemController {
         ModelCheckCompileResponse modelCheckCompileResponse = ModelCheckCompileResponse.builder().status(resp).build();
         return ResponseEntity.status(200).body(modelCheckCompileResponse);
     }
+
+    @PostMapping("/save-test-case/{problemId}")
+    public ResponseEntity<?> saveTestCase(@PathVariable("problemId") String problemId, @RequestBody ModelSaveTestcase modelSaveTestcase){
+        TestCase testCase = problemTestCaseService.saveTestCase(problemId, modelSaveTestcase);
+        return ResponseEntity.status(200).body(testCase);
+    }
 }

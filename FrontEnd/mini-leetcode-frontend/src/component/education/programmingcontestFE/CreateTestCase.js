@@ -11,6 +11,8 @@ import {useDispatch, useSelector} from "react-redux";
 import { Markup } from 'interweave';
 import {OutputWithLoading} from "./OutputWithLoading";
 import {API_URL} from "../../../config/config";
+import {SubmitWarming} from "./SubmitWarming";
+import {SubmitSuccess} from "./SubmitSuccess";
 
 
 export default function CreateTestCase(props){
@@ -25,6 +27,9 @@ export default function CreateTestCase(props){
   const [description, setDescription] = useState();
   const [solution, setSolution] = useState();
   const [load, setLoad] = useState(false);
+  const [checkTestcaseResult, setCheckTestcaseResult] = useState(false);
+  const [showSubmitWarming, setShowSubmitWarming] = useState(false);
+  const [showSubmitSuccess, setShowSubmitSuccess] =useState(false);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -36,13 +41,37 @@ export default function CreateTestCase(props){
       testcase: input,
     }
 
+
     authPost(dispatch, token, "/get-test-case-result/"+problemId, body).then(
       (res) =>{
         console.log("res", res);
         setLoad(false);
         setResult(res.result);
+        setCheckTestcaseResult(true);
+        setShowSubmitWarming(false);
       }
     )
+  }
+
+  const saveTestCase = ()=>{
+    if(!checkTestcaseResult){
+      setShowSubmitWarming(true);
+      return;
+    }
+
+    let body = {
+      input: input,
+      result: result,
+    }
+
+    authPost(dispatch, token, "/save-test-case/"+problemId, body).then(
+      (res) =>{
+        console.log("res", res);
+        setShowSubmitSuccess(true);
+      }
+    )
+
+
   }
 
   useEffect(() =>{
@@ -134,9 +163,17 @@ export default function CreateTestCase(props){
             variant="contained"
             color="light"
             style={{ marginLeft:"50px", marginTop:"10px"}}
+            onClick={saveTestCase}
           >
             save test case
           </Button>
+          <SubmitWarming
+            showSubmitWarming={showSubmitWarming}
+            content={"You must test your test case result before save"}/>
+          <SubmitSuccess
+            showSubmitSuccess={showSubmitSuccess}
+            content={"Your test case is saved"}
+            />
         </Grid>
       </Grid>
 

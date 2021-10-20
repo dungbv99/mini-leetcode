@@ -1,15 +1,15 @@
 import {Alert} from "@material-ui/lab";
 import * as React from "react";
 
-export function SubmitWarming(props){
-  const showSubmitWarming=props.showSubmitWarming;
+export function SubmitSuccess(props){
+  const showSubmitSuccess=props.showSubmitSuccess;
   const content=props.content;
-  if(!showSubmitWarming){
+  if(!showSubmitSuccess){
     return(<div></div>);
   }else {
     return (
       <div>
-        <Alert severity="error">{content}</Alert>
+        <Alert severity="success">{content}</Alert>
       </div>
     );
   }

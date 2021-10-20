@@ -36,4 +36,6 @@ public interface ProblemTestCaseService {
     String getTestCaseResult(String problemId, String userName, ModelGetTestCaseResult modelGetTestCaseResult) throws Exception;
 
     String checkCompile(ModelCheckCompile modelCheckCompile, String userName) throws Exception;
+
+    TestCase saveTestCase(String problemId, ModelSaveTestcase modelSaveTestcase);
 }

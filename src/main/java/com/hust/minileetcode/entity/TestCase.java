@@ -14,6 +14,7 @@ import java.util.UUID;
 public class TestCase {
     @Id
     @Column(name = "test_case_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID testCaseId;
 
     @Column(name = "test_case_point")

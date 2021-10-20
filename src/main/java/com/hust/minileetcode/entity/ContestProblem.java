@@ -59,8 +59,8 @@ public class ContestProblem {
     @Column(name = "solution")
     private String solution;
 
-    @OneToMany(mappedBy = "contestProblem")
-    private Set<TestCase> testCases;
+//    @OneToMany(mappedBy = "contestProblem")
+//    private Set<TestCase> testCases;
 //    @JoinTable(name = "contest_problem_test_case",
 //            joinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id"),
 //            inverseJoinColumns = @JoinColumn(name = "test_case_id", referencedColumnName = "test_case_id")

@@ -99,7 +99,7 @@ export function Console(props){
   }
 }
 
-function ConsoleOutput(props){
+export function ConsoleOutput(props){
   const load=props.load;
   const accept=props.accept;
   const output=props.output;
