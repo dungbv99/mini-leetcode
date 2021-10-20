@@ -1,5 +1,6 @@
 package com.hust.minileetcode.utils;
 
+import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.utils.executor.GccExecutor;
 import com.hust.minileetcode.utils.executor.GolangExecutor;
 import com.hust.minileetcode.utils.executor.JavaExecutor;
@@ -12,6 +13,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.PrimitiveIterator.OfInt;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -71,8 +73,6 @@ public class TempDir {
     }
 
     public void createScriptFile(String source, String testCase, int timeLimit, ComputerLanguage.Languages languages, String tmpName ) throws IOException {
-        String suffixes = "";
-        String cmd = "";
         File theDir = new File(TEMPDIR+tmpName);
         theDir.mkdirs();
         String sourceSh;
@@ -99,8 +99,6 @@ public class TempDir {
     }
 
     public void createScriptCompileFile(String source, ComputerLanguage.Languages languages, String tmpName ) throws IOException {
-        String suffixes = "";
-        String cmd = "";
         File theDir = new File(TEMPDIR+tmpName);
         theDir.mkdirs();
         String sourceSh;
@@ -126,6 +124,31 @@ public class TempDir {
         writer.close();
     }
 
+    public void createScriptSubmissionFile(ComputerLanguage.Languages languages, String tmpName, List<TestCase> testCases, String source, int timeout) throws IOException {
+        File theDir = new File(TEMPDIR+tmpName);
+        theDir.mkdirs();
+        String sourceSh;
+        switch (languages){
+            case CPP:
+                sourceSh = gccExecutor.genSubmitScriptFile(testCases, source, tmpName, timeout);
+                break;
+            case JAVA:
+                sourceSh = javaExecutor.genSubmitScriptFile(testCases, source, tmpName, timeout);
+                break;
+            case PYTHON3:
+                sourceSh = python3Executor.genSubmitScriptFile(testCases, source, tmpName, timeout);
+                break;
+            case GOLANG:
+                sourceSh = golangExecutor.genSubmitScriptFile(testCases, source, tmpName, timeout);
+                break;
+            default:
+                sourceSh = null;
+        }
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(TEMPDIR + tmpName+"/"+tmpName+".sh"));
+        writer.write(sourceSh);
+        writer.close();
+    }
 
     public void removeDir(String dirName){
         FileSystemUtils.deleteRecursively(new File("./temp_dir/"+dirName));

@@ -38,4 +38,6 @@ public interface ProblemTestCaseService {
     String checkCompile(ModelCheckCompile modelCheckCompile, String userName) throws Exception;
 
     TestCase saveTestCase(String problemId, ModelSaveTestcase modelSaveTestcase);
+
+//    void problemDetailSubmission()
 }

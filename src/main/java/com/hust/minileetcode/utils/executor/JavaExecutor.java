@@ -1,5 +1,9 @@
 package com.hust.minileetcode.utils.executor;
 
+import com.hust.minileetcode.entity.TestCase;
+
+import java.util.List;
+
 public class JavaExecutor {
     private static final String buildCmd = "javac Main.java";
     private static final String suffixes =".java";
@@ -45,6 +49,40 @@ public class JavaExecutor {
                 + "  echo Successful\n"
                 + "else\n"
                 + "  echo Compile Error\n"
+                + "fi" + "\n"
+                + "cd .. \n"
+                + "rm -rf " + tmpName + " & "+"\n"
+                + "rm -rf " + tmpName+".sh" + " & "+"\n";
+        return sourceSH;
+    }
+
+    public String genSubmitScriptFile(List<TestCase> testCases, String source, String tmpName, int timeout){
+        String genTestCase = "";
+        for(int i = 0; i < testCases.size(); i++){
+            String testcase = "cat <<EOF >> testcase" + i + ".txt \n"
+                    + testCases.get(i).getTestCase() +"\n"
+                    +"EOF" + "\n";
+            genTestCase += testcase;
+        }
+        String sourceSH = SHFileStart
+                + "mkdir -p " + tmpName +"\n"
+                + "cd " + tmpName +"\n"
+                + "cat <<EOF >> main"  + suffixes + "\n"
+                + source + "\n"
+                + "EOF" + "\n"
+                + buildCmd +"\n"
+                + "FILE=main" +"\n"
+                +"if test -f \"$FILE\"; then" +"\n"
+                + genTestCase +"\n"
+                + "n=0\n"
+                + "while [ \"$n\" -lt " + testCases.size()+" ]"+"\n"
+                + "do\n"
+                + "f=\"testcase\"$n\".txt\"" +"\n"
+                + "cat $f | timeout " + timeout + "s" +" java Main" +"\n"
+                + "n=`expr $n + 1`\n"
+                + "done\n"
+                + "else\n"
+                + "echo Compile Error\n"
                 + "fi" + "\n"
                 + "cd .. \n"
                 + "rm -rf " + tmpName + " & "+"\n"
