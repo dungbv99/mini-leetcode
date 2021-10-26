@@ -148,6 +148,18 @@ export default function ProblemDetail(){
       }
     )
   }
+
+  const handleSubmission = ()=>{
+    let body ={
+      source: source,
+      language:computerLanguage
+    }
+    authPost(dispatch, token, "/problem-details-submission/"+problemId, body).then(
+      (res)=>{
+        console.log("res ", res);
+      }
+    )
+  }
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -299,27 +311,26 @@ export default function ProblemDetail(){
         </Grid>
       </Grid>
 
-
-
-
-
       <Button
         variant="contained"
         color="light"
         // style={{marginLeft:"90px"}}
-        // onClick={handleRun}
+        onClick={handleScroll}
         // style={{position}}
-        style={{left:"95%"}}
+        style={{left:"50%"}}
+        extension={getExtension()}
       >
-        Submit
+        Console
       </Button>
+
+
       <Button
         variant="contained"
         color="light"
         // style={{marginLeft:"90px"}}
         onClick={handleRunCode}
         // style={{position}}
-        style={{left:"82%"}}
+        style={{left:"75%"}}
       >
         Run Code
       </Button>
@@ -327,13 +338,14 @@ export default function ProblemDetail(){
         variant="contained"
         color="light"
         // style={{marginLeft:"90px"}}
-        onClick={handleScroll}
+        onClick={handleSubmission}
         // style={{position}}
-        style={{left:"40%"}}
-        extension={getExtension()}
+        style={{left:"80%"}}
       >
-        Console
+        Submit
       </Button>
+
+
     </div>
 
 

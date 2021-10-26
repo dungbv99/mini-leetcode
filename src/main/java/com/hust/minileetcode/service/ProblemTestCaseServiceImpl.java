@@ -196,7 +196,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                     .build();
         }
         String status = output.substring(lastLineIndexOutput);
-        log.info("stat {}", status);
+        log.info("status {}", status);
         if(status.contains("Compile Error")){
             return ModelProblemDetailRunCodeResponse.builder()
                     .output(output.substring(0, lastLineIndexOutput))
@@ -299,7 +299,34 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         String tempName = tempDir.createRandomScriptFileName(userName+"-"+problemId);
         String response = submission(modelProblemDetailSubmission.getSource(), modelProblemDetailSubmission.getLanguage(), tempName, testCaseList,"Language Not Found", contestProblem.getTimeLimit());
         log.info("response {}", response);
-        return null;
+        response = response.substring(0, response.length()-1);
+        int lastIndex = response.lastIndexOf("\n");
+        String status = response.substring(lastIndex, response.length());
+        log.info("status {}", status);
+        if(status.equals("Compile Error")){
+            return ModelProblemDetailSubmissionResponse.builder()
+                    .status(status)
+                    .build();
+        }
+        String []ans = response.split("testcasedone\n");
+        status = null;
+        int cnt = 0;
+        for(int i = 0; i < testCaseList.size(); i++){
+            if(!testCaseList.get(i).getCorrectAnswer().equals(ans[i])){
+                if(status == null && ans[i].contains("Time Limit Exceeded")){
+                    status = "Time Limit Exceeded";
+                }else{
+                    status = "Wrong Answer";
+                }
+            }else{
+                cnt++;
+            }
+        }
+        log.info("pass {}/{}", cnt, testCaseList.size());
+        ModelProblemDetailSubmissionResponse res = ModelProblemDetailSubmissionResponse.builder()
+                .status(status)
+                .build();
+        return res;
     }
 
     private String submission(String source, String computerLanguage, String tempName, List<TestCase> testCaseList, String exception, int timeLimit) throws Exception {
@@ -325,7 +352,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
             default:
                 throw new Exception(exception);
         }
-        tempDir.pushToConcurrentLinkedQueue(tempName);
+//        tempDir.pushToConcurrentLinkedQueue(tempName);
         return ans;
     }
 

@@ -125,4 +125,10 @@ public class ContestProblemController {
         TestCase testCase = problemTestCaseService.saveTestCase(problemId, modelSaveTestcase);
         return ResponseEntity.status(200).body(testCase);
     }
+
+    @PostMapping("/problem-details-submission/{problemId}")
+    public ResponseEntity<?> problemDetailsSubmission(@PathVariable("problemId") String problemId, @RequestBody ModelProblemDetailSubmission modelProblemDetailSubmission, Principal principal) throws Exception {
+        ModelProblemDetailSubmissionResponse response = problemTestCaseService.problemDetailSubmission(modelProblemDetailSubmission, problemId, principal.getName());
+        return ResponseEntity.status(200).body(response);
+    }
 }
