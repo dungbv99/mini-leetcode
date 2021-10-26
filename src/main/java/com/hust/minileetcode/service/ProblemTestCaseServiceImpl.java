@@ -5,10 +5,7 @@ import com.hust.minileetcode.entity.ContestProblem;
 import com.hust.minileetcode.entity.ProblemSourceCode;
 import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.model.*;
-import com.hust.minileetcode.repo.ContestProblemPagingAndSortingRepo;
-import com.hust.minileetcode.repo.ContestProblemRepo;
-import com.hust.minileetcode.repo.ProblemSourceCodeRepo;
-import com.hust.minileetcode.repo.TestCaseRepo;
+import com.hust.minileetcode.repo.*;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
 import com.spotify.docker.client.exceptions.DockerException;
@@ -35,6 +32,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private DockerClientBase dockerClientBase;
     private TempDir tempDir;
     private ContestProblemPagingAndSortingRepo contestProblemPagingAndSortingRepo;
+    private ProblemSubmissionRepo problemSubmissionRepo;
 
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
@@ -288,6 +286,48 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         return testCaseRepo.save(testCase);
     }
 
+    @Override
+    public ModelProblemDetailSubmissionResponse problemDetailSubmission(ModelProblemDetailSubmission modelProblemDetailSubmission, String problemId, String userName) throws Exception {
+        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+        if(contestProblem.equals(null)){
+            throw new Exception("Contest problem does not exist");
+        }
+        List<TestCase> testCaseList = testCaseRepo.findAllByContestProblem(contestProblem);
+        if (testCaseList == null){
+            throw new Exception("Problem Does not have testcase");
+        }
+        String tempName = tempDir.createRandomScriptFileName(userName+"-"+problemId);
+        String response = submission(modelProblemDetailSubmission.getSource(), modelProblemDetailSubmission.getLanguage(), tempName, testCaseList,"Language Not Found", contestProblem.getTimeLimit());
+        log.info("response {}", response);
+        return null;
+    }
+
+    private String submission(String source, String computerLanguage, String tempName, List<TestCase> testCaseList, String exception, int timeLimit) throws Exception {
+        String ans;
+        tempName = tempName.replaceAll(" ","");
+        switch (computerLanguage){
+            case "CPP":
+                tempDir.createScriptSubmissionFile(ComputerLanguage.Languages.CPP, tempName, testCaseList, source, timeLimit);
+                ans = dockerClientBase.runExecutable(ComputerLanguage.Languages.CPP,  tempName);
+                break;
+            case "JAVA":
+                tempDir.createScriptSubmissionFile(ComputerLanguage.Languages.JAVA, tempName, testCaseList, source, timeLimit);
+                ans = dockerClientBase.runExecutable(ComputerLanguage.Languages.JAVA, tempName);
+                break;
+            case "PYTHON3":
+                tempDir.createScriptSubmissionFile(ComputerLanguage.Languages.PYTHON3, tempName, testCaseList, source, timeLimit);
+                ans = dockerClientBase.runExecutable(ComputerLanguage.Languages.PYTHON3, tempName);
+                break;
+            case "GOLANG":
+                tempDir.createScriptSubmissionFile(ComputerLanguage.Languages.GOLANG, tempName, testCaseList, source, timeLimit);
+                ans = dockerClientBase.runExecutable(ComputerLanguage.Languages.GOLANG, tempName);
+                break;
+            default:
+                throw new Exception(exception);
+        }
+        tempDir.pushToConcurrentLinkedQueue(tempName);
+        return ans;
+    }
 
     private String runCode(String sourceCode, String computerLanguage, String tempName, String input, int timeLimit, String exception) throws Exception {
         String ans;
@@ -312,7 +352,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
             default:
                 throw new Exception(exception);
         }
-//        tempDir.pushToConcurrentLinkedQueue(tempName);
+        tempDir.pushToConcurrentLinkedQueue(tempName);
         return ans;
     }
 }

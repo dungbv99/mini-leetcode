@@ -39,5 +39,5 @@ public interface ProblemTestCaseService {
 
     TestCase saveTestCase(String problemId, ModelSaveTestcase modelSaveTestcase);
 
-//    void problemDetailSubmission()
+    ModelProblemDetailSubmissionResponse problemDetailSubmission(ModelProblemDetailSubmission modelProblemDetailSubmission, String problemId, String userName) throws Exception;
 }

@@ -234,14 +234,15 @@ create table test_case
 
 create table problem_submission
 (
+    problem_submission_id UUID NOT NULL default uuid_generate_v1(),
     problem_id  varchar(100) not null,
     submitted_by_user_login_id varchar(60),
-    submission_source_code text,
-    submission_source_code_language varchar (10),
-    submission_status varchar(20),
-    submission_score int,
-    submission_runtime float ,
-    submission_memory_usage float ,
+    source_code text,
+    source_code_language varchar (10),
+    status varchar(20),
+    score int,
+    runtime varchar(10),
+    memory_usage float ,
     created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
     constraint fk_problem_id foreign key (problem_id) references contest_problem(problem_id),
     constraint fk_user_login_id foreign key (submitted_by_user_login_id) references user_login(user_login_id)
