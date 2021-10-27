@@ -3,9 +3,12 @@ package com.hust.minileetcode.service;
 import com.hust.minileetcode.docker.DockerClientBase;
 import com.hust.minileetcode.entity.ContestProblem;
 import com.hust.minileetcode.entity.ProblemSourceCode;
+import com.hust.minileetcode.entity.ProblemSubmission;
 import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.model.*;
 import com.hust.minileetcode.repo.*;
+import com.hust.minileetcode.rest.entity.UserLogin;
+import com.hust.minileetcode.rest.repo.UserLoginRepo;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
 import com.spotify.docker.client.exceptions.DockerException;
@@ -33,6 +36,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private TempDir tempDir;
     private ContestProblemPagingAndSortingRepo contestProblemPagingAndSortingRepo;
     private ProblemSubmissionRepo problemSubmissionRepo;
+    private UserLoginRepo userLoginRepo;
 
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
@@ -288,6 +292,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public ModelProblemDetailSubmissionResponse problemDetailSubmission(ModelProblemDetailSubmission modelProblemDetailSubmission, String problemId, String userName) throws Exception {
+        log.info("source {} ", modelProblemDetailSubmission.getSource());
+        UserLogin userLogin = userLoginRepo.findByUserLoginId(userName);
+        if(userLogin.equals(null)){
+            throw new Exception(("user not found"));
+        }
         ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
         if(contestProblem.equals(null)){
             throw new Exception("Contest problem does not exist");
@@ -322,11 +331,59 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 cnt++;
             }
         }
+        if(status == null){
+            status = "Accept";
+        }
         log.info("pass {}/{}", cnt, testCaseList.size());
+        ProblemSubmission problemSubmission = ProblemSubmission.builder()
+                .score(cnt)
+                .userLogin(userLogin)
+                .contestProblem(contestProblem)
+                .sourceCode(modelProblemDetailSubmission.getSource())
+                .status(status)
+                .sourceCodeLanguages(modelProblemDetailSubmission.getLanguage())
+                .build();
+        problemSubmissionRepo.save(problemSubmission);
         ModelProblemDetailSubmissionResponse res = ModelProblemDetailSubmissionResponse.builder()
                 .status(status)
+                .result(cnt+"/"+testCaseList.size())
                 .build();
         return res;
+    }
+
+    @Override
+    public ListProblemSubmissionResponse getListProblemSubmissionResponse(String problemId, String userId) throws Exception {
+        UserLogin userLogin = userLoginRepo.findByUserLoginId(userId);
+        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+        if(userLogin == null || contestProblem == null){
+            throw new Exception("not found");
+        }
+        List<Object[]> list = problemSubmissionRepo.getListProblemSubmissionByUserAndProblemId(userLogin, contestProblem);
+        List<ProblemSubmissionResponse> problemSubmissionResponseList = new ArrayList<>();
+        try {
+            list.stream().forEach(objects -> {
+                log.info("objects {}", objects);
+                ProblemSubmissionResponse problemSubmissionResponse = ProblemSubmissionResponse.builder()
+                        .problemSubmissionId((UUID) objects[0])
+                        .timeSubmitted((String) objects[1])
+                        .status((String) objects[2])
+                        .score((int) objects[3])
+                        .runtime((String) objects[4])
+                        .memoryUsage((float) objects[5])
+                        .language((String) objects[6])
+                        .build();
+                problemSubmissionResponseList.add(problemSubmissionResponse);
+            });
+        } catch (Exception e){
+            log.info("error");
+            throw e;
+        }
+
+        ListProblemSubmissionResponse listProblemSubmissionResponse = ListProblemSubmissionResponse.builder()
+                .contents(problemSubmissionResponseList)
+                .isSubmitted(list.size() == 0 ? false:true)
+                .build();
+        return listProblemSubmissionResponse;
     }
 
     private String submission(String source, String computerLanguage, String tempName, List<TestCase> testCaseList, String exception, int timeLimit) throws Exception {

@@ -25,6 +25,8 @@ import {authGet, authPost} from "../../../api";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams} from "react-router-dom";
 import {Markup} from "interweave";
+import {ProblemSubmission} from "./ProblemSubmission";
+import {SubmissionExecute} from "./SubmissionExecute";
 
 TabPanel.propTypes = {
   children: PropTypes.node,
@@ -63,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function ProblemDetail(){
+export default function ProblemDetail(props){
   const [description, setDescription] = useState();
   const [solution, setSolution] = useState();
   const [problem, setProblem] = useState();
@@ -89,7 +91,13 @@ export default function ProblemDetail(){
   const dispatch = useDispatch();
   const {problemId} = useParams();
   const history = useHistory();
-
+  const [problemSubmissionList, setProblemSubmissionList] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
+  const [showShowSubmissionExecute, setShowShowSubmissionExecute] = useState(false);
+  const [submissionRuntime, setSubmissionRuntime] = useState();
+  const [submissionStatus, setSubmissionStatus] = useState();
+  const [submissionPoint, setSubmissionPoint] = useState();
+  const [loadSubmission, setLoadSubmission] = useState(false);
   const onInputChange = (input) =>{
     setInput(input);
   }
@@ -150,6 +158,9 @@ export default function ProblemDetail(){
   }
 
   const handleSubmission = ()=>{
+    setValue(3);
+    setLoadSubmission(true);
+    setShowShowSubmissionExecute(true);
     let body ={
       source: source,
       language:computerLanguage
@@ -157,8 +168,22 @@ export default function ProblemDetail(){
     authPost(dispatch, token, "/problem-details-submission/"+problemId, body).then(
       (res)=>{
         console.log("res ", res);
+        setSubmissionStatus(res.status);
+        setSubmissionPoint(res.result);
+        setLoadSubmission(false);
       }
-    )
+    );
+    authGet(dispatch,token, "/problem-details/"+problemId).then(
+      (res) =>{
+        console.log("res ", res);
+        setProblem(res);
+        setDescription(res.problemDescription);
+        setSolution(res.solution);
+      }
+    );
+
+
+
   }
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -179,6 +204,14 @@ export default function ProblemDetail(){
   }
 
   useEffect(() =>{
+    console.log("props ", props);
+    authGet(dispatch, token, "/get-all-problem-submission-by-user/"+problemId).then(
+      (res) =>{
+        console.log("list problem submission ", res);
+        setProblemSubmissionList(res.contents);
+        setSubmitted(res.submitted);
+      }
+    )
     authGet(dispatch,token, "/problem-details/"+problemId).then(
       (res) =>{
         console.log("res ", res);
@@ -187,13 +220,12 @@ export default function ProblemDetail(){
         setSolution(res.solution);
       }
     );
+
+
   },[])
 
   return (
     <div onScroll={false}>
-
-      {/*<AppBar position="static" color={"default"} variant={"outlined"} style={{width: "100%", height: "65px", marginTop:"0px"}} >*/}
-
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Toolbar style={{height:"0px", marginTop:"-12px", marginBottom:"-8px", border:"1px solid transparent", position: "relative", width:"100%"}} color={"default"} >
             <Tabs
@@ -258,11 +290,6 @@ export default function ProblemDetail(){
             </div>
           </Toolbar>
         </Box>
-      {/*</AppBar>*/}
-      {/*</MuiThemeProvider>*/}
-
-
-
 
       <Grid container spacing={12}>
         <Grid item xs={6}>
@@ -279,8 +306,24 @@ export default function ProblemDetail(){
           <TabPanel value={value} index={2}>
           </TabPanel>
           <TabPanel value={value} index={3}>
+            <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
+              <SubmissionExecute
+                show={showShowSubmissionExecute}
+                loadSubmission={loadSubmission}
+                point={submissionPoint}
+                status={submissionStatus}
+              />
+              <ProblemSubmission
+                show={showShowSubmissionExecute}
+                submitted={submitted}
+                problemSubmission={problemSubmissionList}
+              />
+            </ScrollBox>
+
           </TabPanel>
         </Grid>
+
+
         <Grid item xs={6}>
           <CodeMirror
             height={screenHeight}
@@ -322,8 +365,6 @@ export default function ProblemDetail(){
       >
         Console
       </Button>
-
-
       <Button
         variant="contained"
         color="light"
@@ -344,11 +385,7 @@ export default function ProblemDetail(){
       >
         Submit
       </Button>
-
-
     </div>
-
-
   );
 
 }

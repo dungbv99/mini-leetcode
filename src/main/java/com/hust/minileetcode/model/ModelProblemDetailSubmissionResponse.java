@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class ModelProblemDetailSubmissionResponse {
     private String status;
-
+    private String result;
 }

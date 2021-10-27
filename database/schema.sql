@@ -243,7 +243,7 @@ create table problem_submission
     score int,
     runtime varchar(10),
     memory_usage float ,
-    created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
+    created_stamp              varchar (25),
     constraint fk_problem_id foreign key (problem_id) references contest_problem(problem_id),
     constraint fk_user_login_id foreign key (submitted_by_user_login_id) references user_login(user_login_id)
 );

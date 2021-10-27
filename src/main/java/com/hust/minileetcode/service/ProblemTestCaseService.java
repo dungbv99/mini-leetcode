@@ -40,4 +40,6 @@ public interface ProblemTestCaseService {
     TestCase saveTestCase(String problemId, ModelSaveTestcase modelSaveTestcase);
 
     ModelProblemDetailSubmissionResponse problemDetailSubmission(ModelProblemDetailSubmission modelProblemDetailSubmission, String problemId, String userName) throws Exception;
+
+    ListProblemSubmissionResponse getListProblemSubmissionResponse(String problemId, String userId) throws Exception;
 }

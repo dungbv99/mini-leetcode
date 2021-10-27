@@ -5,15 +5,23 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "problem_source_code")
+@Table(name = "problem_submission")
 @Builder
 public class ProblemSubmission {
     @Id
@@ -38,7 +46,7 @@ public class ProblemSubmission {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "submission_score")
+    @Column(name = "score")
     private int score;
 
     @Column(name = "runtime")
@@ -46,4 +54,15 @@ public class ProblemSubmission {
 
     @Column(name = "memory_usage")
     private float memoryUsage;
+
+    @Column(name = "created_stamp")
+    private String timeSubmitted;
+
+    @PrePersist
+    protected void onCreate() throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        timeSubmitted = formatter.format(date);
+
+    }
 }
