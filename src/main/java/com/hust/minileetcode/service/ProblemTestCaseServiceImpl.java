@@ -5,6 +5,7 @@ import com.hust.minileetcode.entity.ContestProblem;
 import com.hust.minileetcode.entity.ProblemSourceCode;
 import com.hust.minileetcode.entity.ProblemSubmission;
 import com.hust.minileetcode.entity.TestCase;
+import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
 import com.hust.minileetcode.repo.*;
 import com.hust.minileetcode.rest.entity.UserLogin;
@@ -41,29 +42,35 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
         if(contestProblemRepo.findByProblemId(modelCreateContestProblem.getProblemId()) != null){
-            throw new Exception("problem id already exist");
+            throw new MiniLeetCodeException("problem id already exist");
         }
-        ContestProblem contestProblem = ContestProblem.builder()
-                .problemId(modelCreateContestProblem.getProblemId())
-                .problemName(modelCreateContestProblem.getProblemName())
-                .problemDescription(modelCreateContestProblem.getProblemDescription())
-                .categoryId(modelCreateContestProblem.getCategoryId())
-                .memoryLimit(modelCreateContestProblem.getMemoryLimit())
-                .timeLimit(modelCreateContestProblem.getTimeLimit())
-                .levelId(modelCreateContestProblem.getLevelId())
-                .correctSolutionLanguage(modelCreateContestProblem.getCorrectSolutionLanguage())
-                .correctSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode())
-                .solution(modelCreateContestProblem.getSolution())
+        try {
+            ContestProblem contestProblem = ContestProblem.builder()
+                    .problemId(modelCreateContestProblem.getProblemId())
+                    .problemName(modelCreateContestProblem.getProblemName())
+                    .problemDescription(modelCreateContestProblem.getProblemDescription())
+                    .categoryId(modelCreateContestProblem.getCategoryId())
+                    .memoryLimit(modelCreateContestProblem.getMemoryLimit())
+                    .timeLimit(modelCreateContestProblem.getTimeLimit())
+                    .levelId(modelCreateContestProblem.getLevelId())
+                    .correctSolutionLanguage(modelCreateContestProblem.getCorrectSolutionLanguage())
+                    .correctSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode())
+                    .solution(modelCreateContestProblem.getSolution())
 //                .testCases(null)
-                .build();
-        contestProblemRepo.save(contestProblem);
+                    .build();
+            contestProblemRepo.save(contestProblem);
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+
     }
 
     @Override
     public void updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception {
         ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
         if(contestProblem == null){
-            throw new Exception("problem id not found");
+            throw new MiniLeetCodeException("problem id not found");
         }
         contestProblem = ContestProblem.builder()
                 .problemId(modelCreateContestProblem.getProblemId())
@@ -77,7 +84,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .correctSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode())
                 .solution(modelCreateContestProblem.getSolution())
                 .build();
-        contestProblemRepo.save(contestProblem);
+        try {
+            contestProblemRepo.save(contestProblem);
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
 
 
@@ -105,41 +116,54 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public TestCase createTestCase(ModelCreateTestCase modelCreateTestCase, String problemId) throws Exception {
-        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-        String solution = contestProblem.getCorrectSolutionSourceCode();
-        String tempName = tempDir.createRandomScriptFileName(problemId+"-solution");
-        String response = runCode(solution, contestProblem.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), "Language Not Found");
-        TestCase testCase = TestCase.builder()
-                .contestProblem(contestProblem)
-                .testCase(modelCreateTestCase.getTestCase())
-                .testCasePoint(modelCreateTestCase.getTestCasePoint())
-                .correctAnswer(response)
-                .build();
-        testCaseRepo.save(testCase);
-        return testCase;
+        try {
+            ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+            String solution = contestProblem.getCorrectSolutionSourceCode();
+            String tempName = tempDir.createRandomScriptFileName(problemId+"-solution");
+            String response = runCode(solution, contestProblem.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), "Language Not Found");
+            TestCase testCase = TestCase.builder()
+                    .contestProblem(contestProblem)
+                    .testCase(modelCreateTestCase.getTestCase())
+                    .testCasePoint(modelCreateTestCase.getTestCasePoint())
+                    .correctAnswer(response)
+                    .build();
+            testCaseRepo.save(testCase);
+            return testCase;
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
     }
 
     @Override
     public TestCase updateTestCase(ModelCreateTestCase modelCreateTestCase, UUID testCaseId) throws Exception {
-        TestCase testCase = testCaseRepo.findTestCaseByTestCaseId(testCaseId);
-        if(testCase == null){
-            throw new Exception("testcase not found");
+        try {
+            TestCase testCase = testCaseRepo.findTestCaseByTestCaseId(testCaseId);
+            if(testCase == null){
+                throw new Exception("testcase not found");
+            }
+            ContestProblem contestProblem = testCase.getContestProblem();
+            String solution = contestProblem.getCorrectSolutionSourceCode();
+            String tempName = tempDir.createRandomScriptFileName(contestProblem.getProblemId()+"-solution");
+            String response = runCode(solution, contestProblem.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), "Language Not Found");
+            testCase.setTestCase(modelCreateTestCase.getTestCase());
+            testCase.setCorrectAnswer(response);
+            return testCase;
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
         }
-        ContestProblem contestProblem = testCase.getContestProblem();
-        String solution = contestProblem.getCorrectSolutionSourceCode();
-        String tempName = tempDir.createRandomScriptFileName(contestProblem.getProblemId()+"-solution");
-        String response = runCode(solution, contestProblem.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), "Language Not Found");
-        testCase.setTestCase(modelCreateTestCase.getTestCase());
-        testCase.setCorrectAnswer(response);
-        return testCase;
     }
 
     @Override
-    public Page<ContestProblem> getContestProblemPaging(Pageable pageable) {
+    public Page<ContestProblem> getContestProblemPaging(Pageable pageable) throws Exception {
         log.info("getContestProblemPaging ");
-        Page<ContestProblem> contestProblems = contestProblemPagingAndSortingRepo.findAll(pageable);
-//        log.info("testcase size", contestProblems.getContent().get(0).getTestCases().size());
-        return contestProblemPagingAndSortingRepo.findAll(pageable);
+        try {
+            Page<ContestProblem> contestProblems = contestProblemPagingAndSortingRepo.findAll(pageable);
+            return contestProblemPagingAndSortingRepo.findAll(pageable);
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
     }
 
     @Override
@@ -171,11 +195,16 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public ContestProblem getContestProblem(String problemId) throws Exception {
-        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-        if(contestProblem == null){
-            throw new Exception("Problem not found");
+        ContestProblem contestProblem;
+        try {
+            contestProblem = contestProblemRepo.findByProblemId(problemId);
+            if(contestProblem == null){
+                throw new MiniLeetCodeException("Problem not found");
+            }
+            return contestProblem;
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
         }
-        return contestProblem;
     }
 
 

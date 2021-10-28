@@ -21,7 +21,7 @@ public interface ProblemTestCaseService {
 
     TestCase updateTestCase(ModelCreateTestCase modelCreateTestCase, UUID testCaseId) throws Exception;
 
-    Page<ContestProblem> getContestProblemPaging(Pageable pageable);
+    Page<ContestProblem> getContestProblemPaging(Pageable pageable) throws Exception;
 
     ContestProblem findContestProblemByProblemId(String problemId) throws Exception;
 

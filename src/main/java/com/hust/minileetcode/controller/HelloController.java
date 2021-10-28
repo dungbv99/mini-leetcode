@@ -3,6 +3,7 @@ package com.hust.minileetcode.controller;
 import com.hust.minileetcode.docker.DockerClientBase;
 import com.hust.minileetcode.entity.ContestProblem;
 import com.hust.minileetcode.entity.TestCase;
+import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.repo.ContestProblemPagingAndSortingRepo;
 import com.hust.minileetcode.repo.ContestProblemRepo;
 import com.hust.minileetcode.repo.TestCaseRepo;
@@ -128,6 +129,15 @@ public class HelloController {
         return sourceSH;
     }
 
+    @GetMapping("/test-exception")
+    public void testException() throws Exception {
+        throw new Exception("err");
+    }
+
+    @GetMapping("/test-minileetcode-exception")
+    public void testMiniLeetcodeException() throws MiniLeetCodeException {
+        throw new MiniLeetCodeException("bat request");
+    }
 
 
 }
