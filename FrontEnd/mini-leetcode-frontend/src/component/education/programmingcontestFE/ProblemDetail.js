@@ -27,19 +27,24 @@ import {useHistory, useParams} from "react-router-dom";
 import {Markup} from "interweave";
 import {ProblemSubmission} from "./ProblemSubmission";
 import {SubmissionExecute} from "./SubmissionExecute";
-
+import SplitterLayout from 'react-splitter-layout';
+// import 'react-splitter-layout/lib/index.css';
+import './css/splitter.css'
+import SplitPane from "react-split-pane";
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
 
+const heightConst = (window.innerHeight-500)+"px"
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
+    // flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-    height: theme.navBarHeight
+    // height: heightConst
+    width:"60%"
   },
   // tabIndicator: {
   //   backgroundColor: PRIMARY_RED.default
@@ -225,16 +230,18 @@ export default function ProblemDetail(props){
   },[])
 
   return (
-    <div onScroll={false}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Toolbar style={{height:"0px", marginTop:"-12px", marginBottom:"-8px", border:"1px solid transparent", position: "relative", width:"100%"}} color={"default"} >
+    <div >
+      {/*<form className={classes.root}>*/}
+        <SplitterLayout >
+          <div>
+            {/*tab 1*/}
             <Tabs
               value={value}
               onChange={handleChange}
               indicatorColor={"primary"}
               autoFocus
               style={{
-                width:"50%",
+                width:"100%",
                 display:"inline-table",
                 border: "1px solid transparent ",
                 position: "relative",
@@ -248,10 +255,43 @@ export default function ProblemDetail(props){
               <Tab label="Discuss" {...a11yProps(2)} style={{width:"25%"}}/>
               <Tab label="Submissions" {...a11yProps(3)} style={{width:"25%"}}/>
             </Tabs>
+            {/*</Toolbar>*/}
+
+            <TabPanel value={value} index={0}>
+              <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-130) + "px"}}>
+                <Markup content={description} />
+              </ScrollBox>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-130) + "px"}}>
+                <Markup content={solution} />
+              </ScrollBox>
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+              <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-130) + "px"}}>
+                <SubmissionExecute
+                  show={showShowSubmissionExecute}
+                  loadSubmission={loadSubmission}
+                  point={submissionPoint}
+                  status={submissionStatus}
+                />
+                <ProblemSubmission
+                  show={showShowSubmissionExecute}
+                  submitted={submitted}
+                  problemSubmission={problemSubmissionList}
+                />
+              </ScrollBox>
+
+            </TabPanel>
+          </div>
+          <div>
+            {/*tab 2*/}
             <div>
 
               <TextField
-                style={{width:0.075*window.innerWidth, margin:20}}
+                style={{width:0.075*window.innerWidth, marginLeft:20}}
                 variant={"outlined"}
                 size={"small"}
                 autoFocus
@@ -269,7 +309,7 @@ export default function ProblemDetail(props){
                 ))}
               </TextField>
               <TextField
-                style={{width:"100px", margin:20}}
+                style={{width:"100px", marginLeft:20}}
                 variant="outlined"
                 size="small"
                 autoFocus
@@ -288,103 +328,70 @@ export default function ProblemDetail(props){
                 ))}
               </TextField>
             </div>
-          </Toolbar>
-        </Box>
-
-      <Grid container spacing={12}>
-        <Grid item xs={6}>
-          <TabPanel value={value} index={0}>
-            <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
-              <Markup content={description} />
-            </ScrollBox>
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
-              <Markup content={solution} />
-            </ScrollBox>
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-          </TabPanel>
-          <TabPanel value={value} index={3}>
-            <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
-              <SubmissionExecute
-                show={showShowSubmissionExecute}
-                loadSubmission={loadSubmission}
-                point={submissionPoint}
-                status={submissionStatus}
-              />
-              <ProblemSubmission
-                show={showShowSubmissionExecute}
-                submitted={submitted}
-                problemSubmission={problemSubmissionList}
-              />
-            </ScrollBox>
-
-          </TabPanel>
-        </Grid>
 
 
-        <Grid item xs={6}>
-          <CodeMirror
-            height={screenHeight}
-            width="100%"
-            extensions={getExtension()}
-            onChange={(value, viewUpdate) => {
-              setSource(value);
-            }}
-            autoFocus={false}
-            theme={color}
-          />
-          <Console
-            showConsole={showConsole}
-            load={runCodeLoading}
-            output={output}
-            color={color}
-            extension={getExtension()}
-            input={input}
-            onInputChange={onInputChange}
-            consoleTabIndex={consoleTabIndex}
-            onChangeConsoleTabIndex={onChangeConsoleTabIndex}
-            accept={accept}
-            run={run}
-            timeLimit={timeLimit}
-            expected={expected}
-            compileError={compileError}
-          />
-        </Grid>
-      </Grid>
 
-      <Button
-        variant="contained"
-        color="light"
-        // style={{marginLeft:"90px"}}
-        onClick={handleScroll}
-        // style={{position}}
-        style={{left:"50%"}}
-        extension={getExtension()}
-      >
-        Console
-      </Button>
-      <Button
-        variant="contained"
-        color="light"
-        // style={{marginLeft:"90px"}}
-        onClick={handleRunCode}
-        // style={{position}}
-        style={{left:"75%"}}
-      >
-        Run Code
-      </Button>
-      <Button
-        variant="contained"
-        color="light"
-        // style={{marginLeft:"90px"}}
-        onClick={handleSubmission}
-        // style={{position}}
-        style={{left:"80%"}}
-      >
-        Submit
-      </Button>
+            <CodeMirror
+              height={screenHeight}
+              width="100%"
+              extensions={getExtension()}
+              onChange={(value, viewUpdate) => {
+                setSource(value);
+              }}
+              autoFocus={false}
+              theme={color}
+            />
+            <Console
+              showConsole={showConsole}
+              load={runCodeLoading}
+              output={output}
+              color={color}
+              extension={getExtension()}
+              input={input}
+              onInputChange={onInputChange}
+              consoleTabIndex={consoleTabIndex}
+              onChangeConsoleTabIndex={onChangeConsoleTabIndex}
+              accept={accept}
+              run={run}
+              timeLimit={timeLimit}
+              expected={expected}
+              compileError={compileError}
+            />
+            <Button
+              variant="contained"
+              color="light"
+              // style={{marginLeft:"90px"}}
+              onClick={handleScroll}
+              // style={{position}}
+              // style={{left:"50%"}}
+              extension={getExtension()}
+            >
+              Console
+            </Button>
+            <Button
+              variant="contained"
+              color="light"
+              // style={{marginLeft:"90px"}}
+              onClick={handleRunCode}
+              // style={{position}}
+              style={{marginLeft:"20px"}}
+            >
+              Run Code
+            </Button>
+            <Button
+              variant="contained"
+              color="light"
+              // style={{marginLeft:"90px"}}
+              onClick={handleSubmission}
+              // style={{position}}
+              style={{marginLeft:"20px"}}
+            >
+              Submit
+            </Button>
+          </div>
+        </SplitterLayout>
+      {/*</form>*/}
+
     </div>
   );
 
