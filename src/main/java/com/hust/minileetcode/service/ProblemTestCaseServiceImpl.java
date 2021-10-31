@@ -1,10 +1,7 @@
 package com.hust.minileetcode.service;
 
 import com.hust.minileetcode.docker.DockerClientBase;
-import com.hust.minileetcode.entity.ContestProblem;
-import com.hust.minileetcode.entity.ProblemSourceCode;
-import com.hust.minileetcode.entity.ProblemSubmission;
-import com.hust.minileetcode.entity.TestCase;
+import com.hust.minileetcode.entity.*;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
 import com.hust.minileetcode.repo.*;
@@ -38,6 +35,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private ContestProblemPagingAndSortingRepo contestProblemPagingAndSortingRepo;
     private ProblemSubmissionRepo problemSubmissionRepo;
     private UserLoginRepo userLoginRepo;
+    private ContestRepo contestRepo;
 
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
@@ -414,6 +412,66 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .build();
         return listProblemSubmissionResponse;
     }
+
+    @Override
+    public Contest createContest(ModelCreateContest modelCreateContest, String userName) throws Exception {
+        try {
+            Contest contestExist = contestRepo.findContestByContestId(modelCreateContest.getContestId());
+            if(contestExist != null){
+                throw new MiniLeetCodeException("Contest is already exist");
+            }
+            UserLogin userLogin = userLoginRepo.findByUserLoginId(userName);
+            List<ContestProblem> contestProblems = getContestProblemsFromListContestId(modelCreateContest.getProblemIds());
+            Contest contest = Contest.builder()
+                    .contestId(modelCreateContest.getContestId())
+                    .contestName(modelCreateContest.getContestName())
+                    .contestSolvingTime(modelCreateContest.getContestSolvingTime())
+                    .contestProblems(contestProblems)
+                    .userLogin(userLogin)
+                    .build();
+            return contestRepo.save(contest);
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public Contest updateContest(ModelUpdateContest modelUpdateContest, String userName, String contestId) throws Exception {
+        try {
+            Contest contestExist = contestRepo.findContestByContestId(contestId);
+            if(contestExist == null){
+                throw new MiniLeetCodeException("Contest does not exist");
+            }
+            UserLogin userLogin = userLoginRepo.findByUserLoginId(userName);
+            //check user have privileged
+            if(!userLogin.getUserLoginId().equals(contestExist.getUserLogin().getUserLoginId())){
+                throw new MiniLeetCodeException("You don't have privileged");
+            }
+            List<ContestProblem> contestProblems = getContestProblemsFromListContestId(modelUpdateContest.getProblemIds());
+            Contest contest = Contest.builder()
+                    .contestName(modelUpdateContest.getContestName())
+                    .contestSolvingTime(modelUpdateContest.getContestSolvingTime())
+                    .contestProblems(contestProblems)
+                    .userLogin(userLogin)
+                    .build();
+            return contestRepo.save(contest);
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    private List<ContestProblem> getContestProblemsFromListContestId(List<String> problemIds) throws MiniLeetCodeException {
+        List<ContestProblem> contestProblems = new ArrayList<>();
+        for(String problemId : problemIds){
+            ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+            if(contestProblem.equals(null)){
+                throw new MiniLeetCodeException("Problem " + problemId +" does not exist");
+            }
+            contestProblems.add(contestProblem);
+        }
+        return contestProblems;
+    }
+
 
     private String submission(String source, String computerLanguage, String tempName, List<TestCase> testCaseList, String exception, int timeLimit) throws Exception {
         String ans;

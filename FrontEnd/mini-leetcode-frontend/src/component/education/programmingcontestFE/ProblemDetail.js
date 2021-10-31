@@ -390,6 +390,7 @@ export default function ProblemDetail(props){
             </Button>
           </div>
         </SplitterLayout>
+
       {/*</form>*/}
 
     </div>

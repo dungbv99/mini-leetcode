@@ -248,7 +248,29 @@ create table problem_submission
     constraint fk_user_login_id foreign key (submitted_by_user_login_id) references user_login(user_login_id)
 );
 
-drop table problem_submission,  test_case,  contest_problem, problem_source_code;
+-- drop table problem_submission,  test_case,  contest_problem, problem_source_code;
+
+create table contest
+(
+    contest_id varchar (100) not null ,
+    contest_name varchar (100),
+    contest_solving_time int,
+    user_create_id varchar (60),
+    last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
+    created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
+    constraint pk_contest_id primary key (contest_id),
+    constraint fk_user_create_contest foreign key (user_create_id) references user_login(user_login_id)
+);
+
+create table contest_contest_problem
+(
+    contest_id varchar (100) not null ,
+    problem_id varchar (100) not null ,
+    last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
+    created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
+    constraint fk_contest_id_contest_contest_problem foreign key (contest_id) references contest(contest_id),
+    constraint fk_problem_id_contest_contest_problem foreign key (problem_id) references contest_problem(problem_id)
+);
 
 -- create table contest_problem_problem_source_code
 -- (
