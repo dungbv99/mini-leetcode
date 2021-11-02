@@ -111,7 +111,15 @@ public class ContestProblemController {
 
     @GetMapping("/problem-details/{problemId}")
     public ResponseEntity<?> getProblemDetails(@PathVariable("problemId") String problemId) throws Exception {
+        log.info("getProblemDetails problemId ", problemId);
         ContestProblem contestProblem = problemTestCaseService.getContestProblem(problemId);
+        return ResponseEntity.status(200).body(contestProblem);
+    }
+
+    @PostMapping("/update-problem-detail/{problemId}")
+    public ResponseEntity<?> updateProblemDetails(@RequestBody ModelCreateContestProblem modelCreateContestProblem, @PathVariable("problemId") String problemId) throws Exception {
+        log.info("updateProblemDetails problemId {}", problemId);
+        ContestProblem contestProblem = problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
         return ResponseEntity.status(200).body(contestProblem);
     }
 

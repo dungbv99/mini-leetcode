@@ -16,7 +16,7 @@ public interface ProblemTestCaseService {
 
     void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception;
 
-    void updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception;
+    ContestProblem updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception;
 
     void updateProblemSourceCode(ModelAddProblemLanguageSourceCode modelAddProblemLanguageSourceCode, String problemId);
 

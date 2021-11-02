@@ -13,4 +13,6 @@ public interface ContestProblemRepo extends JpaRepository<ContestProblem, String
 
     @Query("select cp.problemName from ContestProblem cp")
     ArrayList<String> findAllProblemName();
+
+
 }

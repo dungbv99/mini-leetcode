@@ -65,25 +65,22 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public void updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception {
-        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-        if(contestProblem == null){
+    public ContestProblem updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception {
+
+        if(!contestProblemRepo.existsById(problemId)){
             throw new MiniLeetCodeException("problem id not found");
         }
-        contestProblem = ContestProblem.builder()
-                .problemId(modelCreateContestProblem.getProblemId())
-                .problemName(modelCreateContestProblem.getProblemName())
-                .problemDescription(modelCreateContestProblem.getProblemDescription())
-                .categoryId(modelCreateContestProblem.getCategoryId())
-                .memoryLimit(modelCreateContestProblem.getMemoryLimit())
-                .timeLimit(modelCreateContestProblem.getTimeLimit())
-                .levelId(modelCreateContestProblem.getLevelId())
-                .correctSolutionLanguage(modelCreateContestProblem.getCorrectSolutionLanguage())
-                .correctSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode())
-                .solution(modelCreateContestProblem.getSolution())
-                .build();
+        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+        contestProblem.setProblemName(modelCreateContestProblem.getProblemName());
+        contestProblem.setProblemDescription(modelCreateContestProblem.getProblemDescription());
+        contestProblem.setLevelId(modelCreateContestProblem.getLevelId());
+        contestProblem.setCategoryId(modelCreateContestProblem.getCategoryId());
+        contestProblem.setSolution(modelCreateContestProblem.getSolution());
+        contestProblem.setTimeLimit(modelCreateContestProblem.getTimeLimit());
+        contestProblem.setCorrectSolutionLanguage(modelCreateContestProblem.getCorrectSolutionLanguage());
+        contestProblem.setCorrectSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode());
         try {
-            contestProblemRepo.save(contestProblem);
+            return contestProblemRepo.save(contestProblem);
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }

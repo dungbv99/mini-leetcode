@@ -136,7 +136,7 @@ public class HelloController {
 
     @GetMapping("/test-minileetcode-exception")
     public void testMiniLeetcodeException() throws MiniLeetCodeException {
-        throw new MiniLeetCodeException("bat request");
+        throw new MiniLeetCodeException("bad request");
     }
 
 
