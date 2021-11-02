@@ -1,11 +1,13 @@
 import Pagination from "@material-ui/lab/Pagination";
 import React, { useState, useEffect } from "react";
 import {Grid, MenuItem, Table, TableBody, TableCell, TableHead, TextField} from "@material-ui/core";
-import {authGet} from "../../../api";
+// import {authGet} from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import TableRow from "@material-ui/core/TableRow";
 import {win} from "leaflet/src/core/Browser";
 import {Link} from "react-router-dom";
+import {request} from "./Request";
+import {API_URL} from "../../../config/config";
 
 
 function ListProblem(){
@@ -32,13 +34,22 @@ function ListProblem(){
   async function getProblemContestList() {
     // var p = page-1;
     console.log("p ", page);
-    await authGet(dispatch, token, "/get-contest-problem-paging?size="+pageSize+"&page="+(page-1)).then(
-      (res) => {
-        console.log("problem list", res);
-        setTotalPage(res.totalPages);
-        setContestProblems(res.content);
+    // await authGet(dispatch, token, "/get-contest-problem-paging?size="+pageSize+"&page="+(page-1)).then(
+    //   (res) => {
+    //     console.log("problem list", res);
+    //     setTotalPage(res.totalPages);
+    //     setContestProblems(res.content);
+    //   }
+    // )
+    request(
+      "get",
+      API_URL+"/get-contest-problem-paging?size="+pageSize+"&page="+(page-1),
+      (res)=>{
+        console.log("problem list", res.data);
+        setTotalPage(res.data.totalPages);
+        setContestProblems(res.data.content);
       }
-    )
+    ).then();
   }
 
   useEffect(() => {

@@ -159,10 +159,24 @@ function EditProblem(){
       source: codeSolution,
       computerLanguage: languageSolution
     }
-    authPost(dispatch, token, "/check-compile", body).then(
-      (res) =>{
-        console.log("res", res);
-        if(res.status == "Successful"){
+    // authPost(dispatch, token, "/check-compile", body).then(
+    //   (res) =>{
+    //     console.log("res", res);
+    //     if(res.status == "Successful"){
+    //       setShowCompile(true);
+    //       setShowSubmitWarming(false);
+    //       setStatusSuccessful(true);
+    //     }else{
+    //       setShowCompile(true);
+    //       setStatusSuccessful(false);
+    //     }
+    //   }
+    // )
+    request(
+      "post",
+      API_URL+"/check-compile",
+      (res)=>{
+        if(res.data.status == "Successful"){
           setShowCompile(true);
           setShowSubmitWarming(false);
           setStatusSuccessful(true);
@@ -170,9 +184,10 @@ function EditProblem(){
           setShowCompile(true);
           setStatusSuccessful(false);
         }
-      }
-    )
-
+      },
+      {},
+      body
+    ).then();
   }
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -209,7 +224,7 @@ function EditProblem(){
       },
       {},
       body
-    )
+    ).then();
   }
 
   return (

@@ -21,7 +21,7 @@ import {Console} from "./Console";
 import {ScrollBox} from 'react-scroll-box';
 import PropTypes from "prop-types"; // ES6
 import {a11yProps, TabPanel} from "./TabPanel";
-import {authGet, authPost} from "../../../api";
+// import {authGet, authPost} from "../../../api";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams} from "react-router-dom";
 import {Markup} from "interweave";
@@ -31,6 +31,8 @@ import SplitterLayout from 'react-splitter-layout';
 // import 'react-splitter-layout/lib/index.css';
 import './css/splitter.css'
 import SplitPane from "react-split-pane";
+import {request} from "./Request";
+import {API_URL} from "../../../config/config";
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
@@ -131,35 +133,64 @@ export default function ProblemDetail(props){
       computerLanguage: computerLanguage,
       input: input
     }
-    authPost(dispatch, token, "/problem-detail-run-code/"+problemId,body).then(
-      (res) =>{
-        console.log("res" , res);
+    // authPost(dispatch, token, "/problem-detail-run-code/"+problemId,body).then(
+    //   (res) =>{
+    //     console.log("res" , res);
+    //     setRun(true);
+    //     setRunCodeLoading(false);
+    //     if(res.status == "Time Limit Exceeded"){
+    //       setTimeLimit(true);
+    //       setCompileError(false);
+    //       setAccept(false);
+    //     }else if(res.status == "Compile Error"){
+    //       setTimeLimit(false);
+    //       setCompileError(true);
+    //       console.log("111");
+    //     }else if(res.status == "Accept"){
+    //       setAccept(true);
+    //       setTimeLimit(false);
+    //       setCompileError(false);
+    //     }else{
+    //       setAccept(false);
+    //       setTimeLimit(false);
+    //       setCompileError(false);
+    //     }
+    //     setOutput(res.output);
+    //     setExpected(res.expected);
+    //
+    //     // setAccept(true);
+    //     // setTimeLimit(false);
+    //   }
+    // );
+    request(
+      "post",
+      API_URL + "/problem-detail-run-code/" + problemId,
+      (res) => {
         setRun(true);
         setRunCodeLoading(false);
-        if(res.status == "Time Limit Exceeded"){
+        if (res.data.status == "Time Limit Exceeded") {
           setTimeLimit(true);
           setCompileError(false);
           setAccept(false);
-        }else if(res.status == "Compile Error"){
+        } else if (res.data.status == "Compile Error") {
           setTimeLimit(false);
           setCompileError(true);
           console.log("111");
-        }else if(res.status == "Accept"){
+        } else if (res.data.status == "Accept") {
           setAccept(true);
           setTimeLimit(false);
           setCompileError(false);
-        }else{
+        } else {
           setAccept(false);
           setTimeLimit(false);
           setCompileError(false);
         }
-        setOutput(res.output);
-        setExpected(res.expected);
-
-        // setAccept(true);
-        // setTimeLimit(false);
-      }
-    )
+        setOutput(res.data.output);
+        setExpected(res.data.expected);
+      },
+      {},
+      body
+    ).then();
   }
 
   const handleSubmission = ()=>{
@@ -170,22 +201,45 @@ export default function ProblemDetail(props){
       source: source,
       language:computerLanguage
     }
-    authPost(dispatch, token, "/problem-details-submission/"+problemId, body).then(
+    // authPost(dispatch, token, "/problem-details-submission/"+problemId, body).then(
+    //   (res)=>{
+    //     console.log("res ", res);
+    //     setSubmissionStatus(res.status);
+    //     setSubmissionPoint(res.result);
+    //     setLoadSubmission(false);
+    //   }
+    // );
+    // authGet(dispatch,token, "/problem-details/"+problemId).then(
+    //   (res) =>{
+    //     console.log("res ", res);
+    //     setProblem(res);
+    //     setDescription(res.problemDescription);
+    //     setSolution(res.solution);
+    //   }
+    // );
+
+    request(
+      "post",
+      API_URL+"/problem-details-submission/"+problemId,
+      (res) =>{
+        setSubmissionStatus(res.data.status);
+        setSubmissionPoint(res.data.result);
+        setLoadSubmission(false);
+      },
+      {},
+      body
+    ).then();
+
+    request(
+      "get",
+      API_URL+"/problem-details/"+problemId,
       (res)=>{
         console.log("res ", res);
-        setSubmissionStatus(res.status);
-        setSubmissionPoint(res.result);
-        setLoadSubmission(false);
+        setProblem(res.data);
+        setDescription(res.data.problemDescription);
+        setSolution(res.data.solution);
       }
-    );
-    authGet(dispatch,token, "/problem-details/"+problemId).then(
-      (res) =>{
-        console.log("res ", res);
-        setProblem(res);
-        setDescription(res.problemDescription);
-        setSolution(res.solution);
-      }
-    );
+    ).then();
 
 
 
@@ -210,21 +264,43 @@ export default function ProblemDetail(props){
 
   useEffect(() =>{
     console.log("props ", props);
-    authGet(dispatch, token, "/get-all-problem-submission-by-user/"+problemId).then(
-      (res) =>{
+    // authGet(dispatch, token, "/get-all-problem-submission-by-user/"+problemId).then(
+    //   (res) =>{
+    //     console.log("list problem submission ", res);
+    //     setProblemSubmissionList(res.contents);
+    //     setSubmitted(res.submitted);
+    //   }
+    // )
+    // authGet(dispatch,token, "/problem-details/"+problemId).then(
+    //   (res) =>{
+    //     console.log("res ", res);
+    //     setProblem(res);
+    //     setDescription(res.problemDescription);
+    //     setSolution(res.solution);
+    //   }
+    // );
+
+    request(
+      "get",
+      API_URL+"/get-all-problem-submission-by-user/"+problemId,
+      (res)=>{
         console.log("list problem submission ", res);
-        setProblemSubmissionList(res.contents);
-        setSubmitted(res.submitted);
+        setProblemSubmissionList(res.data.contents);
+        setSubmitted(res.data.submitted);
       }
-    )
-    authGet(dispatch,token, "/problem-details/"+problemId).then(
-      (res) =>{
+    ).then();
+    request(
+      "get",
+      API_URL+"/problem-details/"+problemId,
+      (res)=>{
         console.log("res ", res);
-        setProblem(res);
-        setDescription(res.problemDescription);
-        setSolution(res.solution);
+        setProblem(res.data);
+        setDescription(res.data.problemDescription);
+        setSolution(res.data.solution);
       }
-    );
+    ).then();
+
+
 
 
   },[])
