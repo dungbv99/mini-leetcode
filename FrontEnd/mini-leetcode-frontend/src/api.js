@@ -234,6 +234,7 @@ export async function request(
 
     if (e.response) {
       // The request was made and the server responded with a status code that falls out of the range of 2xx.
+      console.log("err response ", e.response);
       switch (e.response.status) {
         case 401:
           if (isFunction(errorHandlers[401])) {
@@ -286,3 +287,5 @@ export async function request(
     console.log("Request config", e.config);
   }
 }
+
+

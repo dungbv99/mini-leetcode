@@ -81,7 +81,7 @@ function ListProblem(){
             Add Testcase
           </TableCell>
           <TableCell width={"10%"}>
-            Difficulty
+            Edit
           </TableCell>
         </TableHead>
         <TableBody>
@@ -109,7 +109,9 @@ function ListProblem(){
                     </Link>
                   </TableCell>
                   <TableCell width={"10%"}>
-
+                    <Link to={"/programming-contest/edit-problem/"+problem.problemId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
+                      Edit
+                    </Link>
                   </TableCell>
                 </TableRow>
               );
