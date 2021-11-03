@@ -141,6 +141,7 @@ public class ContestProblemController {
 
     @PostMapping("/problem-details-submission/{problemId}")
     public ResponseEntity<?> problemDetailsSubmission(@PathVariable("problemId") String problemId, @RequestBody ModelProblemDetailSubmission modelProblemDetailSubmission, Principal principal) throws Exception {
+        log.info("problemDetailsSubmission {}", problemId);
         ModelProblemSubmissionResponse response = problemTestCaseService.problemDetailSubmission(modelProblemDetailSubmission, problemId, principal.getName());
         return ResponseEntity.status(200).body(response);
     }

@@ -105,6 +105,7 @@ export default function ProblemDetail(props){
   const [submissionStatus, setSubmissionStatus] = useState();
   const [submissionPoint, setSubmissionPoint] = useState();
   const [loadSubmission, setLoadSubmission] = useState(false);
+
   const onInputChange = (input) =>{
     setInput(input);
   }
@@ -222,24 +223,26 @@ export default function ProblemDetail(props){
       "post",
       API_URL+"/problem-details-submission/"+problemId,
       (res) =>{
+        problemSubmissionList.push(res.data);
         setSubmissionStatus(res.data.status);
         setSubmissionPoint(res.data.result);
         setLoadSubmission(false);
+
       },
       {},
       body
     ).then();
 
-    request(
-      "get",
-      API_URL+"/problem-details/"+problemId,
-      (res)=>{
-        console.log("res ", res);
-        setProblem(res.data);
-        setDescription(res.data.problemDescription);
-        setSolution(res.data.solution);
-      }
-    ).then();
+    // request(
+    //   "get",
+    //   API_URL+"/problem-details/"+problemId,
+    //   (res)=>{
+    //     console.log("res ", res);
+    //     setProblem(res.data);
+    //     setDescription(res.data.problemDescription);
+    //     setSolution(res.data.solution);
+    //   }
+    // ).then();
 
 
 
@@ -290,16 +293,16 @@ export default function ProblemDetail(props){
       }
     ).then();
 
-    // request(
-    //   "get",
-    //   API_URL+"/problem-details/"+problemId,
-    //   (res)=>{
-    //     console.log("res ", res);
-    //     setProblem(res.data);
-    //     setDescription(res.data.problemDescription);
-    //     setSolution(res.data.solution);
-    //   }
-    // ).then()
+    request(
+      "get",
+      API_URL+"/problem-details/"+problemId,
+      (res)=>{
+        console.log("res ", res);
+        setProblem(res.data);
+        setDescription(res.data.problemDescription);
+        setSolution(res.data.solution);
+      }
+    ).then()
 
 
 

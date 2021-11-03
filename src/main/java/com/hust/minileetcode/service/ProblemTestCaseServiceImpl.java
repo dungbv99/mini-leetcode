@@ -378,10 +378,16 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .testCasePass(cnt+"/"+testCaseList.size())
                 .sourceCodeLanguages(modelProblemDetailSubmission.getLanguage())
                 .build();
-        problemSubmissionRepo.save(problemSubmission);
+        ProblemSubmission problemSubmission1 = problemSubmissionRepo.save(problemSubmission);
         ModelProblemSubmissionResponse res = ModelProblemSubmissionResponse.builder()
                 .status(status)
                 .result(cnt+"/"+testCaseList.size())
+                .problemSubmissionId(problemSubmission1.getProblemSubmissionId())
+                .language(modelProblemDetailSubmission.getLanguage())
+                .score(score)
+                .memoryUsage(problemSubmission1.getMemoryUsage())
+                .runtime(problemSubmission1.getRuntime())
+                .timeSubmitted(problemSubmission1.getTimeSubmitted())
                 .build();
         return res;
     }

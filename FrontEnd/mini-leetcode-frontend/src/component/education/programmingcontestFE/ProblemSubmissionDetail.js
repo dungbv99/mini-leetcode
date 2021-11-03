@@ -6,6 +6,13 @@ import * as React from "react";
 import {Typography} from "@mui/material";
 import Box from "@mui/material/Box";
 import {Grid} from "@material-ui/core";
+import CodeMirror from "@uiw/react-codemirror";
+import {cppLanguage} from "@codemirror/lang-cpp";
+import {StreamLanguage} from "@codemirror/stream-parser";
+import {go} from "@codemirror/legacy-modes/mode/go";
+import {java} from "@codemirror/lang-java";
+import {pythonLanguage} from "@codemirror/lang-python";
+import {javascript} from "@codemirror/lang-javascript";
 
 function ProblemSubmissionDetail(){
   const {problemSubmissionId} = useParams();
@@ -25,6 +32,20 @@ function ProblemSubmissionDetail(){
         return 'green';
       default:
         return 'red';
+    }
+  }
+  const getExtension = () =>{
+    switch (submissionLanguage){
+      case "CPP":
+        return [cppLanguage];
+      case "GoLang":
+        return StreamLanguage.define(go);
+      case "Java":
+        return java();
+      case "Python3":
+        return StreamLanguage.define(pythonLanguage);
+      default:
+        return javascript();
     }
   }
 
@@ -85,10 +106,23 @@ function ProblemSubmissionDetail(){
               Submitted: {submittedAt}
             </Typography>
           </Grid>
-
         </Grid>
       </Box>
-
+      <br/>
+      <Typography variant={"h5"}>
+        Submitted Code: {submittedAt}
+      </Typography>
+      <Typography variant={"h5"}>
+        Language: {submissionLanguage}
+      </Typography>
+      <CodeMirror
+        height={"400px"}
+        width="100%"
+        extensions={getExtension()}
+        editable={false}
+        autoFocus={false}
+        value={submissionSource}
+      />
     </div>
   )
 }
