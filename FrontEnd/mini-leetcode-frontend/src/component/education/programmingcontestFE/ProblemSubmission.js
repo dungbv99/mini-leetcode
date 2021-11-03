@@ -4,13 +4,47 @@ import {Alert} from "@material-ui/lab";
 import Box from "@mui/material/Box";
 import {ScrollBox} from "react-scroll-box";
 import Typography from "@mui/material/Typography";
-import {TableBody, TableCell, TableHead} from "@material-ui/core";
+import {Table, TableBody, TableHead} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import {Link} from "react-router-dom";
+import { styled } from '@mui/material/styles';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from "@material-ui/core/TableContainer";
+import Paper from "@material-ui/core/Paper";
+
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 export function ProblemSubmission(props) {
   const submitted = props.submitted;
   const problemSubmission = props.problemSubmission;
+
+  const getColor = (status) => {
+    switch (status){
+      case 'Accept':
+        return 'green';
+      default:
+        return 'red';
+    }
+  }
 
   if(!submitted){
 
@@ -31,55 +65,39 @@ export function ProblemSubmission(props) {
   }else{
     return (
       <div>
-        <TableHead>
-          <TableCell width={"15%"}>
-            Time Submitted
-          </TableCell>
-          <TableCell width={"15%"}>
-            Status
-          </TableCell>
-          <TableCell width={"15%"}>
-            Run time
-          </TableCell>
-          <TableCell width={"15%"}>
-            Memory
-          </TableCell>
-          <TableCell width={"15%"}>
-            Language
 
-          </TableCell>
-          <TableCell width={"15%"}>
-            Point
-          </TableCell>
-        </TableHead>
-        <TableBody>
-          {
-            problemSubmission.map(p =>{
-              return(
-                <TableRow>
-                  <TableCell width={"15%"}>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 100 }} aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>Time Submitted</StyledTableCell>
+                <StyledTableCell align="right">Status</StyledTableCell>
+                <StyledTableCell align="right">Run time</StyledTableCell>
+                <StyledTableCell align="right">Memory</StyledTableCell>
+                <StyledTableCell align="right">Language</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {problemSubmission.map((p) => (
+                <StyledTableRow>
+                  <StyledTableCell component="th" scope="row">
                     {p.timeSubmitted}
-                  </TableCell>
-                  <TableCell width={"15%"}>
-                    {p.status}
-                  </TableCell>
-                  <TableCell width={"15%"}>
-                    {p.runTime}
-                  </TableCell>
-                  <TableCell width={"15%"} >
-                    {p.memory}
-                  </TableCell>
-                  <TableCell width={"15%"}>
-                    {p.language}
-                  </TableCell>
-                  <TableCell width={"15%"}>
-                    {p.point}
-                  </TableCell>
-                </TableRow>
-              );
-            })
-          }
-        </TableBody>
+                  </StyledTableCell>
+                  <StyledTableCell align="right">
+                    <Link to={"/programming-contest/list-problems/"}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
+                      <span style={{color:getColor(`${p.status}`)}}>{`${p.status}`}</span>
+                    </Link>
+
+                  </StyledTableCell>
+                  <StyledTableCell align="right">{p.runTime}</StyledTableCell>
+                  <StyledTableCell align="right">{p.memory}</StyledTableCell>
+                  <StyledTableCell align="right">{p.language}</StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
       </div>
     )
   }

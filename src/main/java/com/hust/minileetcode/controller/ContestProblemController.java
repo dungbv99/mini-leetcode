@@ -5,14 +5,10 @@ import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.model.*;
 import com.hust.minileetcode.repo.ContestProblemRepo;
 import com.hust.minileetcode.repo.ProblemSubmissionRepo;
-import com.hust.minileetcode.rest.entity.UserLogin;
 import com.hust.minileetcode.rest.repo.UserLoginRepo;
 import com.hust.minileetcode.service.ProblemTestCaseService;
-import com.hust.minileetcode.utils.AnswerChecking;
-import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -51,8 +46,8 @@ public class ContestProblemController {
 
     @PostMapping("/update-contest-problem/{problemId}")
     public ResponseEntity<?> updateContestProblem(@RequestBody ModelCreateContestProblem modelCreateContestProblem, @PathVariable("problemId") String problemId) throws Exception{
-        problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
-        return ResponseEntity.ok(null);
+        ContestProblem contestProblem = problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
+        return ResponseEntity.ok(contestProblem);
     }
 
 
@@ -144,7 +139,6 @@ public class ContestProblemController {
 
     @PostMapping("/problem-details-submission/{problemId}")
     public ResponseEntity<?> problemDetailsSubmission(@PathVariable("problemId") String problemId, @RequestBody ModelProblemDetailSubmission modelProblemDetailSubmission, Principal principal) throws Exception {
-
         ModelProblemDetailSubmissionResponse response = problemTestCaseService.problemDetailSubmission(modelProblemDetailSubmission, problemId, principal.getName());
         return ResponseEntity.status(200).body(response);
     }

@@ -346,7 +346,7 @@ export default function ProblemDetail(props){
             <TabPanel value={value} index={2}>
             </TabPanel>
             <TabPanel value={value} index={3}>
-              <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-130) + "px"}}>
+              <ScrollBox style={{width: '95%',  height:(window.innerHeight-130) + "px"}}>
                 <SubmissionExecute
                   show={showShowSubmissionExecute}
                   loadSubmission={loadSubmission}

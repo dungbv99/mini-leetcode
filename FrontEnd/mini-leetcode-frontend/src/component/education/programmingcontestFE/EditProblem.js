@@ -371,6 +371,7 @@ function EditProblem(){
                 setCodeSolution(value);
               }}
               autoFocus={false}
+
               value={codeSolution}
             />
             <CompileStatus
