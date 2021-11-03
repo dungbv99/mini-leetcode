@@ -5,11 +5,9 @@ import com.hust.minileetcode.entity.ContestProblem;
 import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
-import com.spotify.docker.client.exceptions.DockerException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public interface ProblemTestCaseService {
@@ -42,11 +40,13 @@ public interface ProblemTestCaseService {
 
     TestCase saveTestCase(String problemId, ModelSaveTestcase modelSaveTestcase);
 
-    ModelProblemDetailSubmissionResponse problemDetailSubmission(ModelProblemDetailSubmission modelProblemDetailSubmission, String problemId, String userName) throws Exception;
+    ModelProblemSubmissionResponse problemDetailSubmission(ModelProblemDetailSubmission modelProblemDetailSubmission, String problemId, String userName) throws Exception;
 
     ListProblemSubmissionResponse getListProblemSubmissionResponse(String problemId, String userId) throws Exception;
 
     Contest createContest(ModelCreateContest modelCreateContest, String userName) throws Exception;
 
     Contest updateContest(ModelUpdateContest modelUpdateContest, String userName, String contestId) throws Exception;
+
+    ModelProblemSubmissionDetailResponse findProblemSubmissionById(UUID id, String userName) throws MiniLeetCodeException;
 }

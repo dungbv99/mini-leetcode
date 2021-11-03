@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ModelProblemDetailSubmissionResponse {
+public class ModelProblemSubmissionResponse {
     private String status;
     private String result;
 }

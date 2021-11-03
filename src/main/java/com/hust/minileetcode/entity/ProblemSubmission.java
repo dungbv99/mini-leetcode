@@ -58,6 +58,9 @@ public class ProblemSubmission {
     @Column(name = "created_stamp")
     private String timeSubmitted;
 
+    @Column(name = "test_case_pass")
+    private String testCasePass;
+
     @PrePersist
     protected void onCreate() throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");

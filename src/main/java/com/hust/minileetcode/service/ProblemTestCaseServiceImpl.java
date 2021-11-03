@@ -9,16 +9,13 @@ import com.hust.minileetcode.rest.entity.UserLogin;
 import com.hust.minileetcode.rest.repo.UserLoginRepo;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
-import com.spotify.docker.client.exceptions.DockerException;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -315,7 +312,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public ModelProblemDetailSubmissionResponse problemDetailSubmission(ModelProblemDetailSubmission modelProblemDetailSubmission, String problemId, String userName) throws Exception {
+    public ModelProblemSubmissionResponse problemDetailSubmission(ModelProblemDetailSubmission modelProblemDetailSubmission, String problemId, String userName) throws Exception {
         log.info("source {} ", modelProblemDetailSubmission.getSource());
         UserLogin userLogin = userLoginRepo.findByUserLoginId(userName);
         if(userLogin.equals(null)){
@@ -336,14 +333,26 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         int lastIndex = response.lastIndexOf("\n");
         String status = response.substring(lastIndex, response.length());
         log.info("status {}", status);
-        if(status.equals("Compile Error")){
-            return ModelProblemDetailSubmissionResponse.builder()
+        if(status.contains("Compile Error")){
+            log.info("return problem submission compile error");
+            ProblemSubmission problemSubmission = ProblemSubmission.builder()
+                    .score(0)
+                    .userLogin(userLogin)
+                    .contestProblem(contestProblem)
+                    .sourceCode(modelProblemDetailSubmission.getSource())
+                    .status(status)
+                    .testCasePass(0+"/"+testCaseList.size())
+                    .sourceCodeLanguages(modelProblemDetailSubmission.getLanguage())
+                    .build();
+            problemSubmissionRepo.save(problemSubmission);
+            return ModelProblemSubmissionResponse.builder()
                     .status(status)
                     .build();
         }
         String []ans = response.split("testcasedone\n");
         status = null;
         int cnt = 0;
+        int score = 0;
         for(int i = 0; i < testCaseList.size(); i++){
             if(!testCaseList.get(i).getCorrectAnswer().equals(ans[i])){
                 if(status == null && ans[i].contains("Time Limit Exceeded")){
@@ -352,6 +361,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                     status = "Wrong Answer";
                 }
             }else{
+                score = testCaseList.get(i).getTestCasePoint();
                 cnt++;
             }
         }
@@ -360,15 +370,16 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         }
         log.info("pass {}/{}", cnt, testCaseList.size());
         ProblemSubmission problemSubmission = ProblemSubmission.builder()
-                .score(cnt)
+                .score(score)
                 .userLogin(userLogin)
                 .contestProblem(contestProblem)
                 .sourceCode(modelProblemDetailSubmission.getSource())
                 .status(status)
+                .testCasePass(cnt+"/"+testCaseList.size())
                 .sourceCodeLanguages(modelProblemDetailSubmission.getLanguage())
                 .build();
         problemSubmissionRepo.save(problemSubmission);
-        ModelProblemDetailSubmissionResponse res = ModelProblemDetailSubmissionResponse.builder()
+        ModelProblemSubmissionResponse res = ModelProblemSubmissionResponse.builder()
                 .status(status)
                 .result(cnt+"/"+testCaseList.size())
                 .build();
@@ -455,6 +466,28 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
+    }
+
+    @Override
+    public ModelProblemSubmissionDetailResponse findProblemSubmissionById(UUID id, String userName) throws MiniLeetCodeException {
+        ProblemSubmission problemSubmission = problemSubmissionRepo.findByProblemSubmissionId(id);
+        if (!problemSubmission.getUserLogin().getUserLoginId().equals(userName)){
+            throw new MiniLeetCodeException("unauthor");
+        }
+        ModelProblemSubmissionDetailResponse modelProblemDetailSubmissionResponse = ModelProblemSubmissionDetailResponse.builder()
+                .problemSubmissionId(problemSubmission.getProblemSubmissionId())
+                .problemId(problemSubmission.getContestProblem().getProblemId())
+                .problemName(problemSubmission.getContestProblem().getProblemName())
+                .submittedAt(problemSubmission.getTimeSubmitted())
+                .submissionSource(problemSubmission.getSourceCode())
+                .submissionLanguage(problemSubmission.getSourceCodeLanguages())
+                .score(problemSubmission.getScore())
+                .testCasePass(problemSubmission.getTestCasePass())
+                .runTime(problemSubmission.getRuntime())
+                .memoryUsage(problemSubmission.getMemoryUsage())
+                .status(problemSubmission.getStatus())
+                .build();
+        return modelProblemDetailSubmissionResponse;
     }
 
     private List<ContestProblem> getContestProblemsFromListContestId(List<String> problemIds) throws MiniLeetCodeException {

@@ -5,13 +5,14 @@ import {Grid, MenuItem, Table, TableBody, TableCell, TableHead, TextField} from 
 import { useDispatch, useSelector } from "react-redux";
 import TableRow from "@material-ui/core/TableRow";
 import {win} from "leaflet/src/core/Browser";
-import {Link} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import {request} from "./Request";
 import {API_URL} from "../../../config/config";
 import {styled} from "@mui/material/styles";
 import {tableCellClasses} from "@mui/material/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
+import Radium from "radium";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -23,6 +24,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
+
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
@@ -33,6 +35,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+
+
 function ListProblem(){
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
@@ -41,6 +45,8 @@ function ListProblem(){
   const [totalPages, setTotalPage] = useState(0);
   const pageSizes = [1,3, 6, 9];
   const [contestProblems, setContestProblems] = useState([])
+  const RadiatingNavLink = Radium(NavLink);
+  const RadiatingLink = Radium(Link);
 
 
   const handlePageChange = (event, value) => {
@@ -118,7 +124,7 @@ function ListProblem(){
                   </StyledTableCell>
 
                   <StyledTableCell align="left">
-                    <Link to={"/programming-contest/problem-detail/"+problem.problemId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
+                    <Link to={"/programming-contest/problem-detail/"+problem.problemId}  style={{ textDecoration: 'none', color:"#000000", hover:{color:"#00D8FF", textPrimary:"#00D8FF"}}} >
                       {problem.problemName}
                     </Link>
                   </StyledTableCell>
@@ -132,7 +138,7 @@ function ListProblem(){
                   </StyledTableCell>
 
                   <StyledTableCell align="left">
-                    <Link to={"/programming-contest/problem-detail-create-test-case/"+problem.problemId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
+                    <Link to={"/programming-contest/problem-detail-create-test-case/"+problem.problemId}  style={{ textDecoration: 'none', color:"black"}} >
                       ADD
                     </Link>
                   </StyledTableCell>
@@ -146,61 +152,6 @@ function ListProblem(){
             </TableBody>
           </Table>
         </TableContainer>
-        {/*<TableHead>*/}
-        {/*  <TableCell width={"10%"}>*/}
-        {/*    Status*/}
-        {/*  </TableCell>*/}
-        {/*  <TableCell width={"50%"}>*/}
-        {/*    Title*/}
-        {/*  </TableCell>*/}
-        {/*  <TableCell width={"10%"}>*/}
-        {/*    Solution*/}
-        {/*  </TableCell>*/}
-        {/*  <TableCell width={"10%"}>*/}
-        {/*    Difficulty*/}
-        {/*  </TableCell>*/}
-        {/*  <TableCell width={"10%"}>*/}
-        {/*    Add Testcase*/}
-        {/*  </TableCell>*/}
-        {/*  <TableCell width={"10%"}>*/}
-        {/*    Edit*/}
-        {/*  </TableCell>*/}
-        {/*</TableHead>*/}
-        {/*<TableBody>*/}
-        {/*  {*/}
-        {/*    contestProblems.map(problem =>{*/}
-        {/*      return(*/}
-        {/*        <TableRow>*/}
-        {/*          <TableCell width={"10%"}>*/}
-
-        {/*          </TableCell>*/}
-        {/*          <TableCell width={"50%"}>*/}
-        {/*            <Link to={"/programming-contest/problem-detail/"+problem.problemId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >*/}
-        {/*              {problem.problemName}*/}
-        {/*            </Link>*/}
-        {/*          </TableCell>*/}
-        {/*          <TableCell width={"10%"}>*/}
-
-        {/*          </TableCell>*/}
-        {/*          <TableCell width={"10%"} >*/}
-        {/*            <span style={{color:getColor(`${problem.levelId}`)}}>{`${problem.levelId}`}</span>*/}
-        {/*          </TableCell>*/}
-        {/*          <TableCell width={"10%"}>*/}
-        {/*            <Link to={"/programming-contest/problem-detail-create-test-case/"+problem.problemId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >*/}
-        {/*              ADD*/}
-        {/*            </Link>*/}
-        {/*          </TableCell>*/}
-        {/*          <TableCell width={"10%"}>*/}
-        {/*            <Link to={"/programming-contest/edit-problem/"+problem.problemId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >*/}
-        {/*              Edit*/}
-        {/*            </Link>*/}
-        {/*          </TableCell>*/}
-        {/*        </TableRow>*/}
-        {/*      );*/}
-
-        {/*    })*/}
-        {/*  }*/}
-        {/*</TableBody>*/}
       </div>
       <br></br>
       <Grid container spacing={12}>

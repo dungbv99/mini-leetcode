@@ -1,7 +1,9 @@
 package com.hust.minileetcode.controller;
 
 import com.hust.minileetcode.entity.ContestProblem;
+import com.hust.minileetcode.entity.ProblemSubmission;
 import com.hust.minileetcode.entity.TestCase;
+import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
 import com.hust.minileetcode.repo.ContestProblemRepo;
 import com.hust.minileetcode.repo.ProblemSubmissionRepo;
@@ -139,7 +141,7 @@ public class ContestProblemController {
 
     @PostMapping("/problem-details-submission/{problemId}")
     public ResponseEntity<?> problemDetailsSubmission(@PathVariable("problemId") String problemId, @RequestBody ModelProblemDetailSubmission modelProblemDetailSubmission, Principal principal) throws Exception {
-        ModelProblemDetailSubmissionResponse response = problemTestCaseService.problemDetailSubmission(modelProblemDetailSubmission, problemId, principal.getName());
+        ModelProblemSubmissionResponse response = problemTestCaseService.problemDetailSubmission(modelProblemDetailSubmission, problemId, principal.getName());
         return ResponseEntity.status(200).body(response);
     }
 
@@ -147,5 +149,12 @@ public class ContestProblemController {
     public ResponseEntity<?> getAllProblemSubmissionByUser(@PathVariable("problemId") String problemId, Principal principal) throws Exception {
         ListProblemSubmissionResponse listProblemSubmissionResponse = problemTestCaseService.getListProblemSubmissionResponse(problemId, principal.getName());
         return ResponseEntity.status(200).body(listProblemSubmissionResponse);
+    }
+
+    @GetMapping("/get-problem-submission/{id}")
+    public ResponseEntity<?> getProblemSubmissionById(@PathVariable("id") UUID id, Principal principal) throws MiniLeetCodeException {
+        log.info("getProblemSubmissionById id {}", id);
+        ModelProblemSubmissionDetailResponse modelProblemSubmissionDetailResponse = problemTestCaseService.findProblemSubmissionById(id, principal.getName());
+        return ResponseEntity.status(200).body(modelProblemSubmissionDetailResponse);
     }
 }

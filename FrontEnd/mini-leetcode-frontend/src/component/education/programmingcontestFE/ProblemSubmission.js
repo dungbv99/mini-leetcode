@@ -84,7 +84,7 @@ export function ProblemSubmission(props) {
                     {p.timeSubmitted}
                   </StyledTableCell>
                   <StyledTableCell align="right">
-                    <Link to={"/programming-contest/list-problems/"}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
+                    <Link to={"/programming-contest/problem-submission-detail/"+p.problemSubmissionId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
                       <span style={{color:getColor(`${p.status}`)}}>{`${p.status}`}</span>
                     </Link>
 

@@ -289,17 +289,17 @@ export default function ProblemDetail(props){
         setSubmitted(res.data.submitted);
       }
     ).then();
-    request(
-      "get",
-      API_URL+"/problem-details/"+problemId,
-      (res)=>{
-        console.log("res ", res);
-        setProblem(res.data);
-        setDescription(res.data.problemDescription);
-        setSolution(res.data.solution);
-      }
-    ).then();
 
+    // request(
+    //   "get",
+    //   API_URL+"/problem-details/"+problemId,
+    //   (res)=>{
+    //     console.log("res ", res);
+    //     setProblem(res.data);
+    //     setDescription(res.data.problemDescription);
+    //     setSolution(res.data.solution);
+    //   }
+    // ).then()
 
 
 

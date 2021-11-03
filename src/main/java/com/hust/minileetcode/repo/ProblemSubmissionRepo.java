@@ -14,4 +14,5 @@ public interface ProblemSubmissionRepo extends JpaRepository<ProblemSubmission, 
     @Query("select p.problemSubmissionId, p.timeSubmitted, p.status, p.score, p.runtime, p.memoryUsage, p.sourceCodeLanguages from ProblemSubmission p where p.userLogin = :user and p.contestProblem = :problem")
     List<Object[]> getListProblemSubmissionByUserAndProblemId(@Param("user")UserLogin user, @Param("problem")ContestProblem problem);
 
+    ProblemSubmission findByProblemSubmissionId(UUID id);
 }
