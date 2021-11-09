@@ -11,11 +11,14 @@ import com.hust.minileetcode.repo.ProblemSubmissionRepo;
 import com.hust.minileetcode.rest.repo.UserLoginRepo;
 import com.hust.minileetcode.service.ProblemTestCaseService;
 import com.hust.minileetcode.utils.TempDir;
+import io.lettuce.core.dynamic.annotation.Param;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,8 +91,17 @@ public class ContestProblemController {
     }
 
     @GetMapping("/get-contest-problem-paging")
-    public ResponseEntity<?> getContestProblemPaging(Pageable pageable) throws Exception {
+    public ResponseEntity<?> getContestProblemPaging(Pageable pageable, @Param("sortBy") String sortBy, @Param("desc") String desc) throws Exception {
+        log.info("getContestProblemPaging");
+        log.info("sortBy {}", sortBy);
         try {
+            if(sortBy != null){
+                if(desc != null)
+
+                    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy).descending());
+                else
+                    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy).ascending());
+            }
             Page<ContestProblem> contestProblemPage = problemTestCaseService.getContestProblemPaging(pageable);
             return ResponseEntity.status(200).body(contestProblemPage);
         }catch (Exception e){

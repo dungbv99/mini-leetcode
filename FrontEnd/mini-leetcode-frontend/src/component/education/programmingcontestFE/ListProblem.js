@@ -13,6 +13,7 @@ import {tableCellClasses} from "@mui/material/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
 import Radium from "radium";
+import {getColorLevel} from "./lib";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -85,21 +86,6 @@ function ListProblem(){
     getProblemContestList()
   }, [page, pageSize])
 
-  const getColor = (level) => {
-    const colors = ['red', 'yellow', 'green']
-    switch (level){
-      case 'easy':
-        return 'green';
-      case 'medium':
-        return 'orange';
-      case 'hard':
-        return 'red';
-      default:
-        return 'blue';
-    }
-  }
-
-
   return (
     <div>
       <div>
@@ -133,7 +119,7 @@ function ListProblem(){
                   </StyledTableCell>
 
                   <StyledTableCell align="left">
-                    <span style={{color:getColor(`${problem.levelId}`)}}>{`${problem.levelId}`}</span>
+                    <span style={{color:getColorLevel(`${problem.levelId}`)}}>{`${problem.levelId}`}</span>
                   </StyledTableCell>
 
                   <StyledTableCell align="left">

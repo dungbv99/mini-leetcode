@@ -197,6 +197,7 @@ create table contest_problem
     last_updated_stamp         timestamp DEFAULT CURRENT_TIMESTAMP,
     created_stamp              timestamp DEFAULT CURRENT_TIMESTAMP,
     solution text,
+    level_order int,
     correct_solution_source_code text,
     correct_solution_language varchar(10),
     constraint pk_contest_problem primary key (problem_id),

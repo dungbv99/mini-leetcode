@@ -148,7 +148,6 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public Page<ContestProblem> getContestProblemPaging(Pageable pageable) throws Exception {
-        log.info("getContestProblemPaging ");
         try {
             Page<ContestProblem> contestProblems = contestProblemPagingAndSortingRepo.findAll(pageable);
             return contestProblemPagingAndSortingRepo.findAll(pageable);

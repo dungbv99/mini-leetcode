@@ -31,9 +31,10 @@ import {Button, Card, CardActions, TextField} from "@material-ui/core";
 import CardContent from "@material-ui/core/CardContent";
 import {makeStyles} from "@material-ui/core/styles";
 import {TableFooter} from "@mui/material";
-import sleep from "./sleep";
+import lib, {sleep} from "./lib";
 import {SubmitSuccess} from "./SubmitSuccess";
 import {useHistory} from "react-router-dom";
+import {getColorLevel} from "./lib";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,13 +85,13 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: 'Title',
+    id: 'problemName',
     numeric: false,
     disablePadding: true,
     label: 'Title',
   },
   {
-    id: 'Difficulty',
+    id: 'levelOrder',
     numeric: true,
     disablePadding: false,
     label: 'Difficulty',
@@ -381,7 +382,7 @@ export default function CreateContest(props){
                             >
                               {p.problemName}
                             </TableCell>
-                            <TableCell align="right">{p.levelId}</TableCell>
+                            <TableCell align="right"><span style={{color:getColorLevel(`${p.levelId}`)}}>{`${p.levelId}`}</span></TableCell>
                           </TableRow>
                         );
                       })}

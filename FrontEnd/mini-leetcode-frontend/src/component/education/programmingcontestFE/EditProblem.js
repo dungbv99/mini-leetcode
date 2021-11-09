@@ -31,6 +31,7 @@ import {CompileStatus} from "./CompileStatus";
 import {SubmitSuccess} from "./SubmitSuccess";
 import {useParams} from "react-router";
 import {request} from "./Request";
+import {sleep} from "./lib";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -108,8 +109,8 @@ function EditProblem(){
     console.log("url ", url);
     request(
       "get",
-      API_URL+"/problem-details/"+problemId,
-      (res) =>{
+      API_URL + "/problem-details/" + problemId,
+      (res) => {
         console.log("res data", res.data);
         console.log(res.data.levelId);
         // setEditorStateDescription(EditorState.set(res.data.problemDescription));
@@ -125,7 +126,7 @@ function EditProblem(){
         // setEditorStateDescription(res.data.description);
       },
       {}
-    );
+    ).then ();
   }, [problemId]);
 
   const onChangeEditorStateDescription = (editorState) => {
@@ -189,9 +190,7 @@ function EditProblem(){
       body
     ).then();
   }
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+
 
   function handleSubmit(){
     if(!statusSuccessful){

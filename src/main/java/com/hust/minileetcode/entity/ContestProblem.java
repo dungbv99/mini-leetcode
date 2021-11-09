@@ -59,6 +59,9 @@ public class ContestProblem {
     @Column(name = "solution")
     private String solution;
 
+    @Column(name = "level_order")
+    private int levelOrder;
+
 //    @OneToMany(mappedBy = "contestProblem")
 //    private Set<TestCase> testCases;
 //    @JoinTable(name = "contest_problem_test_case",

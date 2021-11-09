@@ -31,7 +31,7 @@ import {CompileStatus} from "./CompileStatus";
 import {SubmitSuccess} from "./SubmitSuccess";
 import {errorNoti, successNoti} from "../../../utils/notification";
 import {request} from "./Request";
-import sleep from "./sleep";
+import lib, {sleep} from "./lib";
 
 const useStyles = makeStyles((theme) => ({
   root: {

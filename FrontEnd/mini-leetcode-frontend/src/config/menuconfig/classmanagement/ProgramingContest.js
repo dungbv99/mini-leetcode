@@ -30,6 +30,14 @@ export const ProgrammingContest = {
       child: [],
     },
     {
+      id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_VIEW_LIST_COURSE",
+      path: "/programming-contest/list-contest",
+      isPublic: false,
+      icon: null,
+      text: "List Contest",
+      child: [],
+    },
+    {
       id: "MENU_EDUCATION_LEARNING_MANAGEMENT_STUDENT_REGISTER_CLASS",
       path: "/programming-contest/ide",
       isPublic: false,
