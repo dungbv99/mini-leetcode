@@ -439,7 +439,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
             Contest contest = Contest.builder()
                     .contestId(modelCreateContest.getContestId())
                     .contestName(modelCreateContest.getContestName())
-                    .contestSolvingTime(modelCreateContest.getContestSolvingTime())
+                    .contestSolvingTime(modelCreateContest.getContestTime())
                     .contestProblems(contestProblems)
                     .userLogin(userLogin)
                     .build();

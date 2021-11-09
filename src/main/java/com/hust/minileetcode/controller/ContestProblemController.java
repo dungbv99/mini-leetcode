@@ -1,5 +1,6 @@
 package com.hust.minileetcode.controller;
 
+import com.hust.minileetcode.entity.Contest;
 import com.hust.minileetcode.entity.ContestProblem;
 import com.hust.minileetcode.entity.ProblemSubmission;
 import com.hust.minileetcode.entity.TestCase;
@@ -157,5 +158,12 @@ public class ContestProblemController {
         log.info("getProblemSubmissionById id {}", id);
         ModelProblemSubmissionDetailResponse modelProblemSubmissionDetailResponse = problemTestCaseService.findProblemSubmissionById(id, principal.getName());
         return ResponseEntity.status(200).body(modelProblemSubmissionDetailResponse);
+    }
+
+    @PostMapping("/create-contest")
+    public ResponseEntity<?> createContest(@RequestBody ModelCreateContest modelCreateContest, Principal principal) throws Exception {
+        log.info("createContest");
+        problemTestCaseService.createContest(modelCreateContest, principal.getName());
+        return ResponseEntity.status(200).body(null);
     }
 }

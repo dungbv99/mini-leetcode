@@ -1,12 +1,12 @@
 export const ProgrammingContest = {
-  id: "MENU_EDUCATION_LEARNING_MANAGEMENT_STUDENT",
+  id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER",
   path: "",
   isPublic: false,
   icon: "LocalLibraryIcon",
   text: "Programming Contest",
   child: [
     {
-      id: "MENU_EDUCATION_LEARNING_MANAGEMENT_STUDENT_REGISTER_CLASS",
+      id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_VIEW_LIST_COURSE",
       path: "/programming-contest/list-problems",
       isPublic: false,
       icon: null,
@@ -14,7 +14,7 @@ export const ProgrammingContest = {
       child: [],
     },
     {
-      id: "MENU_EDUCATION_LEARNING_MANAGEMENT_STUDENT_REGISTER_CLASS",
+      id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_VIEW_LIST_COURSE",
       path: "/programming-contest/create-problem",
       isPublic: false,
       icon: null,
@@ -22,11 +22,11 @@ export const ProgrammingContest = {
       child: [],
     },
     {
-      id: "MENU_EDUCATION_LEARNING_MANAGEMENT_STUDENT_REGISTER_CLASS",
-      path: "/programming-contest/contest",
+      id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_VIEW_LIST_COURSE",
+      path: "/programming-contest/create-contest",
       isPublic: false,
       icon: null,
-      text: "Contest",
+      text: "Create Contest",
       child: [],
     },
     {

@@ -8,6 +8,6 @@ import java.util.List;
 public class ModelCreateContest {
     private String contestId;
     private String contestName;
-    private int contestSolvingTime;
+    private int contestTime;
     private List<String> problemIds;
 }

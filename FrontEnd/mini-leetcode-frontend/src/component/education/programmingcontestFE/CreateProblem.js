@@ -31,6 +31,7 @@ import {CompileStatus} from "./CompileStatus";
 import {SubmitSuccess} from "./SubmitSuccess";
 import {errorNoti, successNoti} from "../../../utils/notification";
 import {request} from "./Request";
+import sleep from "./sleep";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,8 +78,6 @@ const editorStyle = {
 };
 
 function CreateProblem(){
-  const token = useSelector((state) => state.auth.token);
-  const dispatch = useDispatch();
   const history = useHistory();
   const [problemId, setProblemID] = useState();
   const [problemName, setProblemName] = useState();
@@ -161,9 +160,7 @@ function CreateProblem(){
     ).then();
 
   }
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+
 
   function handleSubmit(){
     if(!statusSuccessful){

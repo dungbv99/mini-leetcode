@@ -41,9 +41,9 @@ function ListProblem(){
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPage] = useState(0);
-  const pageSizes = [1,3, 6, 9];
+  const pageSizes = [20,50, 100];
   const [contestProblems, setContestProblems] = useState([])
   const RadiatingNavLink = Radium(NavLink);
   const RadiatingLink = Radium(Link);
@@ -51,7 +51,6 @@ function ListProblem(){
 
   const handlePageChange = (event, value) => {
     setPage(value);
-    // getProblemContestList();
   };
 
   const handlePageSizeChange = (event) => {
