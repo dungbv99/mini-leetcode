@@ -9,6 +9,7 @@ import com.hust.minileetcode.rest.entity.UserLogin;
 import com.hust.minileetcode.rest.repo.UserLoginRepo;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
+import com.hust.minileetcode.constants.Constants;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +35,8 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private ProblemSubmissionRepo problemSubmissionRepo;
     private UserLoginRepo userLoginRepo;
     private ContestRepo contestRepo;
+    private Constants  constants;
+    private ContestPagingAndSortingRepo contestPagingAndSortingRepo;
 
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
@@ -51,6 +55,8 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                     .correctSolutionLanguage(modelCreateContestProblem.getCorrectSolutionLanguage())
                     .correctSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode())
                     .solution(modelCreateContestProblem.getSolution())
+                    .createdAt(new Date())
+                    .levelOrder(constants.getMapLevelOrder().get(modelCreateContestProblem.getLevelId()))
 //                .testCases(null)
                     .build();
             contestProblemRepo.save(contestProblem);
@@ -493,6 +499,47 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .status(problemSubmission.getStatus())
                 .build();
         return modelProblemDetailSubmissionResponse;
+    }
+
+    @Override
+    public ModelGetContestPageResponse getContestPaging(Pageable pageable) {
+        Page<Contest> contestPage =  contestPagingAndSortingRepo.findAll(pageable);
+        List<ModelGetContestResponse> lists = new ArrayList<>();
+        contestPage.forEach(contest -> {
+            ModelGetContestResponse modelGetContestResponse = ModelGetContestResponse.builder()
+                    .contestId(contest.getContestId())
+                    .contestName(contest.getContestName())
+                    .contestTime(contest.getContestSolvingTime())
+                    .build();
+            lists.add(modelGetContestResponse);
+        });
+        ModelGetContestPageResponse modelGetContestPageResponse = ModelGetContestPageResponse.builder()
+                .contents(lists)
+                .build();
+        return modelGetContestPageResponse;
+    }
+
+    @Override
+    public ModelGetContestDetailResponse getContestDetailByContestId(String contestId) {
+        Contest contest = contestRepo.findContestByContestId(contestId);
+        List<ModelGetProblemDetailResponse> problems = new ArrayList<>();
+        contest.getContestProblems().forEach(contestProblem -> {
+            ModelGetProblemDetailResponse p = ModelGetProblemDetailResponse.builder()
+                    .levelId(contestProblem.getLevelId())
+                    .problemId(contestProblem.getProblemId())
+                    .problemName(contestProblem.getProblemName())
+                    .levelOrder(contestProblem.getLevelOrder())
+                    .problemDescription(contestProblem.getProblemDescription())
+                    .build();
+            problems.add(p);
+        });
+        ModelGetContestDetailResponse modelGetContestDetailResponse = ModelGetContestDetailResponse.builder()
+                .contestId(contestId)
+                .contestName(contest.getContestName())
+                .contestTime(contest.getContestSolvingTime())
+                .list(problems)
+                .build();
+        return modelGetContestDetailResponse;
     }
 
     private List<ContestProblem> getContestProblemsFromListContestId(List<String> problemIds) throws MiniLeetCodeException {

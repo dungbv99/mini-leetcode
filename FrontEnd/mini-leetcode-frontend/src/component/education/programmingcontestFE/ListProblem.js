@@ -4,50 +4,20 @@ import {Grid, MenuItem, Table, TableBody, TableCell, TableHead, TextField} from 
 // import {authGet} from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import TableRow from "@material-ui/core/TableRow";
-import {win} from "leaflet/src/core/Browser";
 import {Link, NavLink} from "react-router-dom";
 import {request} from "./Request";
 import {API_URL} from "../../../config/config";
-import {styled} from "@mui/material/styles";
-import {tableCellClasses} from "@mui/material/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
-import Radium from "radium";
-import {getColorLevel} from "./lib";
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
-}));
-
-
+import {getColorLevel, StyledTableCell, StyledTableRow} from "./lib";
 
 function ListProblem(){
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPage] = useState(0);
   const pageSizes = [20,50, 100];
   const [contestProblems, setContestProblems] = useState([])
-  const RadiatingNavLink = Radium(NavLink);
-  const RadiatingLink = Radium(Link);
+
 
 
   const handlePageChange = (event, value) => {
@@ -83,7 +53,7 @@ function ListProblem(){
 
   useEffect(() => {
     console.log("use effect");
-    getProblemContestList()
+    getProblemContestList().then();
   }, [page, pageSize])
 
   return (

@@ -31,11 +31,6 @@ import java.util.UUID;
 @Slf4j
 public class ContestProblemController {
     ProblemTestCaseService problemTestCaseService;
-//    AnswerChecking answerChecking;
-    TempDir tempDir;
-    ProblemSubmissionRepo problemSubmissionRepo;
-    UserLoginRepo userLoginRepo;
-    ContestProblemRepo contestProblemRepo;
 
     @PostMapping("/create-contest-problem")
     public ResponseEntity<?> createContestProblem(@RequestBody ModelCreateContestProblem modelCreateContestProblem) throws Exception{
@@ -97,7 +92,6 @@ public class ContestProblemController {
         try {
             if(sortBy != null){
                 if(desc != null)
-
                     pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy).descending());
                 else
                     pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy).ascending());
@@ -177,5 +171,22 @@ public class ContestProblemController {
         log.info("createContest");
         problemTestCaseService.createContest(modelCreateContest, principal.getName());
         return ResponseEntity.status(200).body(null);
+    }
+
+    @GetMapping("/get-contest-paging")
+    public ResponseEntity<?> getContestPaging(Pageable pageable, @Param("sortBy") String sortBy){
+        log.info("getContestPageing sortBy {} pageable {}", sortBy, pageable);
+        if(sortBy != null){
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy));
+        }
+        ModelGetContestPageResponse modelGetContestPageResponse = problemTestCaseService.getContestPaging(pageable);
+        return ResponseEntity.status(200).body(modelGetContestPageResponse);
+    }
+
+    @GetMapping("/get-contest-detail/{contestId}")
+    public ResponseEntity<?> getContestDetail(@PathVariable("contestId") String contestId){
+        log.info("getContestDetail");
+        ModelGetContestDetailResponse response = problemTestCaseService.getContestDetailByContestId(contestId);
+        return ResponseEntity.status(200).body(response);
     }
 }

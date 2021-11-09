@@ -49,4 +49,8 @@ public interface ProblemTestCaseService {
     Contest updateContest(ModelUpdateContest modelUpdateContest, String userName, String contestId) throws Exception;
 
     ModelProblemSubmissionDetailResponse findProblemSubmissionById(UUID id, String userName) throws MiniLeetCodeException;
+
+    ModelGetContestPageResponse getContestPaging(Pageable pageable);
+
+    ModelGetContestDetailResponse getContestDetailByContestId(String contestId);
 }

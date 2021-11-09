@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -61,6 +62,9 @@ public class ContestProblem {
 
     @Column(name = "level_order")
     private int levelOrder;
+
+    @Column(name = "created_stamp")
+    private Date createdAt;
 
 //    @OneToMany(mappedBy = "contestProblem")
 //    private Set<TestCase> testCases;
