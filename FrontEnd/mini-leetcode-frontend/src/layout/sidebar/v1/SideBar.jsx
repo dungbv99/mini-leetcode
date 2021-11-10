@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   drawerClose: {
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9) + 1,
+      width: 0,
     },
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,

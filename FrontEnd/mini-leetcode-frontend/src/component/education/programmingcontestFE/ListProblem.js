@@ -60,7 +60,7 @@ function ListProblem(){
     <div>
       <div>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 100 }} aria-label="customized table">
+          <Table sx={{ minWidth: 750 }} aria-label="customized table">
             <TableHead>
               <TableRow>
                 <StyledTableCell>Status</StyledTableCell>

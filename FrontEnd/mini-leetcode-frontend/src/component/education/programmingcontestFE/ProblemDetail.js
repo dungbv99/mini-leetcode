@@ -237,7 +237,6 @@ export default function ProblemDetail(props){
       {/*<form className={classes.root}>*/}
         <SplitterLayout >
           <div>
-            {/*tab 1*/}
             <Tabs
               value={value}
               onChange={handleChange}
