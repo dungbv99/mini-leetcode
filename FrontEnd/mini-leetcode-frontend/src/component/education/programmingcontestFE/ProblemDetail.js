@@ -134,35 +134,6 @@ export default function ProblemDetail(props){
       computerLanguage: computerLanguage,
       input: input
     }
-    // authPost(dispatch, token, "/problem-detail-run-code/"+problemId,body).then(
-    //   (res) =>{
-    //     console.log("res" , res);
-    //     setRun(true);
-    //     setRunCodeLoading(false);
-    //     if(res.status == "Time Limit Exceeded"){
-    //       setTimeLimit(true);
-    //       setCompileError(false);
-    //       setAccept(false);
-    //     }else if(res.status == "Compile Error"){
-    //       setTimeLimit(false);
-    //       setCompileError(true);
-    //       console.log("111");
-    //     }else if(res.status == "Accept"){
-    //       setAccept(true);
-    //       setTimeLimit(false);
-    //       setCompileError(false);
-    //     }else{
-    //       setAccept(false);
-    //       setTimeLimit(false);
-    //       setCompileError(false);
-    //     }
-    //     setOutput(res.output);
-    //     setExpected(res.expected);
-    //
-    //     // setAccept(true);
-    //     // setTimeLimit(false);
-    //   }
-    // );
     request(
       "post",
       API_URL + "/problem-detail-run-code/" + problemId,
@@ -202,22 +173,6 @@ export default function ProblemDetail(props){
       source: source,
       language:computerLanguage
     }
-    // authPost(dispatch, token, "/problem-details-submission/"+problemId, body).then(
-    //   (res)=>{
-    //     console.log("res ", res);
-    //     setSubmissionStatus(res.status);
-    //     setSubmissionPoint(res.result);
-    //     setLoadSubmission(false);
-    //   }
-    // );
-    // authGet(dispatch,token, "/problem-details/"+problemId).then(
-    //   (res) =>{
-    //     console.log("res ", res);
-    //     setProblem(res);
-    //     setDescription(res.problemDescription);
-    //     setSolution(res.solution);
-    //   }
-    // );
 
     request(
       "post",
@@ -227,24 +182,10 @@ export default function ProblemDetail(props){
         setSubmissionStatus(res.data.status);
         setSubmissionPoint(res.data.result);
         setLoadSubmission(false);
-
       },
       {},
       body
     ).then();
-
-    // request(
-    //   "get",
-    //   API_URL+"/problem-details/"+problemId,
-    //   (res)=>{
-    //     console.log("res ", res);
-    //     setProblem(res.data);
-    //     setDescription(res.data.problemDescription);
-    //     setSolution(res.data.solution);
-    //   }
-    // ).then();
-
-
 
   }
   const handleChange = (event, newValue) => {
@@ -267,21 +208,6 @@ export default function ProblemDetail(props){
 
   useEffect(() =>{
     console.log("props ", props);
-    // authGet(dispatch, token, "/get-all-problem-submission-by-user/"+problemId).then(
-    //   (res) =>{
-    //     console.log("list problem submission ", res);
-    //     setProblemSubmissionList(res.contents);
-    //     setSubmitted(res.submitted);
-    //   }
-    // )
-    // authGet(dispatch,token, "/problem-details/"+problemId).then(
-    //   (res) =>{
-    //     console.log("res ", res);
-    //     setProblem(res);
-    //     setDescription(res.problemDescription);
-    //     setSolution(res.solution);
-    //   }
-    // );
 
     request(
       "get",
@@ -303,8 +229,6 @@ export default function ProblemDetail(props){
         setSolution(res.data.solution);
       }
     ).then()
-
-
 
   },[])
 
