@@ -4,14 +4,21 @@ import {Link, useHistory, useParams} from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
-import {Button, Grid, Tab, TableHead, Tabs} from "@material-ui/core";
+import {Button, Divider, Grid, MenuItem, Tab, TableHead, Tabs, TextField} from "@material-ui/core";
 import * as React from 'react';
 import Paper from "@material-ui/core/Paper";
 import TableRow from "@material-ui/core/TableRow";
-import {getColorLevel, StyledTableCell, StyledTableRow} from "./lib";
+import {getColorLevel, getExtension, StyledTableCell, StyledTableRow} from "./lib";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
+import SplitterLayout from 'react-splitter-layout';
+import {ScrollBox} from "react-scroll-box";
+import {Markup} from "interweave";
+import CodeMirror from "@uiw/react-codemirror";
+import {API_URL} from "../../../config/config";
+import {Console} from "./Console";
+// import './css/splitter.css'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -25,7 +32,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{marginLeft: 2 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -54,9 +61,41 @@ export default function SolvingContest(){
   const [contestTime, setContestTime] = useState();
   const [problems, setProblems] = useState([]);
   const [submitted, setSubmitted] = useState([]);
+  const [source, setSource] = useState();
+  const [screenHeight, setScreenHeight] = useState((window.innerHeight-180) + "px");
+  const [computerLanguage, setComputerLanguage] = useState("CPP");
+  const computerLanguageList = ["CPP", "GOLANG", "JAVA", "PYTHON3"];
+  const [runCodeLoading, setRunCodeLoading] = useState(false);
+  const [consoleTabIndex, setConsoleTabIndex] = useState(0);
+  const [showConsole, setShowConsole] = useState(false);
+  const [timeLimit, setTimeLimit] = useState(false);
+  const [compileError, setCompileError] = useState(false);
+  const [accept, setAccept] = useState(false);
+  const [output, setOutput] = useState("");
+  const [expected, setExpected] = useState();
+  const [run, setRun] = useState(false);
+  const [input, setInput] = useState();
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  const onInputChange = (input) =>{
+    setInput(input);
+  }
+  const onChangeConsoleTabIndex = (value)=>{
+    setConsoleTabIndex(value)
+  }
+  const handleScroll = () =>{
+    if(showConsole){
+      setScreenHeight((window.innerHeight-180) + "px");
+      setShowConsole(false);
+    }else{
+      setScreenHeight((window.innerHeight-455) + "px");
+      setShowConsole(true);
+    }
+
+  }
+
 
 
   useEffect(() =>{
@@ -157,18 +196,139 @@ export default function SolvingContest(){
         {problems.map((problem, index)=>{
           return(
             <TabPanel value={value} index={index+1}>
-              <Button
-                variant="contained"
-                color="light"
-                // style={{marginLeft:"90px"}}
-                onClick={() =>{
-                  submitted[index] = true;
-                }}
-                // style={{position}}
-                style={{marginLeft:"20px"}}
-              >
-                Submit
-              </Button>
+              <SplitterLayout >
+                <div>
+
+                  <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-150) + "px"}}>
+                    <Typography variant={"h5"}><b>{index+1}. {problem.problemName}</b></Typography>
+                    <Divider />
+                    <Markup content={problem.problemDescription} />
+                  </ScrollBox>
+                </div>
+                <div>
+                  <TextField
+                    style={{width:0.075*window.innerWidth, marginLeft:20}}
+                    variant={"outlined"}
+                    size={"small"}
+                    autoFocus
+                    value={computerLanguage}
+                    select
+                    id="computerLanguage"
+                    onChange={(event) => {
+                      setComputerLanguage(event.target.value);
+                    }}
+                  >
+                    {computerLanguageList.map((item) => (
+                      <MenuItem key={item} value={item}>
+                        {item}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <CodeMirror
+                    height={screenHeight}
+                    width="100%"
+                    extensions={getExtension(computerLanguage)}
+                    onChange={(value, viewUpdate) => {
+                      setSource(value);
+                    }}
+                    autoFocus={false}
+                  />
+
+                  <Console
+                    showConsole={showConsole}
+                    load={runCodeLoading}
+                    output={output}
+                    color={"light"}
+                    extension={getExtension()}
+                    input={input}
+                    onInputChange={onInputChange}
+                    consoleTabIndex={consoleTabIndex}
+                    onChangeConsoleTabIndex={onChangeConsoleTabIndex}
+                    accept={accept}
+                    run={run}
+                    timeLimit={timeLimit}
+                    expected={expected}
+                    compileError={compileError}
+                  />
+                  <Button
+                    variant="contained"
+                    color="light"
+                    // style={{marginLeft:"90px"}}
+                    onClick={handleScroll}
+                    // style={{position}}
+                    // style={{left:"50%"}}
+                    extension={getExtension()}
+                  >
+                    Console
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    color="light"
+                    // style={{marginLeft:"90px"}}
+                    // onClick={handleRunCode(problem.problemId)}
+                    onClick={() =>{
+                      console.log("problemId", problem.problemId);
+                      setRunCodeLoading(true);
+                      setConsoleTabIndex(1);
+                      setShowConsole(true);
+                      setScreenHeight((window.innerHeight-455) + "px");
+                      let body =  {
+                        sourceCode: source,
+                        computerLanguage: computerLanguage,
+                        input: input
+                      }
+                      request(
+                        "post",
+                        API_URL + "/problem-detail-run-code/" + problem.problemId,
+                        (res) => {
+                          setRun(true);
+                          setRunCodeLoading(false);
+                          if (res.data.status == "Time Limit Exceeded") {
+                            setTimeLimit(true);
+                            setCompileError(false);
+                            setAccept(false);
+                          } else if (res.data.status == "Compile Error") {
+                            setTimeLimit(false);
+                            setCompileError(true);
+                            console.log("111");
+                          } else if (res.data.status == "Accept") {
+                            setAccept(true);
+                            setTimeLimit(false);
+                            setCompileError(false);
+                          } else {
+                            setAccept(false);
+                            setTimeLimit(false);
+                            setCompileError(false);
+                          }
+                          setOutput(res.data.output);
+                          setExpected(res.data.expected);
+                        },
+                        {},
+                        body
+                      ).then();
+                    }}
+                    // style={{position}}
+                    style={{marginLeft:"20px"}}
+                  >
+                    Run Code
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    color="light"
+                    onClick={() =>{
+                      setValue(0);
+                      submitted[index] = true;
+                    }}
+                    // style={{position}}
+                    style={{marginLeft:"20px"}}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </SplitterLayout>
+
             </TabPanel>
           )
         })}

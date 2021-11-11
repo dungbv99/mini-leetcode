@@ -2,6 +2,12 @@ import {styled} from "@mui/material/styles";
 import {TableCell} from "@material-ui/core";
 import {tableCellClasses} from "@mui/material/TableCell";
 import TableRow from "@material-ui/core/TableRow";
+import {cppLanguage} from "@codemirror/lang-cpp";
+import {StreamLanguage} from "@codemirror/stream-parser";
+import {go} from "@codemirror/legacy-modes/mode/go";
+import {java} from "@codemirror/lang-java";
+import {pythonLanguage} from "@codemirror/lang-python";
+import {javascript} from "@codemirror/lang-javascript";
 
 export default function lib() {
   return ;
@@ -44,3 +50,18 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
+
+export const getExtension = (computerLanguage) =>{
+  switch (computerLanguage){
+    case "CPP":
+      return [cppLanguage];
+    case "GoLang":
+      return StreamLanguage.define(go);
+    case "Java":
+      return java();
+    case "Python3":
+      return StreamLanguage.define(pythonLanguage);
+    default:
+      return javascript();
+  }
+}

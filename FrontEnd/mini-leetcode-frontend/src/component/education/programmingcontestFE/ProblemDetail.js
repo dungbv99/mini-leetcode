@@ -33,6 +33,7 @@ import './css/splitter.css'
 import SplitPane from "react-split-pane";
 import {request} from "./Request";
 import {API_URL} from "../../../config/config";
+import {getExtension} from "./lib";
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
@@ -191,20 +192,7 @@ export default function ProblemDetail(props){
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const getExtension = () =>{
-    switch (computerLanguage){
-      case "CPP":
-        return [cppLanguage];
-      case "GoLang":
-        return StreamLanguage.define(go);
-      case "Java":
-        return java();
-      case "Python3":
-        return StreamLanguage.define(pythonLanguage);
-      default:
-        return javascript();
-    }
-  }
+
 
   useEffect(() =>{
     console.log("props ", props);
@@ -336,7 +324,7 @@ export default function ProblemDetail(props){
             <CodeMirror
               height={screenHeight}
               width="100%"
-              extensions={getExtension()}
+              extensions={getExtension(computerLanguage)}
               onChange={(value, viewUpdate) => {
                 setSource(value);
               }}
