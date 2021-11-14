@@ -3,7 +3,7 @@ import * as React from "react";
 import {useEffect, useState} from "react";
 import Typography from "@mui/material/Typography";
 import {ScrollBox} from "react-scroll-box";
-import {a11yProps, TabPanel} from "./TabPanel";
+import {a11yProps, TabPanelVertical} from "./TabPanel";
 import CodeMirror from "@uiw/react-codemirror";
 import {useParams} from "react-router-dom";
 import {authGet, authPost} from "../../../api";
@@ -116,17 +116,17 @@ export default function CreateTestCase(props){
               </Tabs>
             </Toolbar>
           </Box>
-          <TabPanel value={value} index={0}>
+          <TabPanelVertical value={value} index={0}>
             <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
               <Markup content={description} />
             </ScrollBox>
-          </TabPanel>
+          </TabPanelVertical>
 
-          <TabPanel value={value} index={1}>
+          <TabPanelVertical value={value} index={1}>
             <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
                 <Markup content={solution} />
             </ScrollBox>
-          </TabPanel>
+          </TabPanelVertical>
 
         </Grid>
         <Grid item xs={6}>

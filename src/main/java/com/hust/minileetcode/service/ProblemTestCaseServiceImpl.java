@@ -349,9 +349,15 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                     .testCasePass(0+"/"+testCaseList.size())
                     .sourceCodeLanguages(modelProblemDetailSubmission.getLanguage())
                     .build();
-            problemSubmissionRepo.save(problemSubmission);
+            ProblemSubmission p = problemSubmissionRepo.save(problemSubmission);
             return ModelProblemSubmissionResponse.builder()
                     .status(status)
+                    .result(p.getTestCasePass())
+                    .runtime(p.getRuntime())
+                    .memoryUsage(p.getMemoryUsage())
+                    .language(p.getSourceCodeLanguages())
+                    .problemName(contestProblem.getProblemName())
+                    .problemSubmissionId(p.getProblemSubmissionId())
                     .build();
         }
         String []ans = response.split("testcasedone\n");
@@ -393,6 +399,8 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .memoryUsage(problemSubmission1.getMemoryUsage())
                 .runtime(problemSubmission1.getRuntime())
                 .timeSubmitted(problemSubmission1.getTimeSubmitted())
+                .problemName(contestProblem.getProblemName())
+                .problemSubmissionId(problemSubmission1.getProblemSubmissionId())
                 .build();
         return res;
     }

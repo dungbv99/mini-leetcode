@@ -13,6 +13,7 @@ import {go} from "@codemirror/legacy-modes/mode/go";
 import {java} from "@codemirror/lang-java";
 import {pythonLanguage} from "@codemirror/lang-python";
 import {javascript} from "@codemirror/lang-javascript";
+import {getStatusColor} from "./lib";
 
 function ProblemSubmissionDetail(){
   const {problemSubmissionId} = useParams();
@@ -26,14 +27,7 @@ function ProblemSubmissionDetail(){
   const [submittedAt, setSubmittedAt] = useState();
   const [testCasePass, setTestCasePass] = useState();
   const [status, setStatus] = useState();
-  const getStatusColor = (status) => {
-    switch (status){
-      case 'Accept':
-        return 'green';
-      default:
-        return 'red';
-    }
-  }
+
   const getExtension = () =>{
     switch (submissionLanguage){
       case "CPP":

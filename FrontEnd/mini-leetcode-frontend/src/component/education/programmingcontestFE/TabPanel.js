@@ -3,7 +3,9 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import styled from 'styled-components';
 
-export function TabPanel(props) {
+
+
+export function TabPanelVertical(props) {
   const { children, value, index, ...other } = props;
 
   return (
@@ -23,6 +25,8 @@ export function TabPanel(props) {
   );
 }
 
+
+
 export function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -37,5 +41,25 @@ const StyledLink = styled(Link)`
         text-decoration: none;
     }
 `;
+
+export function TabPanelHorizontal(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{marginLeft: 2 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
 export default (props) => <StyledLink {...props} />;

@@ -65,3 +65,12 @@ export const getExtension = (computerLanguage) =>{
       return javascript();
   }
 }
+
+export const getStatusColor = (status) => {
+  switch (status){
+    case 'Accept':
+      return 'green';
+    default:
+      return 'red';
+  }
+}

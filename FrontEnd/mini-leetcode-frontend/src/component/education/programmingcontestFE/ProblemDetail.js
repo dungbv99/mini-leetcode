@@ -20,21 +20,19 @@ import { MuiThemeProvider, createTheme, makeStyles } from "@material-ui/core/sty
 import {Console} from "./Console";
 import {ScrollBox} from 'react-scroll-box';
 import PropTypes from "prop-types"; // ES6
-import {a11yProps, TabPanel} from "./TabPanel";
+import {a11yProps, TabPanelVertical} from "./TabPanel";
 // import {authGet, authPost} from "../../../api";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams} from "react-router-dom";
 import {Markup} from "interweave";
 import {ProblemSubmission} from "./ProblemSubmission";
 import {SubmissionExecute} from "./SubmissionExecute";
-import SplitterLayout from 'react-splitter-layout';
-// import 'react-splitter-layout/lib/index.css';
-import './css/splitter.css'
 import SplitPane from "react-split-pane";
 import {request} from "./Request";
 import {API_URL} from "../../../config/config";
 import {getExtension} from "./lib";
-TabPanel.propTypes = {
+
+TabPanelVertical.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
@@ -223,7 +221,7 @@ export default function ProblemDetail(props){
   return (
     <div >
       {/*<form className={classes.root}>*/}
-        <SplitterLayout >
+        <SplitPane split={"vertical"}  >
           <div>
             <Tabs
               value={value}
@@ -247,19 +245,19 @@ export default function ProblemDetail(props){
             </Tabs>
             {/*</Toolbar>*/}
 
-            <TabPanel value={value} index={0}>
+            <TabPanelVertical value={value} index={0}>
               <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-130) + "px"}}>
                 <Markup content={description} />
               </ScrollBox>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
+            </TabPanelVertical>
+            <TabPanelVertical value={value} index={1}>
               <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-130) + "px"}}>
                 <Markup content={solution} />
               </ScrollBox>
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-            </TabPanel>
-            <TabPanel value={value} index={3}>
+            </TabPanelVertical>
+            <TabPanelVertical value={value} index={2}>
+            </TabPanelVertical>
+            <TabPanelVertical value={value} index={3}>
               <ScrollBox style={{width: '95%',  height:(window.innerHeight-130) + "px"}}>
                 <SubmissionExecute
                   show={showShowSubmissionExecute}
@@ -274,7 +272,7 @@ export default function ProblemDetail(props){
                 />
               </ScrollBox>
 
-            </TabPanel>
+            </TabPanelVertical>
           </div>
           <div>
             {/*tab 2*/}
@@ -379,7 +377,7 @@ export default function ProblemDetail(props){
               Submit
             </Button>
           </div>
-        </SplitterLayout>
+        </SplitPane>
 
       {/*</form>*/}
 
