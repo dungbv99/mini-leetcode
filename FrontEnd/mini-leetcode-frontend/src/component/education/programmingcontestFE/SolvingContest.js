@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {request} from "./Request";
 import {Link, useHistory, useParams} from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -22,6 +22,7 @@ import {Console} from "./Console";
 import SplitPane, { Pane } from 'react-split-pane';
 import {TabPanelHorizontal, TabPanelVertical} from "./TabPanel";
 import ContestRunTestCase from "./ContestRunTestCase";
+import {useSelector} from "react-redux";
 
 
 
@@ -39,7 +40,7 @@ function a11yProps(index) {
 }
 
 
-export default function SolvingContest(){
+export default function SolvingContest(props){
   const {contestId} = useParams();
   const [value, setValue] = React.useState(0);
   const [contestName, setContestName] = useState();
@@ -64,9 +65,13 @@ export default function SolvingContest(){
   const [testCaseResult, setTestCaseResult] = useState();
   const [runTestCaseLoad, setRunTestCaseLoad] = useState(false);
   const [runTestCaseShow, setRunTestCaseShow] = useState(false);
+  const [timer, setTimer] = useState('00:00:00');
+  const Ref = useRef(null);
+
   const handleValueTab1Change = (event, newValue) => {
     setValueTab1(newValue);
   };
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -88,23 +93,99 @@ export default function SolvingContest(){
 
   }
 
+  const getTimeRemaining = (e) => {
+    const total = Date.parse(e) - Date.parse(new Date());
+    const seconds = Math.floor((total / 1000) % 60);
+    const minutes = Math.floor((total / (1000 * 60)) % 60);
+    const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+    return {
+      total, hours, minutes, seconds
+    };
+  }
+
+  const clearTimer = (e) => {
+
+    // If you adjust it you should also need to
+    // adjust the Endtime formula we are about
+    // to code next
+    // If you try to remove this line the
+    // updating of timer Variable will be
+    // after 1000ms or 1sec
+    if (Ref.current) clearInterval(Ref.current);
+    const id = setInterval(() => {
+      startTimer(e);
+    }, 1000)
+    console.log("done");
+    Ref.current = id;
+  }
+
+  const getDeadTime = () => {
+    let deadline = new Date();
+
+    // This is where you need to adjust if
+    // you entend to add more time
+    deadline.setSeconds(deadline.getSeconds() + 10);
+    deadline.setHours(deadline.getHours()+2);
+    deadline.setMinutes(deadline.getMinutes()+1);
+    return deadline;
+  }
+
+  const startTimer = (e) => {
+    console.log("start timer ", e);
+    let { total, hours, minutes, seconds }
+      = getTimeRemaining(e);
+    if (total >= 0) {
+
+      // update the timer
+      // check if less than 10 then we need to
+      // add '0' at the begining of the variable
+      setTimer(
+        (hours > 9 ? hours : '0' + hours) + ':' +
+        (minutes > 9 ? minutes : '0' + minutes) + ':'
+        + (seconds > 9 ? seconds : '0' + seconds)
+      )
+    }
+  }
+
+
+
+
 
 
   useEffect(() =>{
+    console.log("props" , props)
     request(
       "get",
       "/get-contest-detail/"+contestId,
       (res) =>{
-        console.log("res ", res.data);
-        setProblems(res.data.list);
         setContestTime(res.data.contestTime);
+        setProblems(res.data.list);
         setContestName(res.data.contestName);
-
+        console.log("res ", res.data);
         let arr = problems.map(()=>false);
         setSubmitted(arr);
+
+        let a = "startTime";
+
+        if(localStorage.getItem(a) == null){
+          console.log("set start time");
+          let now = new Date();
+
+
+          now.setMinutes(now.getMinutes()+res.data.contestTime%60);
+          now.setHours(now.getHours()+res.data.contestTime/60);
+          localStorage.setItem(a, now);
+          clearTimer(now);
+        }else{
+          let now = new Date();
+          if(localStorage.getItem(a) + res.data.contestTime < now.getHours()*60 + now.getMinutes()){
+            // localStorage.removeItem(a);
+          }else{
+            clearTimer(new Date(localStorage.getItem(a)));
+          }
+        }
       }
-    ).then(
-    );
+    ).then();
   }, [])
 
   return (
@@ -117,7 +198,8 @@ export default function SolvingContest(){
             sx={{flexGrow: 1, bgcolor: '#000000', display: 'flex', height:80}}
           >
             <Grid container alignItems="center" style={{padding:"10px"}}>
-              <span style={{color:"#FFFFFF"}}>{`${contestTime}m left`}</span>
+              <b><span style={{color:"#FFFFFF"}}>{`${timer}`}</span></b>
+
             </Grid>
 
           </Box>
@@ -384,6 +466,19 @@ export default function SolvingContest(){
                       style={{marginLeft:"20px"}}
                     >
                       Submit
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="light"
+                      onClick={() =>{
+                        console.log("start time", localStorage.getItem('startTime'));
+                        var n = new Date()
+                        console.log("runtime", n.getTime() - localStorage.getItem('startTime'))
+                      }}
+                      // style={{position}}
+                      style={{marginLeft:"20px"}}
+                    >
+                      test
                     </Button>
                   </div>
                 </SplitPane>
