@@ -53,4 +53,6 @@ public interface ProblemTestCaseService {
     ModelGetContestPageResponse getContestPaging(Pageable pageable);
 
     ModelGetContestDetailResponse getContestDetailByContestId(String contestId);
+
+    ModelContestSubmissionResponse submitContestProblem(ModelContestSubmission modelContestSubmission, String userName) throws Exception;
 }

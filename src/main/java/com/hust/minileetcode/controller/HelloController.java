@@ -4,8 +4,8 @@ import com.hust.minileetcode.docker.DockerClientBase;
 import com.hust.minileetcode.entity.Problem;
 import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
-import com.hust.minileetcode.repo.ContestProblemPagingAndSortingRepo;
-import com.hust.minileetcode.repo.ContestProblemRepo;
+import com.hust.minileetcode.repo.ProblemPagingAndSortingRepo;
+import com.hust.minileetcode.repo.ProblemRepo;
 import com.hust.minileetcode.repo.TestCaseRepo;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
@@ -25,8 +25,8 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class HelloController {
-    private ContestProblemPagingAndSortingRepo contestProblemPagingAndSortingRepo;
-    private ContestProblemRepo contestProblemRepo;
+    private ProblemPagingAndSortingRepo problemPagingAndSortingRepo;
+    private ProblemRepo problemRepo;
     private DockerClientBase dockerClientBase = new DockerClientBase();
     private TempDir tempDir = new TempDir();
     private TestCaseRepo testCaseRepo;
@@ -78,7 +78,7 @@ public class HelloController {
     @GetMapping("/test")
     public String test() throws IOException {
         String problemId = "1.Add 2 Number";
-        Problem problem = contestProblemRepo.findByProblemId(problemId);
+        Problem problem = problemRepo.findByProblemId(problemId);
         log.info("contestProblem {}", problem);
         List<TestCase> testCases = testCaseRepo.findAllByProblem(problem);
         log.info("testcase size {}", testCases.size());

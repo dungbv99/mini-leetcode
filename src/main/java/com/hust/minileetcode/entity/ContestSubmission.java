@@ -32,12 +32,21 @@ public class ContestSubmission {
     @ManyToOne(fetch = FetchType.LAZY)
     private UserLogin userLogin;
 
+    @JoinColumn(name = "problem_submission_id", referencedColumnName = "problem_submission_id")
+    @OneToOne
+    private ProblemSubmission problemSubmission;
+
     @Column(name = "point")
     private int point;
+
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "created_stamp")
     private Date createdAt;
 
     @Column(name = "last_updated_stamp")
     private Date updateAt;
+
+
 }

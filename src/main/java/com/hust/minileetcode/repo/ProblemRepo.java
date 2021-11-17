@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.ArrayList;
 
-public interface ContestProblemRepo extends JpaRepository<Problem, String> {
+public interface ProblemRepo extends JpaRepository<Problem, String> {
     Problem findByProblemId(String problemId);
 
     @Query("select p.problemName from Problem p")
