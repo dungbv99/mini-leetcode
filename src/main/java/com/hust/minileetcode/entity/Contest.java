@@ -1,17 +1,15 @@
 package com.hust.minileetcode.entity;
 
 import com.hust.minileetcode.rest.entity.UserLogin;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Entity
 @Builder
 @Table(name = "contest")

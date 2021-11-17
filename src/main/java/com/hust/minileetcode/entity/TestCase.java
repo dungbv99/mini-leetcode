@@ -5,11 +5,12 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.UUID;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Builder
 @Entity
+@Builder
 @Table(name = "test_case")
 public class TestCase {
     @Id

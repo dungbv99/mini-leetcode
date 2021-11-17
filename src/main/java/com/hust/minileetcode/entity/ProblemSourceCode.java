@@ -4,9 +4,10 @@ import lombok.*;
 
 import javax.persistence.*;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Entity
 @Builder
 @Table(name = "problem_source_code")

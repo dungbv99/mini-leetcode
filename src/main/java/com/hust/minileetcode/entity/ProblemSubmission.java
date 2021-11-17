@@ -1,10 +1,7 @@
 package com.hust.minileetcode.entity;
 
 import com.hust.minileetcode.rest.entity.UserLogin;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -17,12 +14,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Entity
-@Table(name = "problem_submission")
 @Builder
+@Table(name = "problem_submission")
 public class ProblemSubmission {
     @Id
     @Column(name = "problem_submission_id")

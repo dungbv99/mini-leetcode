@@ -276,9 +276,11 @@ create table contest_contest_problem
 
 create table contest_submission
 (
+    contest_submission_id  UUID NOT NULL default uuid_generate_v1(),
     contest_id varchar (100) not null ,
     problem_id varchar (100) not null ,
     user_submission_id varchar (100) not null ,
+    point int,
     last_updated_stamp         date default current_date ,
     created_stamp              date default current_date ,
     constraint fk_contest_id_contest_submission foreign key (contest_id) references contest(contest_id),
@@ -286,8 +288,14 @@ create table contest_submission
     constraint fk_user_submission_id_contest_submission foreign key (user_submission_id) references user_login(user_login_id)
 );
 
-create table test
+create table user_submission_result
 (
-    id int,
-    created_stamp              timestamp default current_date
-);
+    user_submission_result_id UUID NOT NULL default uuid_generate_v1(),
+    contest_id varchar (100) not null ,
+    user_id varchar (100) not null,
+    point int not null,
+    last_updated_stamp         date default current_date ,
+    created_stamp              date default current_date ,
+    constraint fk_contest_id_user_submission_result foreign key (contest_id) references contest(contest_id),
+    constraint fk_user_id_user_submission_result foreign key (user_id) references user_login(user_login_id),
+)
