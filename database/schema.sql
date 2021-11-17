@@ -303,3 +303,11 @@ create table user_submission_result
     constraint fk_contest_id_user_submission_result foreign key (contest_id) references contest(contest_id),
     constraint fk_user_id_user_submission_result foreign key (user_id) references user_login(user_login_id)
 );
+
+create table user_registration_contest
+(
+    user_id varchar (100) not null ,
+    contest_id varchar (100) not null ,
+    constraint fk_user_id_user_registration_contest foreign key (user_id) references user_login(user_login_id),
+    constraint fk_contest_id_user_registration_contest foreign key (contest_id) references contest(contest_id)
+);
