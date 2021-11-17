@@ -63,12 +63,42 @@ CREATE TABLE public.application_type (
 ALTER TABLE public.application_type OWNER TO postgres;
 
 --
+-- Name: contest; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.contest (
+    contest_id character varying(100) NOT NULL,
+    contest_name character varying(100),
+    contest_solving_time integer,
+    user_create_id character varying(60),
+    last_updated_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.contest OWNER TO postgres;
+
+--
+-- Name: contest_contest_problem; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.contest_contest_problem (
+    contest_id character varying(100) NOT NULL,
+    problem_id character varying(100) NOT NULL,
+    last_updated_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.contest_contest_problem OWNER TO postgres;
+
+--
 -- Name: contest_problem; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.contest_problem (
-    problem_id character varying(60) NOT NULL,
-    problem_name character varying(200),
+    problem_id character varying(100) NOT NULL,
+    problem_name character varying(100),
     problem_description text,
     created_by_user_login_id character varying(60),
     time_limit integer,
@@ -76,23 +106,15 @@ CREATE TABLE public.contest_problem (
     level_id character varying(60),
     category_id character varying(60),
     last_updated_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    solution text,
+    correct_solution_source_code text,
+    correct_solution_language character varying(10),
+    level_order integer
 );
 
 
 ALTER TABLE public.contest_problem OWNER TO postgres;
-
---
--- Name: contest_problem_problem_source_code; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.contest_problem_problem_source_code (
-    problem_source_code_id character varying(70),
-    problem_id character varying(60) NOT NULL
-);
-
-
-ALTER TABLE public.contest_problem_problem_source_code OWNER TO postgres;
 
 --
 -- Name: party; Type: TABLE; Schema: public; Owner: postgres
@@ -163,12 +185,34 @@ CREATE TABLE public.problem_source_code (
     problem_function_default_source text,
     problem_function_solution text,
     language character varying(10),
+    contest_problem_id character varying(60),
     last_updated_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
 ALTER TABLE public.problem_source_code OWNER TO postgres;
+
+--
+-- Name: problem_submission; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.problem_submission (
+    problem_submission_id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
+    problem_id character varying(100) NOT NULL,
+    submitted_by_user_login_id character varying(60),
+    source_code text,
+    source_code_language character varying(10),
+    status character varying(20),
+    score integer,
+    runtime character varying(10),
+    memory_usage double precision,
+    test_case_pass character varying(10),
+    created_stamp character varying(25)
+);
+
+
+ALTER TABLE public.problem_submission OWNER TO postgres;
 
 --
 -- Name: security_group; Type: TABLE; Schema: public; Owner: postgres
@@ -433,6 +477,7 @@ MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_VIEW_LIST_COURSE	MENU	MENU_EDUCATION_
 MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_QUIZ_TEST_LIST	MENU	MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER	EDUCATION_TEACHING_MANAGEMENT_TEACHER	Menu teaching management for teachers: view list quiz test	\N	2021-05-22 17:21:12.757518
 MENU_EDUCATION_TEACHING_MANAGEMENT_STUDENT_QUIZ_TEST_LIST	MENU	MENU_EDUCATION_LEARNING_MANAGEMENT_STUDENT	EDUCATION_LEARNING_MANAGEMENT_STUDENT	Menu teaching management for students: view list quiz test	\N	2021-05-22 17:21:12.757518
 MENU_USER_SEND_MAIL_TO_USERS	MENU	MENU_USER	SEND_MAIL_TO_USERS	Menu Send mail to users	\N	2021-07-13 13:48:43.511215
+MENU_DEFAULT	MENU	MENU_DEFAULT	DEFAULT	\N	\N	2021-10-02 07:44:48.490188
 \.
 
 
@@ -450,18 +495,66 @@ ENTITY	Entity application type	2019-12-26 08:00:39.953925	2019-12-26 08:00:39.95
 
 
 --
--- Data for Name: contest_problem; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: contest; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.contest_problem (problem_id, problem_name, problem_description, created_by_user_login_id, time_limit, memory_limit, level_id, category_id, last_updated_stamp, created_stamp) FROM stdin;
+COPY public.contest (contest_id, contest_name, contest_solving_time, user_create_id, last_updated_stamp, created_stamp) FROM stdin;
+1	1	122	admin	2021-11-09 16:05:58.806274	2021-11-09 16:05:58.806274
+2	2	2	admin	2021-11-09 16:10:53.692016	2021-11-09 16:10:53.692016
+3	4	5	admin	2021-11-09 16:12:34.41868	2021-11-09 16:12:34.41868
+test1	test1	60	admin	2021-11-15 20:59:13.710199	2021-11-15 20:59:13.710199
+2222222	22222222	75	admin	2021-11-16 13:14:00.528548	2021-11-16 13:14:00.528548
+54	5	1	admin	2021-11-16 13:45:26.940563	2021-11-16 13:45:26.940563
 \.
 
 
 --
--- Data for Name: contest_problem_problem_source_code; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: contest_contest_problem; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.contest_problem_problem_source_code (problem_source_code_id, problem_id) FROM stdin;
+COPY public.contest_contest_problem (contest_id, problem_id, last_updated_stamp, created_stamp) FROM stdin;
+1	3	2021-11-09 16:05:58.806274	2021-11-09 16:05:58.806274
+1	3321	2021-11-09 16:05:58.806274	2021-11-09 16:05:58.806274
+1	5	2021-11-09 16:05:58.806274	2021-11-09 16:05:58.806274
+2	5	2021-11-09 16:10:53.692016	2021-11-09 16:10:53.692016
+2	3321	2021-11-09 16:10:53.692016	2021-11-09 16:10:53.692016
+2	7	2021-11-09 16:10:53.692016	2021-11-09 16:10:53.692016
+3	3321	2021-11-09 16:12:34.41868	2021-11-09 16:12:34.41868
+3	5	2021-11-09 16:12:34.41868	2021-11-09 16:12:34.41868
+3	7	2021-11-09 16:12:34.41868	2021-11-09 16:12:34.41868
+3	Add 2 Number	2021-11-09 16:12:34.41868	2021-11-09 16:12:34.41868
+3	2	2021-11-09 16:12:34.41868	2021-11-09 16:12:34.41868
+test1	Add 2 Number	2021-11-15 20:59:13.710199	2021-11-15 20:59:13.710199
+test1	9	2021-11-15 20:59:13.710199	2021-11-15 20:59:13.710199
+test1	111	2021-11-15 20:59:13.710199	2021-11-15 20:59:13.710199
+test1	2	2021-11-15 20:59:13.710199	2021-11-15 20:59:13.710199
+2222222	3321	2021-11-16 13:14:00.528548	2021-11-16 13:14:00.528548
+2222222	5	2021-11-16 13:14:00.528548	2021-11-16 13:14:00.528548
+2222222	3	2021-11-16 13:14:00.528548	2021-11-16 13:14:00.528548
+54	3321	2021-11-16 13:45:26.940563	2021-11-16 13:45:26.940563
+54	3	2021-11-16 13:45:26.940563	2021-11-16 13:45:26.940563
+\.
+
+
+--
+-- Data for Name: contest_problem; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.contest_problem (problem_id, problem_name, problem_description, created_by_user_login_id, time_limit, memory_limit, level_id, category_id, last_updated_stamp, created_stamp, solution, correct_solution_source_code, correct_solution_language, level_order) FROM stdin;
+11	11	<p>1</p>\n	\N	11	11	medium	\N	2021-11-02 09:51:29.359937	2021-11-02 09:51:29.359937	<p>1</p>\n	// Your First C++ Program\n\n#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	2
+3	3	<p>3</p>\n	\N	3	3	hard	\N	2021-11-02 09:38:41.191888	2021-11-02 09:38:41.191888	<p>3</p>\n	#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	3
+5	5	<p>6</p>\n	\N	5	5	hard	\N	2021-11-02 09:42:59.496965	2021-11-02 09:42:59.496965	<p>6</p>\n	#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	3
+3321	123	<p>123</p>\n	\N	321	123	easy	\N	2021-11-02 09:41:49.384692	2021-11-02 09:41:49.384692	<p>123</p>\n	#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	1
+hello	hello	<p>1111</p>\n	\N	1	1	easy	\N	2021-11-02 13:42:47.895762	2021-11-02 13:42:47.895762	<p>111</p>\n	// Your First C++ Program\n\n#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	1
+ss	s	<p>1</p>\n	\N	1	1	easy	\N	2021-11-02 14:20:20.200878	2021-11-02 14:20:20.200878	<p>1</p>\n	// Your First C++ Program\n\n#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	1
+2	2	<p>&lt;p&gt;1221&lt;/p&gt;</p>\n<p></p>\n	\N	2	2	easy	\N	2021-11-02 09:31:42.586162	2021-11-02 09:31:42.586162	<p>&lt;p&gt;121&lt;/p&gt;</p>\n<p></p>\n	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  cout << "hello";\n}	CPP	1
+111	222	<p>&lt;h1&gt;adssaddsaaskdnaskldkjsajdlkasjdlksaj&lt;/h1&gt;</p>\n<p></p>\n	\N	222	22	easy	\N	2021-11-07 14:32:27.343943	2021-11-07 14:32:27.343943	<p>&lt;p&gt;111&lt;/p&gt;</p>\n<p></p>\n	// Your First C++ Program\n\n#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	1
+7	7	<p>7</p>\n	\N	7	7	hard	\N	2021-11-02 09:45:38.409901	2021-11-02 09:45:38.409901	<p>7</p>\n	#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	3
+8	8	<p>8</p>\n	\N	8	8	hard	\N	2021-11-02 09:47:23.259036	2021-11-02 09:47:23.259036	<p>8</p>\n	#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	3
+9	9	<p>9</p>\n	\N	9	9	hard	\N	2021-11-02 09:49:46.073809	2021-11-02 09:49:46.073809	<p>9</p>\n	// Your First C++ Program\n\n#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	3
+ssadasd	fdsaf	<p>3321321sdasad</p>\n	\N	1	1	hard	\N	2021-11-02 14:17:34.660324	2021-11-02 14:17:34.660324	<p>dsadas</p>\n	// Your First C++ Program\n\n#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	3
+1111111	1	<p>1</p>\n	\N	1	1	hard	\N	2021-11-02 14:18:34.376294	2021-11-02 14:18:34.376294	<p>1</p>\n	// Your First C++ Program\n\n#include <iostream>\n\nint main() {\n    std::cout << "Hello World!";\n    return 0;\n}	CPP	3
+Add 2 Number	Add 2 Number	<p>&lt;h4&gt;Add 2 Number&lt;/h4&gt;</p>\n<p>&lt;blockquote&gt;Give 2 number and return sum of them&lt;/blockquote&gt;</p>\n<p>&lt;pre&gt;Example:&lt;br&gt;   Input: 1 2&lt;br&gt;   Output: 3&lt;/pre&gt;</p>\n<p>&lt;p&gt;&lt;/p&gt;</p>\n<p>&lt;p&gt;&lt;/p&gt;</p>\n<p></p>\n	\N	1	1	easy	\N	2021-10-26 11:38:20.969877	2021-10-26 11:38:20.969877	<p>&lt;p&gt;#include&amp;lt;bits/stdc++.h&amp;gt;&lt;/p&gt;</p>\n<p>&lt;p&gt;using namespace std;&lt;/p&gt;</p>\n<p>&lt;p&gt;&lt;/p&gt;</p>\n<p>&lt;p&gt;int main(){&lt;/p&gt;</p>\n<p>&lt;p&gt;&amp;nbsp;&amp;nbsp;int a, b;&lt;/p&gt;</p>\n<p>&lt;p&gt;&amp;nbsp;&amp;nbsp;cin &amp;gt;&amp;gt; a &amp;gt;&amp;gt; b;&lt;/p&gt;</p>\n<p>&lt;p&gt;&amp;nbsp;&amp;nbsp;cout &amp;lt;&amp;lt; a+b;&lt;/p&gt;</p>\n<p>&lt;p&gt;&amp;nbsp;&amp;nbsp;return 0;&lt;/p&gt;</p>\n<p>&lt;p&gt;}&lt;/p&gt;</p>\n<p></p>\n	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a+b;\n  return 0;\n  \n  \n}	CPP	1
 \.
 
 
@@ -513,7 +606,47 @@ bd6322f2-2121-11ea-81a8-979e2f76b5a4	admin	,	,	M	2021-10-02	\N	2021-10-02 04:39:
 -- Data for Name: problem_source_code; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.problem_source_code (problem_source_code_id, base_source, main_source, problem_function_default_source, problem_function_solution, language, last_updated_stamp, created_stamp) FROM stdin;
+COPY public.problem_source_code (problem_source_code_id, base_source, main_source, problem_function_default_source, problem_function_solution, language, contest_problem_id, last_updated_stamp, created_stamp) FROM stdin;
+\.
+
+
+--
+-- Data for Name: problem_submission; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.problem_submission (problem_submission_id, problem_id, submitted_by_user_login_id, source_code, source_code_language, status, score, runtime, memory_usage, test_case_pass, created_stamp) FROM stdin;
+2a80bb52-a54f-4013-8768-3b8d87a90b25	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a+b;\n}	CPP	Accept	0	\N	0	3/3	03/11/2021 15:10:46
+8ebfb787-c8f0-450f-93f9-107e5c9a94c5	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << -1;\n}	CPP	Wrong Answer	0	\N	0	0/3	03/11/2021 15:20:03
+1235043d-86e4-487e-987f-206a142980c6	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a>> b;\n  if(a == 2){\n    while(true){}\n  }\n  cout << a+b;\n}	CPP	Time Limit Exceeded	0	\N	0	2/3	03/11/2021 15:28:01
+3d4e73c7-0add-463e-bcaf-35bd52449f70	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  cout << 3\n}	CPP	\nCompile Error	0	\N	0	0/3	03/11/2021 15:30:20
+1f3f9881-1bb8-4987-96db-ec6176f6dc91	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  cout << 0;\n}	CPP	Wrong Answer	0	\N	0	0/3	03/11/2021 20:58:39
+0617b861-32ed-4319-9496-fdbc090ea759	Add 2 Number	admin	\N	CPP	\nCompile Error	0	\N	0	0/3	03/11/2021 21:06:23
+d381174a-f8b2-4d80-8d71-bdaf054d5b9a	Add 2 Number	admin	\N	CPP	\nCompile Error	0	\N	0	0/3	03/11/2021 21:07:43
+1a7c2160-ba4f-49ba-bf57-1dfd3f9401d0	Add 2 Number	admin	\N	CPP	\nCompile Error	0	\N	0	0/3	03/11/2021 21:07:56
+4f6e770e-08df-4f1d-8f5c-14b4573799c5	Add 2 Number	admin	\N	CPP	\nCompile Error	0	\N	0	0/3	03/11/2021 21:08:04
+1a97fb34-29a2-4955-9d9b-da7b10b42430	Add 2 Number	admin	\N	CPP	\nCompile Error	0	\N	0	0/3	03/11/2021 21:08:18
+a8fe2737-76a5-46ed-932e-c3a4d66bec03	Add 2 Number	admin	\N	CPP	\nCompile Error	0	\N	0	0/3	03/11/2021 21:08:29
+5b21aafd-aa4f-45d0-851c-965d1914be14	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << 2;\n}	CPP	Wrong Answer	0	\N	0	0/3	03/11/2021 21:09:10
+30dd4dea-b457-43c6-91ca-bffe1c50dbf6	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << 2;\n}	CPP	Wrong Answer	0	\N	0	0/3	03/11/2021 21:09:21
+fe643924-74aa-404d-a00d-51e74661d39b	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << 2;\n}	CPP	Wrong Answer	0	\N	0	0/3	03/11/2021 21:09:39
+ac095913-4f26-4d88-a673-0176fbf5b6d8	Add 2 Number	admin	\N	CPP	\nCompile Error	0	\N	0	0/3	03/11/2021 21:16:14
+54f44b5a-b7ed-4979-955d-d74a576a5bb4	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << 2;\n}	CPP	Wrong Answer	0	\N	0	0/3	03/11/2021 21:16:59
+c38cad8d-64aa-4847-83bc-a617f9ebb708	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a+b;\n}	CPP	Accept	0	\N	0	3/3	03/11/2021 21:24:37
+f7a08798-264e-46b1-be8c-5e6937616334	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a+b;\n}	JAVA	\nCompile Error	0	\N	0	0/3	03/11/2021 21:25:09
+11023a3b-8533-4b93-ad6f-11720bdf9e51	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a+b;\n}	CPP	Accept	0	\N	0	3/3	03/11/2021 21:25:59
+789804b5-bd07-4bf4-a54b-99ae62fe4c9f	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a+b;\n}	CPP	Accept	0	\N	0	3/3	03/11/2021 21:26:18
+bb20530f-7f27-4af6-95c2-79a7b7b86aae	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a+b;\n}	CPP	Accept	0	\N	0	3/3	03/11/2021 21:26:23
+273717ab-4437-4eda-9198-087bcedceb5b	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a+b;\n}	CPP	Accept	0	\N	0	3/3	03/11/2021 21:27:50
+c086f815-1922-4c35-83ca-ea6d335cd699	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << 1;\n}	CPP	Wrong Answer	0	\N	0	0/3	14/11/2021 16:08:03
+4c180012-49e5-4494-bf30-ae0458b0cc9c	7	admin	\N	CPP	\nCompile Error	0	\N	0	0/0	14/11/2021 16:18:25
+9766c8af-2dc4-498e-a03f-ffd5169b346a	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << 1;\n}	CPP	Wrong Answer	0	\N	0	0/3	14/11/2021 16:19:41
+f382cbe2-43af-4c59-baac-57997bac716b	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << 1;\n}	CPP	Wrong Answer	0	\N	0	0/3	14/11/2021 17:05:28
+7aa46fe0-57ef-49b8-a920-fd9808bb28d2	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << 2;\n}	CPP	Wrong Answer	0	\N	0	0/3	14/11/2021 17:05:43
+36292f15-e4f4-4237-ba19-b57c6e0d339e	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a, b;\n  cout << a+b;\n}	CPP	Wrong Answer	0	\N	0	0/3	14/11/2021 17:06:16
+1e09833f-6019-4507-9ada-829b21021d22	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a+b;\n}	CPP	Accept	0	\N	0	3/3	14/11/2021 17:07:14
+e42ca037-e4c3-433f-b80e-609155b72a5f	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a+b;\n}	CPP	Accept	0	\N	0	3/3	14/11/2021 17:08:19
+91ff8efa-e32f-4415-9644-e6cac14dc44c	Add 2 Number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a>> b;\n  cout << a+b;\n}	CPP	Accept	0	\N	0	3/3	15/11/2021 20:58:21
+78ba9c56-58cb-405b-b84a-68c26b2b7cb0	Add 2 Number	admin	#in	CPP	\nCompile Error	0	\N	0	0/3	15/11/2021 21:01:56
 \.
 
 
@@ -768,6 +901,7 @@ BACKLOG_ASSIGN_SUGGESTION	Get suggestion for assigning task	\N	2020-11-16 10:18:
 BACKLOG_CREATE_PROJECT	Create project	\N	2020-11-16 10:18:51.143996
 BACKLOG_VIEW_LIST_PROJECT	View created projects	\N	2020-11-16 10:18:51.143996
 SEND_MAIL_TO_USERS	Send mail to users	\N	2021-07-13 13:48:43.511215
+DEFAULT	\N	\N	2021-10-02 07:42:39.159506
 \.
 
 
@@ -806,6 +940,9 @@ NOTIFICATION_STATUS	\N	Status for notification	\N	2020-11-19 11:15:40.540188
 --
 
 COPY public.test_case (test_case_id, test_case_point, test_case, correct_answer, contest_problem_id, last_updated_stamp, created_stamp) FROM stdin;
+d37ef03b-0bdf-4984-9215-d9a9accb0929	0	1 2	3	Add 2 Number	2021-10-26 11:39:31.064345	2021-10-26 11:39:31.064345
+ec219f86-0a49-4a6f-8cdb-17607f29a259	0	2 3	5	Add 2 Number	2021-10-26 11:39:38.878935	2021-10-26 11:39:38.878935
+d03fbdd7-4201-4fcf-8ddd-456d1bed753d	0	3 4	7	Add 2 Number	2021-10-26 11:39:45.845639	2021-10-26 11:39:45.845639
 \.
 
 
@@ -856,6 +993,14 @@ admin	ROLE_BACKLOG	2020-11-16 10:20:47.055271	2020-11-16 10:20:47.055271
 
 
 --
+-- Name: contest_problem contest_problem_problem_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_problem
+    ADD CONSTRAINT contest_problem_problem_name_key UNIQUE (problem_name);
+
+
+--
 -- Name: application pk_application; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -869,6 +1014,14 @@ ALTER TABLE ONLY public.application
 
 ALTER TABLE ONLY public.application_type
     ADD CONSTRAINT pk_application_type PRIMARY KEY (application_type_id);
+
+
+--
+-- Name: contest pk_contest_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest
+    ADD CONSTRAINT pk_contest_id PRIMARY KEY (contest_id);
 
 
 --
@@ -1000,6 +1153,14 @@ ALTER TABLE ONLY public.application
 
 
 --
+-- Name: contest_contest_problem fk_contest_id_contest_contest_problem; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_contest_problem
+    ADD CONSTRAINT fk_contest_id_contest_contest_problem FOREIGN KEY (contest_id) REFERENCES public.contest(contest_id);
+
+
+--
 -- Name: contest_problem fk_contest_problem; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1008,11 +1169,11 @@ ALTER TABLE ONLY public.contest_problem
 
 
 --
--- Name: contest_problem_problem_source_code fk_contest_problem; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: problem_source_code fk_contest_problem; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.contest_problem_problem_source_code
-    ADD CONSTRAINT fk_contest_problem FOREIGN KEY (problem_id) REFERENCES public.contest_problem(problem_id);
+ALTER TABLE ONLY public.problem_source_code
+    ADD CONSTRAINT fk_contest_problem FOREIGN KEY (contest_problem_id) REFERENCES public.contest_problem(problem_id);
 
 
 --
@@ -1024,11 +1185,35 @@ ALTER TABLE ONLY public.test_case
 
 
 --
--- Name: contest_problem_problem_source_code fk_problem_source_code; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: problem_submission fk_problem_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.contest_problem_problem_source_code
-    ADD CONSTRAINT fk_problem_source_code FOREIGN KEY (problem_source_code_id) REFERENCES public.problem_source_code(problem_source_code_id);
+ALTER TABLE ONLY public.problem_submission
+    ADD CONSTRAINT fk_problem_id FOREIGN KEY (problem_id) REFERENCES public.contest_problem(problem_id);
+
+
+--
+-- Name: contest_contest_problem fk_problem_id_contest_contest_problem; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_contest_problem
+    ADD CONSTRAINT fk_problem_id_contest_contest_problem FOREIGN KEY (problem_id) REFERENCES public.contest_problem(problem_id);
+
+
+--
+-- Name: contest fk_user_create_contest; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest
+    ADD CONSTRAINT fk_user_create_contest FOREIGN KEY (user_create_id) REFERENCES public.user_login(user_login_id);
+
+
+--
+-- Name: problem_submission fk_user_login_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.problem_submission
+    ADD CONSTRAINT fk_user_login_id FOREIGN KEY (submitted_by_user_login_id) REFERENCES public.user_login(user_login_id);
 
 
 --

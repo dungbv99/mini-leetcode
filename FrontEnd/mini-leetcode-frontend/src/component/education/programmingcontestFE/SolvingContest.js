@@ -116,7 +116,9 @@ export default function SolvingContest(props){
       startTimer(e);
     }, 1000)
     console.log("done");
+
     Ref.current = id;
+
   }
 
   const getDeadTime = () => {
@@ -144,6 +146,8 @@ export default function SolvingContest(props){
         (minutes > 9 ? minutes : '0' + minutes) + ':'
         + (seconds > 9 ? seconds : '0' + seconds)
       )
+    }else{
+    //  submit
     }
   }
 
@@ -165,13 +169,11 @@ export default function SolvingContest(props){
         let arr = problems.map(()=>false);
         setSubmitted(arr);
 
-        let a = "startTime";
+        let a = "startTime-"+res.data.contestTime;
 
         if(localStorage.getItem(a) == null){
           console.log("set start time");
           let now = new Date();
-
-
           now.setMinutes(now.getMinutes()+res.data.contestTime%60);
           now.setHours(now.getHours()+res.data.contestTime/60);
           localStorage.setItem(a, now);
