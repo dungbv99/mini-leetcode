@@ -34,5 +34,5 @@ public class Contest {
             inverseJoinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
     )
     @OneToMany(fetch = FetchType.LAZY)
-    private List<ContestProblem> contestProblems;
+    private List<Problem> problems;
 }

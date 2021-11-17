@@ -1,7 +1,7 @@
 package com.hust.minileetcode.service;
 
 import com.hust.minileetcode.entity.Contest;
-import com.hust.minileetcode.entity.ContestProblem;
+import com.hust.minileetcode.entity.Problem;
 import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
@@ -14,7 +14,7 @@ public interface ProblemTestCaseService {
 
     void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception;
 
-    ContestProblem updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception;
+    Problem updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception;
 
     void updateProblemSourceCode(ModelAddProblemLanguageSourceCode modelAddProblemLanguageSourceCode, String problemId);
 
@@ -22,15 +22,15 @@ public interface ProblemTestCaseService {
 
     TestCase updateTestCase(ModelCreateTestCase modelCreateTestCase, UUID testCaseId) throws Exception;
 
-    Page<ContestProblem> getContestProblemPaging(Pageable pageable) throws Exception;
+    Page<Problem> getContestProblemPaging(Pageable pageable) throws Exception;
 
-    ContestProblem findContestProblemByProblemId(String problemId) throws Exception;
+    Problem findContestProblemByProblemId(String problemId) throws Exception;
 
     void saveTestCase(TestCase testCase) throws Exception;
 
     String executableIDECode(ModelRunCodeFromIDE modelRunCodeFromIDE, String userName, String computerLanguage) throws Exception;
 
-    ContestProblem getContestProblem(String problemId) throws Exception;
+    Problem getContestProblem(String problemId) throws Exception;
 
     ModelProblemDetailRunCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception;
 

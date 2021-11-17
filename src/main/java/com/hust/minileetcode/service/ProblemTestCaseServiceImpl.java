@@ -44,7 +44,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
             throw new MiniLeetCodeException("problem id already exist");
         }
         try {
-            ContestProblem contestProblem = ContestProblem.builder()
+            Problem problem = Problem.builder()
                     .problemId(modelCreateContestProblem.getProblemId())
                     .problemName(modelCreateContestProblem.getProblemName())
                     .problemDescription(modelCreateContestProblem.getProblemDescription())
@@ -59,7 +59,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                     .levelOrder(constants.getMapLevelOrder().get(modelCreateContestProblem.getLevelId()))
 //                .testCases(null)
                     .build();
-            contestProblemRepo.save(contestProblem);
+            contestProblemRepo.save(problem);
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
@@ -68,22 +68,22 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public ContestProblem updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception {
+    public Problem updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception {
 
         if(!contestProblemRepo.existsById(problemId)){
             throw new MiniLeetCodeException("problem id not found");
         }
-        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-        contestProblem.setProblemName(modelCreateContestProblem.getProblemName());
-        contestProblem.setProblemDescription(modelCreateContestProblem.getProblemDescription());
-        contestProblem.setLevelId(modelCreateContestProblem.getLevelId());
-        contestProblem.setCategoryId(modelCreateContestProblem.getCategoryId());
-        contestProblem.setSolution(modelCreateContestProblem.getSolution());
-        contestProblem.setTimeLimit(modelCreateContestProblem.getTimeLimit());
-        contestProblem.setCorrectSolutionLanguage(modelCreateContestProblem.getCorrectSolutionLanguage());
-        contestProblem.setCorrectSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode());
+        Problem problem = contestProblemRepo.findByProblemId(problemId);
+        problem.setProblemName(modelCreateContestProblem.getProblemName());
+        problem.setProblemDescription(modelCreateContestProblem.getProblemDescription());
+        problem.setLevelId(modelCreateContestProblem.getLevelId());
+        problem.setCategoryId(modelCreateContestProblem.getCategoryId());
+        problem.setSolution(modelCreateContestProblem.getSolution());
+        problem.setTimeLimit(modelCreateContestProblem.getTimeLimit());
+        problem.setCorrectSolutionLanguage(modelCreateContestProblem.getCorrectSolutionLanguage());
+        problem.setCorrectSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode());
         try {
-            return contestProblemRepo.save(contestProblem);
+            return contestProblemRepo.save(problem);
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
@@ -115,12 +115,12 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     @Override
     public TestCase createTestCase(ModelCreateTestCase modelCreateTestCase, String problemId) throws Exception {
         try {
-            ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-            String solution = contestProblem.getCorrectSolutionSourceCode();
+            Problem problem = contestProblemRepo.findByProblemId(problemId);
+            String solution = problem.getCorrectSolutionSourceCode();
             String tempName = tempDir.createRandomScriptFileName(problemId+"-solution");
-            String response = runCode(solution, contestProblem.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), "Language Not Found");
+            String response = runCode(solution, problem.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), problem.getTimeLimit(), "Language Not Found");
             TestCase testCase = TestCase.builder()
-                    .contestProblem(contestProblem)
+                    .problem(problem)
                     .testCase(modelCreateTestCase.getTestCase())
                     .testCasePoint(modelCreateTestCase.getTestCasePoint())
                     .correctAnswer(response)
@@ -140,10 +140,10 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
             if(testCase == null){
                 throw new Exception("testcase not found");
             }
-            ContestProblem contestProblem = testCase.getContestProblem();
-            String solution = contestProblem.getCorrectSolutionSourceCode();
-            String tempName = tempDir.createRandomScriptFileName(contestProblem.getProblemId()+"-solution");
-            String response = runCode(solution, contestProblem.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), contestProblem.getTimeLimit(), "Language Not Found");
+            Problem problem = testCase.getProblem();
+            String solution = problem.getCorrectSolutionSourceCode();
+            String tempName = tempDir.createRandomScriptFileName(problem.getProblemId()+"-solution");
+            String response = runCode(solution, problem.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), problem.getTimeLimit(), "Language Not Found");
             testCase.setTestCase(modelCreateTestCase.getTestCase());
             testCase.setCorrectAnswer(response);
             return testCase;
@@ -153,9 +153,9 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public Page<ContestProblem> getContestProblemPaging(Pageable pageable) throws Exception {
+    public Page<Problem> getContestProblemPaging(Pageable pageable) throws Exception {
         try {
-            Page<ContestProblem> contestProblems = contestProblemPagingAndSortingRepo.findAll(pageable);
+            Page<Problem> contestProblems = contestProblemPagingAndSortingRepo.findAll(pageable);
             return contestProblemPagingAndSortingRepo.findAll(pageable);
         }catch (Exception e){
             throw new Exception(e.getMessage());
@@ -164,10 +164,10 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public ContestProblem findContestProblemByProblemId(String problemId) throws Exception {
+    public Problem findContestProblemByProblemId(String problemId) throws Exception {
         try {
-            ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-            return contestProblem;
+            Problem problem = contestProblemRepo.findByProblemId(problemId);
+            return problem;
         }catch (Exception e){
             throw new Exception(e.toString());
         }
@@ -191,14 +191,14 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public ContestProblem getContestProblem(String problemId) throws Exception {
-        ContestProblem contestProblem;
+    public Problem getContestProblem(String problemId) throws Exception {
+        Problem problem;
         try {
-            contestProblem = contestProblemRepo.findByProblemId(problemId);
-            if(contestProblem == null){
+            problem = contestProblemRepo.findByProblemId(problemId);
+            if(problem == null){
                 throw new MiniLeetCodeException("Problem not found");
             }
-            return contestProblem;
+            return problem;
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
@@ -208,13 +208,13 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public ModelProblemDetailRunCodeResponse problemDetailRunCode(String problemId, ModelProblemDetailRunCode modelProblemDetailRunCode, String userName) throws Exception {
-        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-        String tempName = tempDir.createRandomScriptFileName(contestProblem.getProblemName() + "-" + contestProblem.getCorrectSolutionLanguage());
+        Problem problem = contestProblemRepo.findByProblemId(problemId);
+        String tempName = tempDir.createRandomScriptFileName(problem.getProblemName() + "-" + problem.getCorrectSolutionLanguage());
         String output = runCode(modelProblemDetailRunCode.getSourceCode(),
                 modelProblemDetailRunCode.getComputerLanguage(),
                 tempName+"-"+userName+"-code",
                 modelProblemDetailRunCode.getInput(),
-                contestProblem.getTimeLimit(),
+                problem.getTimeLimit(),
                 "User Source Code Langua Not Found");
 
         output = output.substring(0, output.length()-1);
@@ -235,11 +235,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         }
         log.info("status {}", status);
         output = output.substring(0, lastLineIndexOutput);
-        String expected = runCode(contestProblem.getCorrectSolutionSourceCode(),
-                contestProblem.getCorrectSolutionLanguage(),
+        String expected = runCode(problem.getCorrectSolutionSourceCode(),
+                problem.getCorrectSolutionLanguage(),
                 tempName+"-solution",
                 modelProblemDetailRunCode.getInput(),
-                contestProblem.getTimeLimit(),
+                problem.getTimeLimit(),
                 "Correct Solution Language Not Found");
         expected = expected.substring(0, expected.length()-1);
         int lastLinetIndexExpected = expected.lastIndexOf("\n");
@@ -262,9 +262,9 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public String getTestCaseResult(String problemId, String userName, ModelGetTestCaseResult modelGetTestCaseResult) throws Exception {
-        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-        String tempName = tempDir.createRandomScriptFileName(userName + "-" +contestProblem.getProblemName() + "-" + contestProblem.getCorrectSolutionLanguage());
-        String output = runCode(contestProblem.getCorrectSolutionSourceCode(), contestProblem.getCorrectSolutionLanguage(), tempName, modelGetTestCaseResult.getTestcase(), contestProblem.getTimeLimit(), "Correct Solution Language Not Found");
+        Problem problem = contestProblemRepo.findByProblemId(problemId);
+        String tempName = tempDir.createRandomScriptFileName(userName + "-" + problem.getProblemName() + "-" + problem.getCorrectSolutionLanguage());
+        String output = runCode(problem.getCorrectSolutionSourceCode(), problem.getCorrectSolutionLanguage(), tempName, modelGetTestCaseResult.getTestcase(), problem.getTimeLimit(), "Correct Solution Language Not Found");
         output = output.substring(0, output.length()-1);
         int lastLinetIndexExpected = output.lastIndexOf("\n");
         output = output.substring(0, lastLinetIndexExpected);
@@ -307,11 +307,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     @Override
     public TestCase saveTestCase(String problemId, ModelSaveTestcase modelSaveTestcase) {
 
-        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
+        Problem problem = contestProblemRepo.findByProblemId(problemId);
         TestCase testCase = TestCase.builder()
                 .correctAnswer(modelSaveTestcase.getResult())
                 .testCase(modelSaveTestcase.getInput())
-                .contestProblem(contestProblem)
+                .problem(problem)
                 .build();
         return testCaseRepo.save(testCase);
     }
@@ -323,16 +323,16 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         if(userLogin.equals(null)){
             throw new Exception(("user not found"));
         }
-        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-        if(contestProblem.equals(null)){
+        Problem problem = contestProblemRepo.findByProblemId(problemId);
+        if(problem.equals(null)){
             throw new Exception("Contest problem does not exist");
         }
-        List<TestCase> testCaseList = testCaseRepo.findAllByContestProblem(contestProblem);
+        List<TestCase> testCaseList = testCaseRepo.findAllByProblem(problem);
         if (testCaseList == null){
             throw new Exception("Problem Does not have testcase");
         }
         String tempName = tempDir.createRandomScriptFileName(userName+"-"+problemId);
-        String response = submission(modelProblemDetailSubmission.getSource(), modelProblemDetailSubmission.getLanguage(), tempName, testCaseList,"Language Not Found", contestProblem.getTimeLimit());
+        String response = submission(modelProblemDetailSubmission.getSource(), modelProblemDetailSubmission.getLanguage(), tempName, testCaseList,"Language Not Found", problem.getTimeLimit());
         log.info("response {}", response);
         response = response.substring(0, response.length()-1);
         int lastIndex = response.lastIndexOf("\n");
@@ -343,7 +343,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
             ProblemSubmission problemSubmission = ProblemSubmission.builder()
                     .score(0)
                     .userLogin(userLogin)
-                    .contestProblem(contestProblem)
+                    .problem(problem)
                     .sourceCode(modelProblemDetailSubmission.getSource())
                     .status(status)
                     .testCasePass(0+"/"+testCaseList.size())
@@ -356,7 +356,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                     .runtime(p.getRuntime())
                     .memoryUsage(p.getMemoryUsage())
                     .language(p.getSourceCodeLanguages())
-                    .problemName(contestProblem.getProblemName())
+                    .problemName(problem.getProblemName())
                     .problemSubmissionId(p.getProblemSubmissionId())
                     .build();
         }
@@ -383,7 +383,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         ProblemSubmission problemSubmission = ProblemSubmission.builder()
                 .score(score)
                 .userLogin(userLogin)
-                .contestProblem(contestProblem)
+                .problem(problem)
                 .sourceCode(modelProblemDetailSubmission.getSource())
                 .status(status)
                 .testCasePass(cnt+"/"+testCaseList.size())
@@ -399,7 +399,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .memoryUsage(problemSubmission1.getMemoryUsage())
                 .runtime(problemSubmission1.getRuntime())
                 .timeSubmitted(problemSubmission1.getTimeSubmitted())
-                .problemName(contestProblem.getProblemName())
+                .problemName(problem.getProblemName())
                 .problemSubmissionId(problemSubmission1.getProblemSubmissionId())
                 .build();
         return res;
@@ -408,11 +408,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     @Override
     public ListProblemSubmissionResponse getListProblemSubmissionResponse(String problemId, String userId) throws Exception {
         UserLogin userLogin = userLoginRepo.findByUserLoginId(userId);
-        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-        if(userLogin == null || contestProblem == null){
+        Problem problem = contestProblemRepo.findByProblemId(problemId);
+        if(userLogin == null || problem == null){
             throw new Exception("not found");
         }
-        List<Object[]> list = problemSubmissionRepo.getListProblemSubmissionByUserAndProblemId(userLogin, contestProblem);
+        List<Object[]> list = problemSubmissionRepo.getListProblemSubmissionByUserAndProblemId(userLogin, problem);
         List<ProblemSubmissionResponse> problemSubmissionResponseList = new ArrayList<>();
         try {
             list.stream().forEach(objects -> {
@@ -448,12 +448,12 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 throw new MiniLeetCodeException("Contest is already exist");
             }
             UserLogin userLogin = userLoginRepo.findByUserLoginId(userName);
-            List<ContestProblem> contestProblems = getContestProblemsFromListContestId(modelCreateContest.getProblemIds());
+            List<Problem> problems = getContestProblemsFromListContestId(modelCreateContest.getProblemIds());
             Contest contest = Contest.builder()
                     .contestId(modelCreateContest.getContestId())
                     .contestName(modelCreateContest.getContestName())
                     .contestSolvingTime(modelCreateContest.getContestTime())
-                    .contestProblems(contestProblems)
+                    .problems(problems)
                     .userLogin(userLogin)
                     .build();
             return contestRepo.save(contest);
@@ -474,11 +474,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
             if(!userLogin.getUserLoginId().equals(contestExist.getUserLogin().getUserLoginId())){
                 throw new MiniLeetCodeException("You don't have privileged");
             }
-            List<ContestProblem> contestProblems = getContestProblemsFromListContestId(modelUpdateContest.getProblemIds());
+            List<Problem> problems = getContestProblemsFromListContestId(modelUpdateContest.getProblemIds());
             Contest contest = Contest.builder()
                     .contestName(modelUpdateContest.getContestName())
                     .contestSolvingTime(modelUpdateContest.getContestSolvingTime())
-                    .contestProblems(contestProblems)
+                    .problems(problems)
                     .userLogin(userLogin)
                     .build();
             return contestRepo.save(contest);
@@ -495,8 +495,8 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         }
         ModelProblemSubmissionDetailResponse modelProblemDetailSubmissionResponse = ModelProblemSubmissionDetailResponse.builder()
                 .problemSubmissionId(problemSubmission.getProblemSubmissionId())
-                .problemId(problemSubmission.getContestProblem().getProblemId())
-                .problemName(problemSubmission.getContestProblem().getProblemName())
+                .problemId(problemSubmission.getProblem().getProblemId())
+                .problemName(problemSubmission.getProblem().getProblemName())
                 .submittedAt(problemSubmission.getTimeSubmitted())
                 .submissionSource(problemSubmission.getSourceCode())
                 .submissionLanguage(problemSubmission.getSourceCodeLanguages())
@@ -531,7 +531,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     public ModelGetContestDetailResponse getContestDetailByContestId(String contestId) {
         Contest contest = contestRepo.findContestByContestId(contestId);
         List<ModelGetProblemDetailResponse> problems = new ArrayList<>();
-        contest.getContestProblems().forEach(contestProblem -> {
+        contest.getProblems().forEach(contestProblem -> {
             ModelGetProblemDetailResponse p = ModelGetProblemDetailResponse.builder()
                     .levelId(contestProblem.getLevelId())
                     .problemId(contestProblem.getProblemId())
@@ -550,16 +550,16 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         return modelGetContestDetailResponse;
     }
 
-    private List<ContestProblem> getContestProblemsFromListContestId(List<String> problemIds) throws MiniLeetCodeException {
-        List<ContestProblem> contestProblems = new ArrayList<>();
+    private List<Problem> getContestProblemsFromListContestId(List<String> problemIds) throws MiniLeetCodeException {
+        List<Problem> problems = new ArrayList<>();
         for(String problemId : problemIds){
-            ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-            if(contestProblem.equals(null)){
+            Problem problem = contestProblemRepo.findByProblemId(problemId);
+            if(problem.equals(null)){
                 throw new MiniLeetCodeException("Problem " + problemId +" does not exist");
             }
-            contestProblems.add(contestProblem);
+            problems.add(problem);
         }
-        return contestProblems;
+        return problems;
     }
 
 

@@ -29,7 +29,7 @@ public class TestCase {
 
     @JoinColumn(name = "contest_problem_id", referencedColumnName = "problem_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ContestProblem contestProblem;
+    private Problem problem;
 
 //    @JoinTable(name = "contest_problem_test_case",
 //            joinColumns = @JoinColumn(name = "test_case_id", referencedColumnName = "test_case_id"),

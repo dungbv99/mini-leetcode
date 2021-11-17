@@ -1,7 +1,7 @@
 package com.hust.minileetcode.controller;
 
 import com.hust.minileetcode.docker.DockerClientBase;
-import com.hust.minileetcode.entity.ContestProblem;
+import com.hust.minileetcode.entity.Problem;
 import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.repo.ContestProblemPagingAndSortingRepo;
@@ -12,19 +12,13 @@ import com.hust.minileetcode.utils.TempDir;
 import com.spotify.docker.client.exceptions.DockerException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.LifecycleState;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -84,11 +78,11 @@ public class HelloController {
     @GetMapping("/test")
     public String test() throws IOException {
         String problemId = "1.Add 2 Number";
-        ContestProblem contestProblem = contestProblemRepo.findByProblemId(problemId);
-        log.info("contestProblem {}", contestProblem);
-        List<TestCase> testCases = testCaseRepo.findAllByContestProblem(contestProblem);
+        Problem problem = contestProblemRepo.findByProblemId(problemId);
+        log.info("contestProblem {}", problem);
+        List<TestCase> testCases = testCaseRepo.findAllByProblem(problem);
         log.info("testcase size {}", testCases.size());
-        String source = genSubmitScriptFile(testCases, contestProblem.getCorrectSolutionSourceCode(), "test", 1);
+        String source = genSubmitScriptFile(testCases, problem.getCorrectSolutionSourceCode(), "test", 1);
         BufferedWriter writer = new BufferedWriter(new FileWriter("./temp_dir/" + "a.sh"));
         writer.write(source);
         writer.close();

@@ -22,7 +22,7 @@ public class ContestSubmission {
 
     @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ContestProblem contestProblem;
+    private Problem problem;
 
     @JoinColumn(name = "contest_id", referencedColumnName = "contest_id")
     @ManyToOne(fetch = FetchType.LAZY)

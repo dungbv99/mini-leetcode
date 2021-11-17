@@ -1,16 +1,10 @@
 package com.hust.minileetcode.controller;
 
-import com.hust.minileetcode.entity.Contest;
-import com.hust.minileetcode.entity.ContestProblem;
-import com.hust.minileetcode.entity.ProblemSubmission;
+import com.hust.minileetcode.entity.Problem;
 import com.hust.minileetcode.entity.TestCase;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
-import com.hust.minileetcode.repo.ContestProblemRepo;
-import com.hust.minileetcode.repo.ProblemSubmissionRepo;
-import com.hust.minileetcode.rest.repo.UserLoginRepo;
 import com.hust.minileetcode.service.ProblemTestCaseService;
-import com.hust.minileetcode.utils.TempDir;
 import io.lettuce.core.dynamic.annotation.Param;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,8 +41,8 @@ public class ContestProblemController {
 
     @PostMapping("/update-contest-problem/{problemId}")
     public ResponseEntity<?> updateContestProblem(@RequestBody ModelCreateContestProblem modelCreateContestProblem, @PathVariable("problemId") String problemId) throws Exception{
-        ContestProblem contestProblem = problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
-        return ResponseEntity.ok(contestProblem);
+        Problem problem = problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
+        return ResponseEntity.ok(problem);
     }
 
 
@@ -96,7 +90,7 @@ public class ContestProblemController {
                 else
                     pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy).ascending());
             }
-            Page<ContestProblem> contestProblemPage = problemTestCaseService.getContestProblemPaging(pageable);
+            Page<Problem> contestProblemPage = problemTestCaseService.getContestProblemPaging(pageable);
             return ResponseEntity.status(200).body(contestProblemPage);
         }catch (Exception e){
             e.printStackTrace();
@@ -116,15 +110,15 @@ public class ContestProblemController {
     @GetMapping("/problem-details/{problemId}")
     public ResponseEntity<?> getProblemDetails(@PathVariable("problemId") String problemId) throws Exception {
         log.info("getProblemDetails problemId ", problemId);
-        ContestProblem contestProblem = problemTestCaseService.getContestProblem(problemId);
-        return ResponseEntity.status(200).body(contestProblem);
+        Problem problem = problemTestCaseService.getContestProblem(problemId);
+        return ResponseEntity.status(200).body(problem);
     }
 
     @PostMapping("/update-problem-detail/{problemId}")
     public ResponseEntity<?> updateProblemDetails(@RequestBody ModelCreateContestProblem modelCreateContestProblem, @PathVariable("problemId") String problemId) throws Exception {
         log.info("updateProblemDetails problemId {}", problemId);
-        ContestProblem contestProblem = problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
-        return ResponseEntity.status(200).body(contestProblem);
+        Problem problem = problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
+        return ResponseEntity.status(200).body(problem);
     }
 
     @PostMapping("/problem-detail-run-code/{problemId}")

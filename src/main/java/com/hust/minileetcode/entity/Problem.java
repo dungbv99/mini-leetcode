@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Builder
 @Table(name = "contest_problem")
-public class ContestProblem {
+public class Problem {
     @Id
     @Column(name = "problem_id")
     private String problemId;
@@ -27,7 +27,7 @@ public class ContestProblem {
 //    @OneToMany(fetch = FetchType.LAZY)
 //    private List<ProblemSourceCode> problemSourceCode;
 
-    @OneToMany(mappedBy = "contestProblem")
+    @OneToMany(mappedBy = "problem")
     private Set<ProblemSourceCode> problemSourceCodes;
 
     @Column(name = "problem_name", unique = true)

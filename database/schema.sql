@@ -297,5 +297,5 @@ create table user_submission_result
     last_updated_stamp         date default current_date ,
     created_stamp              date default current_date ,
     constraint fk_contest_id_user_submission_result foreign key (contest_id) references contest(contest_id),
-    constraint fk_user_id_user_submission_result foreign key (user_id) references user_login(user_login_id),
-)
+    constraint fk_user_id_user_submission_result foreign key (user_id) references user_login(user_login_id)
+);

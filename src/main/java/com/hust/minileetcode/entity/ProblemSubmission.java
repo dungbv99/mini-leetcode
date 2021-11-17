@@ -2,15 +2,10 @@ package com.hust.minileetcode.entity;
 
 import com.hust.minileetcode.rest.entity.UserLogin;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 
@@ -29,7 +24,7 @@ public class ProblemSubmission {
 
     @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ContestProblem contestProblem;
+    private Problem problem;
 
     @JoinColumn(name = "submitted_by_user_login_id", referencedColumnName = "user_login_id")
     @ManyToOne(fetch = FetchType.LAZY)
