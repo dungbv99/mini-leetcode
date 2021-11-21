@@ -8,9 +8,11 @@ import com.hust.minileetcode.rest.service.PersonService;
 import com.hust.minileetcode.rest.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +24,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
+@Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ApiController {
 
@@ -30,7 +33,9 @@ public class ApiController {
     private ApplicationService applicationService;
 
     @GetMapping("/")
-    public ResponseEntity<Map> home(@CurrentSecurityContext(expression = "authentication.name") String name) {
+    public ResponseEntity<Map> home(@CurrentSecurityContext(expression = "authentication.name") String name, Principal principal) {
+        log.info("SecurityContextHolder.getContext().getAuthentication() {}", SecurityContextHolder.getContext().getAuthentication());
+        log.info("principal {}", principal);
         Map<String, String> response = new HashMap<>();
         HttpHeaders headers = new HttpHeaders();
         response.put("user", name);

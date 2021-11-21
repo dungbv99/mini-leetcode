@@ -22,5 +22,38 @@ public class Constants {
         MapLevelOrder.put("hard", 3);
     }
 
+    public enum RegistrationType{
+        PENDING("PENDING"),
+        SUCCESSFUL("SUCCESSFUL"),
+        FAILED("FAILED");
+
+        private final String value;
+
+        RegistrationType(String value){
+            this.value = value;
+        }
+
+        public String getValue(){
+            return this.value;
+        }
+    }
+
+    public enum Languages{
+        CPP("CPP"),
+        PYTHON3("PYTHON3"),
+        JAVA("JAVA"),
+        GOLANG("GOLANG");
+
+        private final String value;
+
+        Languages(String value){
+            this.value = value;
+        }
+        public String getValue(){
+            return this.value;
+        }
+
+    }
+
 
 }

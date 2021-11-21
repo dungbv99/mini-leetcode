@@ -5,8 +5,7 @@ SQL_DB_PORT: 5432
 SQL_DB_USER: postgres
 SQL_DB_PASS: 123456
 POSTGRES_DB: leetcode
-DOCKER_SERVER_HOST: http://localhost:12375
-
+DOCKER_SERVER_HOST: http://103.56.158.222:12375
 server.servlet.context-path: '/api'
 
 spring:
@@ -44,4 +43,20 @@ spring:
     jackson:
         serialization:
             FAIL_ON_EMPTY_BEANS: false
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: anhtuan0126104@gmail.com
+        password: prmsathjqufwtxxw
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    connectiontimeout: 5000
+                    timeout: 5000
+                    writetimeout: 5000
+                    ssl:
+                        trust: smtp.gmail.com
+                    starttls:
+                        enable: true
 

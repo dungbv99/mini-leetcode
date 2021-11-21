@@ -26,7 +26,7 @@ import java.util.UUID;
 public class ContestProblemController {
     ProblemTestCaseService problemTestCaseService;
 
-    @PostMapping("/create-contest-problem")
+    @PostMapping("/create-problem")
     public ResponseEntity<?> createContestProblem(@RequestBody ModelCreateContestProblem modelCreateContestProblem) throws Exception{
         System.out.println(modelCreateContestProblem.toString());
         try {
