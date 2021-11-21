@@ -183,7 +183,7 @@ function CreateProblem(){
     }
     request(
       "post",
-      API_URL+"/create-contest-problem",
+      API_URL+"/create-problem",
       (res) =>{
         console.log("res ", res);
         setShowSubmitSuccess(true);

@@ -32,6 +32,7 @@ import {SubmitSuccess} from "./SubmitSuccess";
 import {useParams} from "react-router";
 import {request} from "./Request";
 import {sleep} from "./lib";
+import htmlToDraft from "html-to-draftjs";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -119,11 +120,19 @@ function EditProblem(){
         setMemoryLimit(res.data.memoryLimit);
         setCodeSolution(res.data.correctSolutionSourceCode);
         setTimeLimit(res.data.timeLimit);
-        setEditorStateDescription(EditorState.createWithText(res.data.problemDescription));
-        setEditorStateSolution(EditorState.createWithText(res.data.solution));
-        // setEditorStateSolution(res.data.solution);
-        // setLanguageSolution(res.data.correctSolutionLanguage);
-        // setEditorStateDescription(res.data.description);
+        let problemDescriptionHtml = htmlToDraft(res.data.problemDescription);
+        let {contentBlocks, entityMap} = problemDescriptionHtml;
+        let contentDescriptionState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+        let statementDescription = EditorState.createWithContent(contentDescriptionState);
+        setEditorStateDescription(statementDescription);
+        console.log("statementDescription ", statementDescription);
+        let solutionHtml = htmlToDraft(res.data.solution);
+        let contentBlocks1 = solutionHtml.contentBlocks;
+        let entityMap1 = solutionHtml.entityMap;
+        let contentSolutionState = ContentState.createFromBlockArray(contentBlocks1, entityMap1);
+        let statementSolution = EditorState.createWithContent(contentSolutionState);
+        setEditorStateSolution(statementSolution);
+
       },
       {}
     ).then ();
