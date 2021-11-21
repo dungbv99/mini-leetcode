@@ -44,3 +44,17 @@ INSERT INTO application_type(application_type_id, description, last_updated_stam
 VALUES ('ENTITY', 'Entity application type', NOW(), NOW());
 
 
+insert into security_group(group_id, description, group_name) values ('ROLE_ADMIN', 'ADMIN', 'ADMIN');
+insert into security_group(group_id, description, group_name) values ('ROLE_TEACHER', 'TEACHER', 'TEACHER');
+insert into security_group(group_id, description, group_name) values ('ROLE_STUDENT', 'STUDENT', 'STUDENT');
+
+insert into user_login_security_group(user_login_id, group_id) values ('admin', 'ROLE_ADMIN'),('admin', 'ROLE_TEACHER'), ('admin', 'ROLE_STUDENT');
+insert into security_permission(permission_id, description) values ('ADMIN', 'ADMIN'), ('TEACHER', 'TEACHER'), ('STUDENT', 'STUDENT');
+insert into security_group_permission(group_id, permission_id) values ('ROLE_ADMIN', 'ADMIN'), ('ROLE_TEACHER', 'TEACHER'), ('ROLE_STUDENT', 'STUDENT');
+insert into application(application_id, application_type_id, module_id, permission_id, description)
+values ('MENU_ADMIN', 'MENU',NULL,NULL,'MENU ADMIN PRIMARY'),
+       ('MENU_ADMIN_CHILDREN', 'MENU','MENU_ADMIN', 'ADMIN', 'MENU ADMIN CHILDREN'),
+       ('MENU_TEACHER', 'MENU',NULL,NULL,'MENU TEACHER PRIMARY'),
+       ('MENU_TEACHER_CHILDREN', 'MENU','MENU_TEACHER', 'TEACHER', 'MENU TEACHER CHILDREN'),
+       ('MENU_STUDENT', 'MENU',NULL,NULL,'MENU STUDENT PRIMARY'),
+       ('MENU_STUDENT_CHILDREN', 'MENU','MENU_STUDENT', 'STUDENT', 'MENU STUDENT CHILDREN');

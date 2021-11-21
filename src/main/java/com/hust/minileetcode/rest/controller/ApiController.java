@@ -3,11 +3,11 @@ package com.hust.minileetcode.rest.controller;
 import com.hust.minileetcode.rest.entity.Party;
 import com.hust.minileetcode.rest.entity.Person;
 import com.hust.minileetcode.rest.entity.UserLogin;
+import com.hust.minileetcode.rest.service.SecurityGroupService;
 import com.hust.minileetcode.rest.service.ApplicationService;
 import com.hust.minileetcode.rest.service.PersonService;
 import com.hust.minileetcode.rest.service.UserService;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +31,7 @@ public class ApiController {
     private UserService userService;
     private PersonService personService;
     private ApplicationService applicationService;
+    private SecurityGroupService securityGroupService;
 
     @GetMapping("/")
     public ResponseEntity<Map> home(@CurrentSecurityContext(expression = "authentication.name") String name, Principal principal) {
@@ -53,6 +54,11 @@ public class ApiController {
         response.put("partyId", person.getPartyId().toString());
         response.put("user", principal.getName());
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<?> getRoles() {
+        return ResponseEntity.ok().body(securityGroupService.getRoles());
     }
 
     @GetMapping("screen-security")
