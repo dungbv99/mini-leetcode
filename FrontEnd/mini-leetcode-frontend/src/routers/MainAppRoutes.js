@@ -15,6 +15,7 @@ const UserLoginRoute = lazy(() => import("./UserLoginRoute"));
 // const TestGroupRoute = lazy(() => import("./TestGroupRoute"));
 // const UserGroupRoute = lazy(() => import("./UserGroupRoute"));
 const ProgrammingContestRoutes = lazy(() => import("./ProgrammingContestRoutes"));
+const UserRoute = lazy(() => import("./UserRoute"));
 
 function MainAppRoute(props) {
   const location = useLocation();
@@ -64,6 +65,11 @@ function MainAppRoute(props) {
 
           <PrivateRoute component={ProgrammingContestRoutes} path="/programming-contest" />
 
+          <PrivateRoute
+            component={UserRoute}
+            isAuthenticated={props.isAuthenticated}
+            path="/user-group"
+          />
 
           {/* <PrivateRoute component={EduRoute} path="/edu" /> */}
 

@@ -1,12 +1,14 @@
 package com.hust.minileetcode.rest.service;
 
 import com.hust.minileetcode.rest.entity.UserLogin;
-import com.hust.minileetcode.rest.user.DPerson;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.hust.minileetcode.rest.model.*;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface UserService {
     UserLogin findById(String userLoginId);
+
+    @Transactional
+    SimpleResponse register(RegisterIM im);
 
 //    DPerson findByPartyId(String partyId);
 
@@ -18,11 +20,11 @@ public interface UserService {
 //
 //    List<UserLogin> getAllUserLogins();
 //
-//    UserLogin createAndSaveUserLogin(String userName, String password);
+    UserLogin createAndSaveUserLogin(String userName, String password);
 //
 //    UserLogin updatePassword(UserLogin user, String password);
 //
-//    Party createAndSaveUserLogin(PersonModel personModel) throws Exception;
+    void createAndSaveUserLogin(PersonModel personModel) throws Exception;
 //
 //    Party update(PersonUpdateModel personUpdateModel, UUID partyId);
 //
@@ -30,11 +32,11 @@ public interface UserService {
 //
 //    SimpleResponse register(RegisterIM im);
 //
-//    GetAllRegistsOM getAllRegists();
+    GetAllRegistersOM getAllRegisters();
+
+    SimpleResponse approve(ApproveRegistrationIM im);
 //
-//    SimpleResponse approve(ApproveRegistrationIM im);
-//
-//    SimpleResponse disableUserRegistration(DisableUserRegistrationIM im);
+    SimpleResponse disableUserRegistration(DisableUserRegistrationIM im);
 //
 //    UserLogin updatePassword2(String userLoginId, String password);
 //

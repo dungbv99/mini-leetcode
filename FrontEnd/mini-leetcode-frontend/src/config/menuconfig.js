@@ -6,11 +6,14 @@ import { GiTeacher } from "react-icons/gi";
 import TeachingIcon from "../assets/icons/mathematics.svg";
 import { buildMapPathMenu } from "../utils/MenuUtils";
 import { general } from "./menuconfig/general";
-import { ProgrammingContest } from "./menuconfig/classmanagement/ProgramingContest";
+import { ProgrammingContest } from "./menuconfig/ProgramingContest";
+import {user} from "./menuconfig/user";
+import PeopleIcon from "@material-ui/icons/People";
 
 export const MENU_LIST = [];
 MENU_LIST.push(general);
 MENU_LIST.push(ProgrammingContest);
+MENU_LIST.push(user);
 
 export const menuIconMap = new Map();
 menuIconMap.set(
@@ -24,6 +27,8 @@ menuIconMap.set(
 );
 menuIconMap.set("DashboardIcon", <DashboardRoundedIcon />);
 menuIconMap.set("GiTeacher", <GiTeacher size={24} />);
+menuIconMap.set("LocalLibraryIcon", <LocalLibraryIcon />);
+menuIconMap.set("PeopleIcon", <PeopleIcon/>);
 menuIconMap.set("LocalLibraryIcon", <LocalLibraryIcon />);
 
 export const mapPathMenu = buildMapPathMenu(MENU_LIST);

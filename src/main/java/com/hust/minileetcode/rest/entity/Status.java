@@ -1,6 +1,8 @@
 package com.hust.minileetcode.rest.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -9,14 +11,14 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Status {
 
     @Id
     @Column(name = "status_id")
     private String id;
-    @JoinColumn(name = "status_type_id", referencedColumnName = "status_type_id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    private StatusType type;
+
     private String statusCode;
     private String sequenceId;
 
@@ -26,18 +28,18 @@ public class Status {
     private Date createdStamp;
     private Date lastUpdatedStamp;
 
-    public Status(String id, StatusType type, String statusCode, String sequenceId, String description) {
-        this.id = id;
-        this.type = type;
-        this.statusCode = statusCode;
-        this.sequenceId = sequenceId;
-        this.description = description;
-    }
-
-    public Status() {
-    }
 
     public enum StatusEnum {
-        SINGLE, MARRIED, DIVORCED, PARTY_ENABLED, PARTY_DISABLED
+        PERSON_ENABLED("PERSON_ENABLED"), PERSON_DISABLE("PERSON_DISABLE");
+
+        private String value;
+
+        StatusEnum(String value){
+            this.value = value;
+        }
+
+        public String getValue(){
+            return this.value;
+        }
     }
 }

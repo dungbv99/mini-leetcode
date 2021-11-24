@@ -15,7 +15,7 @@ public class PersonServiceImpl implements PersonService {
     PersonRepo personRepo;
 
     @Override
-    public Person findByPartyId(UUID partyId) {
-        return personRepo.findByPartyId(partyId);
+    public Person findByPersonId(UUID partyId) {
+        return personRepo.findPersonByPersonId(partyId);
     }
 }

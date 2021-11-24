@@ -37,46 +37,27 @@ create TABLE status
     CONSTRAINT status_to_type FOREIGN KEY (status_type_id) REFERENCES status_type (status_type_id)
 );
 
-create TABLE party_type
+create TABLE person
 (
-    party_type_id      VARCHAR(60) NOT NULL,
-    parent_type_id     VARCHAR(60),
-    has_table          BOOLEAN,
-    description        TEXT,
-    last_updated_stamp TIMESTAMP,
-    created_stamp      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT pk_party_type PRIMARY KEY (party_type_id),
-    CONSTRAINT party_type_par FOREIGN KEY (parent_type_id) REFERENCES party_type (party_type_id)
-);
+    person_id          UUID NOT NULL DEFAULT uuid_generate_v1(),
+    status_id          varchar (20),
+    first_name         VARCHAR(100),
+    middle_name        VARCHAR(100),
+    last_name          VARCHAR(100),
+    gender             CHARACTER(1),
+    birth_date         DATE,
+    last_updated_stamp TIMESTAMP NULL,
+    created_stamp      TIMESTAMP DEFAULT current_date,
+    constraint pk_person_id primary key (person_id),
+    constraint fk_status_id_person foreign key(status_id) references status(status_id)
 
-create TABLE party
-(
-    party_id                    UUID      NOT NULL default uuid_generate_v1(),
-    party_type_id               VARCHAR(60),
-    name                        varchar(200),
-    external_id                 VARCHAR(60),
-    description                 TEXT,
-    status_id                   VARCHAR(60),
-    created_date                TIMESTAMP NULL,
-    created_by_user_login       VARCHAR(255),
-    last_modified_date          TIMESTAMP NULL,
-    last_modified_by_user_login VARCHAR(255),
-    is_unread                   BOOLEAN,
-    last_updated_stamp          TIMESTAMP,
-    created_stamp               TIMESTAMP          DEFAULT CURRENT_TIMESTAMP,
-    party_code                  VARCHAR(255),
-    CONSTRAINT pk_party PRIMARY KEY (party_id),
-    CONSTRAINT party_status_item FOREIGN KEY (status_id) REFERENCES status (status_id),
-    CONSTRAINT party_pty_typ FOREIGN KEY (party_type_id) REFERENCES party_type (party_type_id)
---     CONSTRAINT party_m_user_login FOREIGN KEY (last_modified_by_user_login) REFERENCES user_login (user_login_id),
---     CONSTRAINT party_c_user_login FOREIGN KEY (created_by_user_login) REFERENCES user_login (user_login_id)
 );
-
 
 
 create TABLE user_login
 (
     user_login_id            VARCHAR(255)        NOT NULL,
+    person_id                UUID,
     current_password         VARCHAR(60),
     otp_secret               VARCHAR(60),
     client_token             VARCHAR(512),
@@ -90,17 +71,12 @@ create TABLE user_login
     last_updated_stamp       TIMESTAMP,
     created_stamp            TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     otp_resend_number        INT       DEFAULT 0 NULL,
-    party_id                 UUID,
+    UNIQUE (person_id),
     CONSTRAINT pk_user_login PRIMARY KEY (user_login_id),
-    CONSTRAINT user_party FOREIGN KEY (party_id) REFERENCES party (party_id)
+    CONSTRAINT pk_person_id_user_login FOREIGN KEY (person_id) references person(person_id)
 );
 
-alter table party
-    add CONSTRAINT party_m_user_login FOREIGN KEY (last_modified_by_user_login) REFERENCES user_login (user_login_id);
-alter table party
-    add CONSTRAINT party_c_user_login FOREIGN KEY (created_by_user_login) REFERENCES user_login (user_login_id);
-
-CREATE TABLE public.security_group
+CREATE TABLE security_group
 (
     group_id varchar(60) NOT NULL,
     description text NULL,
@@ -143,19 +119,6 @@ create TABLE security_group_permission
     CONSTRAINT sec_grp_perm_perm FOREIGN KEY (permission_id) REFERENCES security_permission (permission_id)
 );
 
-create TABLE person
-(
-    party_id           UUID      NOT NULL,
-    first_name         VARCHAR(100),
-    middle_name        VARCHAR(100),
-    last_name          VARCHAR(100),
-    gender             CHARACTER(1),
-    birth_date         DATE,
-    last_updated_stamp TIMESTAMP NULL,
-    created_stamp      TIMESTAMP DEFAULT current_date ,
-    CONSTRAINT pk_person PRIMARY KEY (party_id),
-    CONSTRAINT person_party FOREIGN KEY (party_id) REFERENCES party (party_id)
-);
 
 create TABLE application_type
 (
@@ -181,7 +144,7 @@ create TABLE application
     CONSTRAINT application_permission FOREIGN KEY (permission_id) REFERENCES security_permission (permission_id)
 );
 
-create TABLE public.notification_type
+create TABLE notification_type
 (
     notification_type_id varchar(100) NOT NULL,
     notification_type_name varchar(200) NULL,
@@ -190,11 +153,11 @@ create TABLE public.notification_type
     CONSTRAINT pk_notification_type_id PRIMARY KEY (notification_type_id)
 );
 
-create TABLE public.notifications
+create TABLE notifications
 (
     id uuid NOT NULL DEFAULT uuid_generate_v1(),
     "content" varchar(500) NULL,
-    notification_type_id varchar(100) NULL,
+--     notification_type_id varchar(100) NULL,
     from_user varchar(60) NULL,
     to_user varchar(60) NULL,
     url varchar(200) NULL,
@@ -202,11 +165,37 @@ create TABLE public.notifications
     last_updated_stamp timestamp NULL,
     created_stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_notification_id PRIMARY KEY (id),
-    CONSTRAINT fk_notification_notification_type_id FOREIGN KEY (notification_type_id) REFERENCES notification_type(notification_type_id),
+--     CONSTRAINT fk_notification_notification_type_id FOREIGN KEY (notification_type_id) REFERENCES notification_type(notification_type_id),
     CONSTRAINT fk_notification_user_login_id FOREIGN KEY (to_user) REFERENCES user_login(user_login_id)
 );
 
+create TABLE status_item
+(
+    status_id          VARCHAR(60) NOT NULL,
+    status_code        VARCHAR(60),
+    description        TEXT,
+    last_updated_stamp TIMESTAMP,
+    created_stamp      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT pk_status_id PRIMARY KEY (status_id)
+);
 
+
+create TABLE user_register
+(
+    user_login_id varchar(60) NOT NULL,
+    "password" varchar(100) NOT NULL,
+    email varchar(100) NOT NULL,
+    first_name varchar(100) NOT NULL,
+    middle_name varchar(100) NOT NULL,
+    last_name varchar(100) NOT NULL,
+    status_id varchar(60) NULL,
+    registered_roles text NOT NULL,
+    affiliations text,
+    last_updated_stamp timestamp NULL,
+    created_stamp timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT pk_register__login PRIMARY KEY (user_login_id),
+    CONSTRAINT fk_register_status FOREIGN KEY (status_id) REFERENCES status_item(status_id)
+);
 -- contest defind
 
 
@@ -272,6 +261,7 @@ create table problem_submission
     memory_usage float ,
     test_case_pass varchar (10),
     created_stamp              varchar (25),
+    constraint fk_problem_submission_id primary key(problem_submission_id),
     constraint fk_problem_id foreign key (problem_id) references contest_problem(problem_id),
     constraint fk_user_login_id foreign key (submitted_by_user_login_id) references user_login(user_login_id)
 );
@@ -305,6 +295,7 @@ create table contest_submission
     contest_submission_id  UUID NOT NULL default uuid_generate_v1(),
     contest_id varchar (100) not null ,
     problem_id varchar (100) not null ,
+    user_submission_id varchar (100) not null ,
     problem_submission_id UUID,
     status varchar (20),
     point int,
@@ -314,7 +305,7 @@ create table contest_submission
     constraint fk_contest_id_contest_submission foreign key (contest_id) references contest(contest_id),
     constraint fk_problem_id_contest_submission foreign key (problem_id) references contest_problem(problem_id),
     constraint fk_user_submission_id_contest_submission foreign key (user_submission_id) references user_login(user_login_id),
-    constraint fk_problem_submission_id_contest_submission foreign (problem_submission_id) references problem_submission(problem_submission_id)
+    constraint fk_problem_submission_id_contest_submission foreign key(problem_submission_id) references problem_submission(problem_submission_id)
 );
 
 create table user_submission_result

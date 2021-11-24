@@ -17,8 +17,11 @@ public class ApplicationType {
     @Id
     @Column(name = "application_type_id")
     private String applicationTypeId;
+
     private String description;
+
     private Date createdStamp;
+
     private Date lastUpdatedStamp;
 
     public ApplicationType(String applicationTypeId, String description) {

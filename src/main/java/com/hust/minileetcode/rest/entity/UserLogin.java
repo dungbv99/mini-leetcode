@@ -1,7 +1,6 @@
 package com.hust.minileetcode.rest.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -12,6 +11,9 @@ import java.util.Set;
 @Entity
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserLogin {
 
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
@@ -42,9 +44,9 @@ public class UserLogin {
     private int otpResendNumber;
 
 
-    @JoinColumn(name = "party_id", referencedColumnName = "party_id")
+    @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     @OneToOne(fetch = FetchType.EAGER)
-    private Party party;
+    private Person person;
 
 
     @OneToMany(fetch = FetchType.EAGER)
@@ -54,36 +56,6 @@ public class UserLogin {
             inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "group_id"))
     private Set<SecurityGroup> roles;
     private Date disabledDateTime;
-
-    public UserLogin() {
-    }
-
-
-    public UserLogin(String userLoginId, String password, Set<SecurityGroup> roles, boolean enabled) {
-        this.userLoginId = userLoginId;
-        this.password = PASSWORD_ENCODER.encode(password);
-        this.roles = roles;
-
-        this.enabled = enabled;
-    }
-
-
-    public UserLogin(
-            String password, String passwordHint, boolean isSystem,
-            boolean enabled, boolean hasLoggedOut,
-            boolean requirePasswordChange, int successiveFailedLogins,
-            Date disabledDateTime
-    ) {
-        super();
-        this.password = password;
-        this.passwordHint = passwordHint;
-        this.isSystem = isSystem;
-        this.enabled = enabled;
-        this.hasLoggedOut = hasLoggedOut;
-        this.requirePasswordChange = requirePasswordChange;
-        this.successiveFailedLogins = successiveFailedLogins;
-        this.disabledDateTime = disabledDateTime;
-    }
 
     public void setPassword(String password) {
         this.password = PASSWORD_ENCODER.encode(password);

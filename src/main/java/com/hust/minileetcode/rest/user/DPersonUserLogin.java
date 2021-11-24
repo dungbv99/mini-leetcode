@@ -1,8 +1,5 @@
 package com.hust.minileetcode.rest.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import com.hust.minileetcode.rest.entity.Party;
 import com.hust.minileetcode.rest.entity.SecurityGroup;
 import lombok.Data;
 
@@ -26,10 +23,10 @@ public class DPersonUserLogin {
 
     private boolean enabled;
 
-    @JoinColumn(name = "party_id", referencedColumnName = "party_id")
-    @OneToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
-    private Party party;
+//    @JoinColumn(name = "party_id", referencedColumnName = "party_id")
+//    @OneToOne(fetch = FetchType.EAGER)
+//    @JsonIgnore
+//    private Party party;
 
 
     @OneToMany(fetch = FetchType.EAGER)

@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public interface PersonService {
 
-    Person findByPartyId(UUID partyId);
+    Person findByPersonId(UUID partyId);
 }

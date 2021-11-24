@@ -1,14 +1,8 @@
 package com.hust.minileetcode.rest.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.UUID;
 
@@ -21,11 +15,12 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Person {
 
     @Id
-    @Column(name = "party_id")
-    private UUID partyId;
+    @Column(name = "person_id")
+    private UUID personId;
 
     //@Column(name="first_name")
     private String firstName;
@@ -42,13 +37,17 @@ public class Person {
     //@Column(name="birth_date")
     private Date birthDate;
 
+    @JoinColumn(name = "status_id", referencedColumnName = "status_id")
+    @ManyToOne
+    private Status status;
+
     //private String birthDate;
     public String getFullName() {
         return firstName + " " + middleName + " " + lastName;
     }
 
-    public Person(UUID partyId, String firstName, String middleName, String lastName, String gender, Date birthDate) {
-        this.partyId = partyId;
+    public Person(UUID personId, String firstName, String middleName, String lastName, String gender, Date birthDate) {
+        this.personId = personId;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -57,7 +56,7 @@ public class Person {
     }
 
     public BasicInfoModel getBasicInfoModel() {
-        return new BasicInfoModel(partyId, firstName + " " + middleName + " " + lastName, gender);
+        return new BasicInfoModel(personId, firstName + " " + middleName + " " + lastName, gender);
     }
 
     @AllArgsConstructor
@@ -65,7 +64,7 @@ public class Person {
     @Getter
     public static class BasicInfoModel {
 
-        private UUID partyId;
+        private UUID personId;
         private String fullName;
         private String gender;
     }
@@ -81,7 +80,7 @@ public class Person {
     @Override
     public String toString() {
         return "Person{" +
-                "partyId=" + partyId +
+                "partyId=" + personId +
                 ", firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +

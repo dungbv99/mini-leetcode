@@ -1,11 +1,8 @@
 package com.hust.minileetcode.rest.user;
 
-
-import com.hust.minileetcode.rest.entity.PartyType;
 import com.hust.minileetcode.rest.entity.Person;
 import com.hust.minileetcode.rest.entity.Status;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -20,6 +17,9 @@ import java.util.UUID;
 @Table(name = "party")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class DPerson {
 
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
@@ -28,10 +28,10 @@ public class DPerson {
     @Column(name = "party_id")
     private UUID partyId;
 
-    private String partyCode;
-    @JoinColumn(name = "party_type_id", referencedColumnName = "party_type_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private PartyType type;
+//    private String partyCode;
+//    @JoinColumn(name = "party_type_id", referencedColumnName = "party_type_id")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private PartyType type;
 
     @JoinColumn(name = "party_id", referencedColumnName = "party_id")
     @OneToOne(fetch = FetchType.LAZY)
@@ -44,8 +44,8 @@ public class DPerson {
     @ManyToOne(fetch = FetchType.EAGER)
     private Status status;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "party")
-    private DPersonUserLogin userLogin;
+//    @OneToOne(fetch = FetchType.LAZY, mappedBy = "party")
+//    private DPersonUserLogin userLogin;
 
     private boolean isUnread;
 
@@ -59,8 +59,6 @@ public class DPerson {
     private Date createdStamp;
     private Date lastUpdatedStamp;
 
-    public DPerson() {
-    }
 
     public String getStatus() {
         return this.status != null ? this.status.getId() : null;

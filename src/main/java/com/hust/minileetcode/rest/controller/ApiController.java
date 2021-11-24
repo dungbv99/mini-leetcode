@@ -1,6 +1,5 @@
 package com.hust.minileetcode.rest.controller;
 
-import com.hust.minileetcode.rest.entity.Party;
 import com.hust.minileetcode.rest.entity.Person;
 import com.hust.minileetcode.rest.entity.UserLogin;
 import com.hust.minileetcode.rest.service.SecurityGroupService;
@@ -47,11 +46,12 @@ public class ApiController {
     @GetMapping("/my-account")
     public ResponseEntity<?> getAccount(Principal principal) {
         UserLogin userLogin = userService.findById(principal.getName());
-        Party party = userLogin.getParty();
-        Person person = personService.findByPartyId(party.getPartyId());
+        Person person = userLogin.getPerson();
+//        Party party = userLogin.getParty();
+//        Person person = personService.findByPartyId(party.getPartyId());
         Map<String, String> response = new HashMap<>();
         response.put("name", person.getFullName());
-        response.put("partyId", person.getPartyId().toString());
+//        response.put("partyId", person.getPartyId().toString());
         response.put("user", principal.getName());
         return ResponseEntity.ok().body(response);
     }
