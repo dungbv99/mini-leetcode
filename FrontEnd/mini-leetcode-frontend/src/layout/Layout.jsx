@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { ReactComponent as Logo } from "../assets/icons/logo.svg";
 import bgImage from "../assets/img/sidebar-2.jpg";
 import AccountButton from "./account/AccountButton";
-// import NotificationButton from "./notification/NotificationButton";
+import NotificationButton from "./notification/NotificationButton";
 import SideBar, { drawerWidth, miniDrawerWidth } from "./sidebar/v1/SideBar";
 
 const useStyles = makeStyles((theme) => ({
@@ -158,7 +158,7 @@ function Layout(props) {
           <div className={classes.sectionDesktop}>
             {isAuthenticated && (
               <>
-                {/* <NotificationButton /> */}
+                 <NotificationButton />
                 <AccountButton />
               </>
             )}

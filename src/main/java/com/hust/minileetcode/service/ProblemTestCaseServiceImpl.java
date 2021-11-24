@@ -39,7 +39,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private ContestPagingAndSortingRepo contestPagingAndSortingRepo;
     private UserSubmissionResultRepo userSubmissionResultRepo;
     private ContestSubmissionRepo contestSubmissionRepo;
-
+    private UserRegistrationContestRepo userRegistrationContestRepo;
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
         if(problemRepo.findByProblemId(modelCreateContestProblem.getProblemId()) != null){
@@ -638,6 +638,23 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .memoryUsage(p.getMemoryUsage())
                 .problemName(problem.getProblemName())
                 .contestSubmissionID(contestSubmission.getContestSubmissionId())
+                .build();
+    }
+
+    @Override
+    public ModelStudentRegisterCourseResponse studentRegisterContest(String contestId, String userId) {
+        Contest contest = contestRepo.findContestByContestId(contestId);
+        UserLogin userLogin = userLoginRepo.findByUserLoginId(userId);
+        UserRegistrationContest userRegistrationContest = UserRegistrationContest.builder()
+                .contest(contest)
+                .userLogin(userLogin)
+                .status(Constants.RegistrationType.PENDING.getValue())
+                .build();
+        userRegistrationContestRepo.save(userRegistrationContest);
+
+        return ModelStudentRegisterCourseResponse.builder()
+                .status(Constants.RegistrationType.PENDING.getValue())
+                .message("You have send request to register contest "+ contestId +", please wait to accept")
                 .build();
     }
 

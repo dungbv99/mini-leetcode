@@ -55,4 +55,6 @@ public interface ProblemTestCaseService {
     ModelGetContestDetailResponse getContestDetailByContestId(String contestId);
 
     ModelContestSubmissionResponse submitContestProblem(ModelContestSubmission modelContestSubmission, String userName) throws Exception;
+
+    ModelStudentRegisterCourseResponse studentRegisterContest(String contestId, String userId);
 }

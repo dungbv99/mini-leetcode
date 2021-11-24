@@ -6,7 +6,7 @@ export const ProgrammingContest = {
   text: "Programming Contest",
   child: [
     {
-      id: "MENU_TEACHER_CHILDREN",
+      id: "MENU_TEACHER",
       path: "/programming-contest/list-problems",
       isPublic: false,
       icon: null,
@@ -14,7 +14,7 @@ export const ProgrammingContest = {
       child: [],
     },
     {
-      id: "MENU_TEACHER_CHILDREN",
+      id: "MENU_TEACHER",
       path: "/programming-contest/create-problem",
       isPublic: false,
       icon: null,
@@ -22,7 +22,7 @@ export const ProgrammingContest = {
       child: [],
     },
     {
-      id: "MENU_TEACHER_CHILDREN",
+      id: "MENU_TEACHER",
       path: "/programming-contest/create-contest",
       isPublic: false,
       icon: null,
@@ -30,7 +30,7 @@ export const ProgrammingContest = {
       child: [],
     },
     {
-      id: "MENU_TEACHER_CHILDREN",
+      id: "MENU_TEACHER",
       path: "/programming-contest/list-contest",
       isPublic: false,
       icon: null,
@@ -38,7 +38,7 @@ export const ProgrammingContest = {
       child: [],
     },
     {
-      id: "MENU_EDUCATION_LEARNING_MANAGEMENT_STUDENT_REGISTER_CLASS",
+      id: "MENU_TEACHER",
       path: "/programming-contest/ide",
       isPublic: false,
       icon: null,

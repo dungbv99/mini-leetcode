@@ -332,9 +332,11 @@ create table user_submission_result
 
 create table user_registration_contest
 (
+    user_registration_contest_id UUID NOT NULL default uuid_generate_v1(),
     user_id varchar (100) not null ,
     contest_id varchar (100) not null ,
     status varchar (20) not null,
     constraint fk_user_id_user_registration_contest foreign key (user_id) references user_login(user_login_id),
     constraint fk_contest_id_user_registration_contest foreign key (contest_id) references contest(contest_id)
 );
+
