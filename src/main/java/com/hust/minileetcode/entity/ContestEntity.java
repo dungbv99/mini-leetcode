@@ -12,7 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "contest")
+//@Table(name = "contest")
+@Table(name = "contest_new")
 public class ContestEntity {
     @Id
     @Column(name = "contest_id")

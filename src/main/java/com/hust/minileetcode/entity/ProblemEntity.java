@@ -12,7 +12,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "contest_problem")
+//@Table(name = "contest_problem")
+@Table(name = "contest_problem_new")
 public class ProblemEntity {
     @Id
     @Column(name = "problem_id")

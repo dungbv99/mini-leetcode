@@ -11,7 +11,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "test_case")
+//@Table(name = "test_case")
+@Table(name = "test_case_new")
 public class TestCaseEntity {
     @Id
     @Column(name = "test_case_id")

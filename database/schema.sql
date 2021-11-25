@@ -199,7 +199,7 @@ create TABLE user_register
 -- contestEntity defind
 
 
-create table contest_problem
+create table contest_problem_new
 (
     problem_id varchar(100) not null,
     problem_name varchar(100) unique ,
@@ -219,7 +219,7 @@ create table contest_problem
     constraint fk_contest_problem foreign key (created_by_user_login_id) references user_login(user_login_id)
 );
 
-create table problem_source_code
+create table problem_source_code_new
 (
     problem_source_code_id varchar (70),
     base_source text,
@@ -235,7 +235,7 @@ create table problem_source_code
 );
 
 
-create table test_case
+create table test_case_new
 (
     test_case_id  UUID NOT NULL default uuid_generate_v1(),
     test_case_point int,
@@ -248,7 +248,7 @@ create table test_case
     constraint fk_contest_problem_test_case_problem_id foreign key (contest_problem_id) references contest_problem(problem_id)
 );
 
-create table problem_submission
+create table problem_submission_new
 (
     problem_submission_id UUID NOT NULL default uuid_generate_v1(),
     problem_id  varchar(100) not null,
@@ -268,7 +268,7 @@ create table problem_submission
 
 -- drop table problem_submission,  test_case,  contest_problem, problem_source_code;
 
-create table contestEntity
+create table contest_new
 (
     contest_id varchar (100) not null ,
     contest_name varchar (100),
@@ -282,7 +282,7 @@ create table contestEntity
     constraint fk_user_create_contest foreign key (user_create_id) references user_login(user_login_id)
 );
 
-create table contest_contest_problem
+create table contest_contest_problem_new
 (
     contest_id varchar (100) not null ,
     problem_id varchar (100) not null ,
@@ -292,7 +292,7 @@ create table contest_contest_problem
     constraint fk_problem_id_contest_contest_problem foreign key (problem_id) references contest_problem(problem_id)
 );
 
-create table contest_submission
+create table contest_submission_new
 (
     contest_submission_id  UUID NOT NULL default uuid_generate_v1(),
     contest_id varchar (100) not null ,
@@ -310,7 +310,7 @@ create table contest_submission
     constraint fk_problem_submission_id_contest_submission foreign key(problem_submission_id) references problem_submission(problem_submission_id)
 );
 
-create table user_submission_contest_result
+create table user_submission_contest_result_new
 (
     user_submission_contest_result_id UUID NOT NULL default uuid_generate_v1(),
     contest_id varchar (100) not null ,
@@ -323,7 +323,7 @@ create table user_submission_contest_result
     constraint fk_user_id_user_submission_result foreign key (user_id) references user_login(user_login_id)
 );
 
-create table user_registration_contest
+create table user_registration_contest_new
 (
     user_registration_contest_id UUID NOT NULL default uuid_generate_v1(),
     user_id varchar (100) not null ,

@@ -13,7 +13,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "contest_problem")
+//@Table(name = "contest_problem")
+@Table(name = "contest_problem_new")
 public class ContestSubmissionEntity {
     @Id
     @Column(name = "contest_submission_id")
