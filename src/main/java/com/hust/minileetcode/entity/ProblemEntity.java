@@ -3,9 +3,7 @@ package com.hust.minileetcode.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,7 +13,7 @@ import java.util.Set;
 @Entity
 @Builder
 @Table(name = "contest_problem")
-public class Problem {
+public class ProblemEntity {
     @Id
     @Column(name = "problem_id")
     private String problemId;
@@ -28,7 +26,7 @@ public class Problem {
 //    private List<ProblemSourceCode> problemSourceCode;
 
     @OneToMany(mappedBy = "problem")
-    private Set<ProblemSourceCode> problemSourceCodes;
+    private Set<ProblemSourceCodeEntity> problemSourceCodes;
 
     @Column(name = "problem_name", unique = true)
     private String problemName;

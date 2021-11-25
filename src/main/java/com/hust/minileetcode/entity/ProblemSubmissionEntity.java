@@ -16,7 +16,7 @@ import java.util.UUID;
 @Entity
 @Builder
 @Table(name = "problem_submission")
-public class ProblemSubmission {
+public class ProblemSubmissionEntity {
     @Id
     @Column(name = "problem_submission_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,7 +24,7 @@ public class ProblemSubmission {
 
     @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Problem problem;
+    private ProblemEntity problem;
 
     @JoinColumn(name = "submitted_by_user_login_id", referencedColumnName = "user_login_id")
     @ManyToOne(fetch = FetchType.LAZY)

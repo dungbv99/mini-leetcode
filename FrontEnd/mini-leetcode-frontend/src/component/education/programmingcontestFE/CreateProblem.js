@@ -183,7 +183,7 @@ function CreateProblem(){
     }
     request(
       "post",
-      API_URL+"/create-problem",
+      API_URL+"/create-problemEntity",
       (res) =>{
         console.log("res ", res);
         setShowSubmitSuccess(true);
@@ -375,7 +375,7 @@ function CreateProblem(){
             />
             <SubmitSuccess
               showSubmitSuccess={showSubmitSuccess}
-              content={"You have saved problem"}/>
+              content={"You have saved problemEntity"}/>
           </CardActions>
         </Card>
       </MuiPickersUtilsProvider>

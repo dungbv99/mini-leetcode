@@ -351,7 +351,7 @@ curl --location --request POST 'http://localhost:8080/api/files' \
 curl --header "Content-Type: multipart/form-data" -v POST http://localhost:8080/api/edu/programsubmission/upload -u admin:123 -F "file=@package.json"
 
 -----------
-Submit program contest
+Submit program contestEntity
 
 curl --header "Content-Type: multipart/form-data" -v POST http://localhost:8080/api/upload-program -u admin:sscm@123456 -F "file=@add.py"
 

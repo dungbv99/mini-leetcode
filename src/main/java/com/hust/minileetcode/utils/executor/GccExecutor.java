@@ -1,7 +1,7 @@
 package com.hust.minileetcode.utils.executor;
 
 
-import com.hust.minileetcode.entity.TestCase;
+import com.hust.minileetcode.entity.TestCaseEntity;
 
 import java.util.List;
 
@@ -60,11 +60,11 @@ public class GccExecutor {
 
         return sourceSH;
     }
-    public String genSubmitScriptFile(List<TestCase> testCases, String source, String tmpName, int timeLimit){
+    public String genSubmitScriptFile(List<TestCaseEntity> testCaseEntities, String source, String tmpName, int timeLimit){
         String genTestCase = "";
-        for(int i = 0; i < testCases.size(); i++){
+        for(int i = 0; i < testCaseEntities.size(); i++){
             String testcase = "cat <<EOF >> testcase" + i + ".txt \n"
-                            + testCases.get(i).getTestCase() +"\n"
+                            + testCaseEntities.get(i).getTestCase() +"\n"
                             +"EOF" + "\n";
             genTestCase += testcase;
         }
@@ -79,7 +79,7 @@ public class GccExecutor {
                 +"if test -f \"$FILE\"; then" +"\n"
                 + genTestCase +"\n"
                 + "n=0\n"
-                + "while [ \"$n\" -lt " + testCases.size()+" ]"+"\n"
+                + "while [ \"$n\" -lt " + testCaseEntities.size()+" ]"+"\n"
                 + "do\n"
                 + "f=\"testcase\"$n\".txt\"" +"\n"
                 + "cat $f | timeout " + timeLimit +"s " +"./main  || echo Time Limit Exceeded" + "\n"

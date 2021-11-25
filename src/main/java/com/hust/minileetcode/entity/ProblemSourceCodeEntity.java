@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Builder
 @Table(name = "problem_source_code")
-public class ProblemSourceCode {
+public class ProblemSourceCodeEntity {
     @Id
     @Column(name = "problem_source_code_id")
     private String problemSourceCodeId;
@@ -40,7 +40,7 @@ public class ProblemSourceCode {
 
     @JoinColumn(name = "contest_problem_id", referencedColumnName = "problem_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Problem problem;
+    private ProblemEntity problem;
 
     public String createSolutionSourceCode(){
         return this.getBaseSource() + "\n" + this.getProblemFunctionSolution() + "\n" + this.getMainSource();

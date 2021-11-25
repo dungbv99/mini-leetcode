@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name = "contest")
-public class Contest {
+public class ContestEntity {
     @Id
     @Column(name = "contest_id")
     private String contestId;
@@ -34,7 +34,7 @@ public class Contest {
             inverseJoinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
     )
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Problem> problems;
+    private List<ProblemEntity> problems;
 
     @Column(name = "try_again")
     private boolean tryAgain;

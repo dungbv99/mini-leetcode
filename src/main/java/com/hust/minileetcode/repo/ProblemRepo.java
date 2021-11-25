@@ -1,15 +1,15 @@
 package com.hust.minileetcode.repo;
 
-import com.hust.minileetcode.entity.Problem;
+import com.hust.minileetcode.entity.ProblemEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.ArrayList;
 
-public interface ProblemRepo extends JpaRepository<Problem, String> {
-    Problem findByProblemId(String problemId);
+public interface ProblemRepo extends JpaRepository<ProblemEntity, String> {
+    ProblemEntity findByProblemId(String problemId);
 
-    @Query("select p.problemName from Problem p")
+    @Query("select p.problemName from ProblemEntity p")
     ArrayList<String> findAllProblemName();
 
 

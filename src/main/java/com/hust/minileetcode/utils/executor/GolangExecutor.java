@@ -1,6 +1,6 @@
 package com.hust.minileetcode.utils.executor;
 
-import com.hust.minileetcode.entity.TestCase;
+import com.hust.minileetcode.entity.TestCaseEntity;
 
 import java.util.List;
 
@@ -58,7 +58,7 @@ public class GolangExecutor {
         return sourceSH;
     }
 
-    public String genSubmitScriptFile(List<TestCase> testCases, String source, String tmpName, int timeout){
+    public String genSubmitScriptFile(List<TestCaseEntity> testCases, String source, String tmpName, int timeout){
         String genTestCase = "";
         for(int i = 0; i < testCases.size(); i++){
             String testcase = "cat <<EOF >> testcase" + i + ".txt \n"

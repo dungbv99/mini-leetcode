@@ -1,7 +1,7 @@
 package com.hust.minileetcode.controller;
 
-import com.hust.minileetcode.entity.Problem;
-import com.hust.minileetcode.entity.TestCase;
+import com.hust.minileetcode.entity.ProblemEntity;
+import com.hust.minileetcode.entity.TestCaseEntity;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
 import com.hust.minileetcode.service.ProblemTestCaseService;
@@ -41,8 +41,8 @@ public class ContestProblemController {
 
     @PostMapping("/update-contest-problem/{problemId}")
     public ResponseEntity<?> updateContestProblem(@RequestBody ModelCreateContestProblem modelCreateContestProblem, @PathVariable("problemId") String problemId) throws Exception{
-        Problem problem = problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
-        return ResponseEntity.ok(problem);
+        ProblemEntity problemEntity = problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
+        return ResponseEntity.ok(problemEntity);
     }
 
 
@@ -60,8 +60,8 @@ public class ContestProblemController {
 
     @PostMapping("/update-test-case-and-generate-answer/{problemId}")
     public ResponseEntity<?> createTestCase(@RequestBody ModelCreateTestCase modelCreateTestCase, @PathVariable("problemId") String problemId) throws Exception{
-        TestCase testCase = problemTestCaseService.createTestCase(modelCreateTestCase, problemId);
-        return ResponseEntity.status(200).body(testCase);
+        TestCaseEntity testCaseEntity = problemTestCaseService.createTestCase(modelCreateTestCase, problemId);
+        return ResponseEntity.status(200).body(testCaseEntity);
     }
 
     @PostMapping("/get-test-case-result/{problemId}")
@@ -75,8 +75,8 @@ public class ContestProblemController {
 
     @PostMapping("/edit-test-case/{testCaseId}")
     public ResponseEntity<?> editTestCase(@PathVariable("testCaseId") UUID testCaseId, @RequestBody ModelCreateTestCase modelCreateTestCase) throws Exception {
-        TestCase testCase = problemTestCaseService.updateTestCase(modelCreateTestCase, testCaseId);
-        return ResponseEntity.status(200).body(testCase);
+        TestCaseEntity testCaseEntity = problemTestCaseService.updateTestCase(modelCreateTestCase, testCaseId);
+        return ResponseEntity.status(200).body(testCaseEntity);
     }
 
     @GetMapping("/get-contest-problem-paging")
@@ -90,7 +90,7 @@ public class ContestProblemController {
                 else
                     pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy).ascending());
             }
-            Page<Problem> contestProblemPage = problemTestCaseService.getContestProblemPaging(pageable);
+            Page<ProblemEntity> contestProblemPage = problemTestCaseService.getContestProblemPaging(pageable);
             return ResponseEntity.status(200).body(contestProblemPage);
         }catch (Exception e){
             e.printStackTrace();
@@ -110,15 +110,15 @@ public class ContestProblemController {
     @GetMapping("/problem-details/{problemId}")
     public ResponseEntity<?> getProblemDetails(@PathVariable("problemId") String problemId) throws Exception {
         log.info("getProblemDetails problemId ", problemId);
-        Problem problem = problemTestCaseService.getContestProblem(problemId);
-        return ResponseEntity.status(200).body(problem);
+        ProblemEntity problemEntity = problemTestCaseService.getContestProblem(problemId);
+        return ResponseEntity.status(200).body(problemEntity);
     }
 
     @PostMapping("/update-problem-detail/{problemId}")
     public ResponseEntity<?> updateProblemDetails(@RequestBody ModelCreateContestProblem modelCreateContestProblem, @PathVariable("problemId") String problemId) throws Exception {
         log.info("updateProblemDetails problemId {}", problemId);
-        Problem problem = problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
-        return ResponseEntity.status(200).body(problem);
+        ProblemEntity problemEntity = problemTestCaseService.updateContestProblem(modelCreateContestProblem, problemId);
+        return ResponseEntity.status(200).body(problemEntity);
     }
 
     @PostMapping("/problem-detail-run-code/{problemId}")
@@ -136,8 +136,8 @@ public class ContestProblemController {
 
     @PostMapping("/save-test-case/{problemId}")
     public ResponseEntity<?> saveTestCase(@PathVariable("problemId") String problemId, @RequestBody ModelSaveTestcase modelSaveTestcase){
-        TestCase testCase = problemTestCaseService.saveTestCase(problemId, modelSaveTestcase);
-        return ResponseEntity.status(200).body(testCase);
+        TestCaseEntity testCaseEntity = problemTestCaseService.saveTestCase(problemId, modelSaveTestcase);
+        return ResponseEntity.status(200).body(testCaseEntity);
     }
 
     @PostMapping("/problem-details-submission/{problemId}")

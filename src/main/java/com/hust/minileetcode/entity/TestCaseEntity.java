@@ -12,7 +12,7 @@ import java.util.UUID;
 @Entity
 @Builder
 @Table(name = "test_case")
-public class TestCase {
+public class TestCaseEntity {
     @Id
     @Column(name = "test_case_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,7 +29,7 @@ public class TestCase {
 
     @JoinColumn(name = "contest_problem_id", referencedColumnName = "problem_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Problem problem;
+    private ProblemEntity problem;
 
 //    @JoinTable(name = "contest_problem_test_case",
 //            joinColumns = @JoinColumn(name = "test_case_id", referencedColumnName = "test_case_id"),

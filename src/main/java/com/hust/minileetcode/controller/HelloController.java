@@ -1,8 +1,8 @@
 package com.hust.minileetcode.controller;
 
 import com.hust.minileetcode.docker.DockerClientBase;
-import com.hust.minileetcode.entity.Problem;
-import com.hust.minileetcode.entity.TestCase;
+import com.hust.minileetcode.entity.ProblemEntity;
+import com.hust.minileetcode.entity.TestCaseEntity;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.repo.ProblemPagingAndSortingRepo;
 import com.hust.minileetcode.repo.ProblemRepo;
@@ -78,22 +78,22 @@ public class HelloController {
     @GetMapping("/test")
     public String test() throws IOException {
         String problemId = "1.Add 2 Number";
-        Problem problem = problemRepo.findByProblemId(problemId);
-        log.info("contestProblem {}", problem);
-        List<TestCase> testCases = testCaseRepo.findAllByProblem(problem);
-        log.info("testcase size {}", testCases.size());
-        String source = genSubmitScriptFile(testCases, problem.getCorrectSolutionSourceCode(), "test", 1);
+        ProblemEntity problemEntity = problemRepo.findByProblemId(problemId);
+        log.info("contestProblem {}", problemEntity);
+        List<TestCaseEntity> testCaseEntities = testCaseRepo.findAllByProblem(problemEntity);
+        log.info("testcase size {}", testCaseEntities.size());
+        String source = genSubmitScriptFile(testCaseEntities, problemEntity.getCorrectSolutionSourceCode(), "test", 1);
         BufferedWriter writer = new BufferedWriter(new FileWriter("./temp_dir/" + "a.sh"));
         writer.write(source);
         writer.close();
         return "ok";
     }
-    public String genSubmitScriptFile(List<TestCase> testCases, String source, String tmpName, int timeout){
+    public String genSubmitScriptFile(List<TestCaseEntity> testCaseEntities, String source, String tmpName, int timeout){
         String genTestCase = "";
-        for(int i = 0; i < testCases.size(); i++){
+        for(int i = 0; i < testCaseEntities.size(); i++){
             String testcase =
                     "cat <<EOF >> testcase" + i + ".txt \n"
-                    + testCases.get(i).getTestCase() +"\n"
+                    + testCaseEntities.get(i).getTestCase() +"\n"
                     +"EOF" + "\n";
             genTestCase += testcase;
         }
@@ -108,7 +108,7 @@ public class HelloController {
                 +"if test -f \"$FILE\"; then" +"\n"
                 + genTestCase +"\n"
                 + "n=0\n"
-                + "while [ \"$n\" -lt " + testCases.size()+" ]"+"\n"
+                + "while [ \"$n\" -lt " + testCaseEntities.size()+" ]"+"\n"
                 + "do\n"
                 + "f=\"testcase\"$n\".txt\"" +"\n"
                 + "cat $f | timeout " + timeout + "s" +" ./main" +"\n"

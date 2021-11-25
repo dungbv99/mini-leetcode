@@ -63,10 +63,10 @@ CREATE TABLE public.application_type (
 ALTER TABLE public.application_type OWNER TO postgres;
 
 --
--- Name: contest; Type: TABLE; Schema: public; Owner: postgres
+-- Name: contestEntity; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.contest (
+CREATE TABLE public.contestEntity (
     contest_id character varying(100) NOT NULL,
     contest_name character varying(100),
     contest_solving_time integer,
@@ -76,7 +76,7 @@ CREATE TABLE public.contest (
 );
 
 
-ALTER TABLE public.contest OWNER TO postgres;
+ALTER TABLE public.contestEntity OWNER TO postgres;
 
 --
 -- Name: contest_contest_problem; Type: TABLE; Schema: public; Owner: postgres
@@ -452,10 +452,10 @@ ENTITY	Entity application type	2019-12-26 08:00:39.953925	2019-12-26 08:00:39.95
 
 
 --
--- Data for Name: contest; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: contestEntity; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.contest (contest_id, contest_name, contest_solving_time, user_create_id, last_updated_stamp, created_stamp) FROM stdin;
+COPY public.contestEntity (contest_id, contest_name, contest_solving_time, user_create_id, last_updated_stamp, created_stamp) FROM stdin;
 1	1	122	admin	2021-11-09 16:05:58.806274	2021-11-09 16:05:58.806274
 2	2	2	admin	2021-11-09 16:10:53.692016	2021-11-09 16:10:53.692016
 3	4	5	admin	2021-11-09 16:12:34.41868	2021-11-09 16:12:34.41868
@@ -769,10 +769,10 @@ ALTER TABLE ONLY public.application_type
 
 
 --
--- Name: contest pk_contest_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: contestEntity pk_contest_id; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.contest
+ALTER TABLE ONLY public.contestEntity
     ADD CONSTRAINT pk_contest_id PRIMARY KEY (contest_id);
 
 
@@ -925,7 +925,7 @@ ALTER TABLE ONLY public.application
 --
 
 ALTER TABLE ONLY public.contest_contest_problem
-    ADD CONSTRAINT fk_contest_id_contest_contest_problem FOREIGN KEY (contest_id) REFERENCES public.contest(contest_id);
+    ADD CONSTRAINT fk_contest_id_contest_contest_problem FOREIGN KEY (contest_id) REFERENCES public.contestEntity(contest_id);
 
 
 --
@@ -933,7 +933,7 @@ ALTER TABLE ONLY public.contest_contest_problem
 --
 
 ALTER TABLE ONLY public.contest_submission
-    ADD CONSTRAINT fk_contest_id_contest_submission FOREIGN KEY (contest_id) REFERENCES public.contest(contest_id);
+    ADD CONSTRAINT fk_contest_id_contest_submission FOREIGN KEY (contest_id) REFERENCES public.contestEntity(contest_id);
 
 
 --
@@ -941,7 +941,7 @@ ALTER TABLE ONLY public.contest_submission
 --
 
 ALTER TABLE ONLY public.user_submission_result
-    ADD CONSTRAINT fk_contest_id_user_submission_result FOREIGN KEY (contest_id) REFERENCES public.contest(contest_id);
+    ADD CONSTRAINT fk_contest_id_user_submission_result FOREIGN KEY (contest_id) REFERENCES public.contestEntity(contest_id);
 
 
 --
@@ -1009,10 +1009,10 @@ ALTER TABLE ONLY public.contest_submission
 
 
 --
--- Name: contest fk_user_create_contest; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: contestEntity fk_user_create_contest; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.contest
+ALTER TABLE ONLY public.contestEntity
     ADD CONSTRAINT fk_user_create_contest FOREIGN KEY (user_create_id) REFERENCES public.user_login(user_login_id);
 
 

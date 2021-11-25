@@ -107,7 +107,7 @@ create table contest_program_submission(
 
 
 --------------------------------------------------------------------------
--- problem
+-- problemEntity
 create table problem_source_code(
                                     problem_source_code_id uuid not null default uuid_generate_v1(),
                                     base_source text,

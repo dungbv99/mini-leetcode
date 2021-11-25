@@ -1,6 +1,6 @@
 package com.hust.minileetcode.utils;
 
-import com.hust.minileetcode.entity.TestCase;
+import com.hust.minileetcode.entity.TestCaseEntity;
 import com.hust.minileetcode.utils.executor.GccExecutor;
 import com.hust.minileetcode.utils.executor.GolangExecutor;
 import com.hust.minileetcode.utils.executor.JavaExecutor;
@@ -124,7 +124,7 @@ public class TempDir {
         writer.close();
     }
 
-    public void createScriptSubmissionFile(ComputerLanguage.Languages languages, String tmpName, List<TestCase> testCases, String source, int timeout) throws IOException {
+    public void createScriptSubmissionFile(ComputerLanguage.Languages languages, String tmpName, List<TestCaseEntity> testCases, String source, int timeout) throws IOException {
         File theDir = new File(TEMPDIR+tmpName);
         theDir.mkdirs();
         String sourceSh;

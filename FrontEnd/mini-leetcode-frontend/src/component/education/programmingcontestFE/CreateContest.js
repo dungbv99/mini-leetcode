@@ -255,12 +255,12 @@ export default function CreateContest(props){
     }
     request(
       "post",
-      API_URL+"/create-contest",
+      API_URL+"/create-contestEntity",
       (res)=>{
         // console.log("problem list", res.data);
         setShowSubmitSuccess(true);
         sleep(1000).then(r => {
-          history.push("/programming-contest/list-problems");
+          history.push("/programming-contestEntity/list-problems");
         });
 
       },
@@ -273,7 +273,7 @@ export default function CreateContest(props){
   useEffect(() =>{
     request(
       "get",
-      API_URL+"/get-contest-problem-paging?size="+pageSize+"&page="+(page-1),
+      API_URL+"/get-contestEntity-problem-paging?size="+pageSize+"&page="+(page-1),
       (res)=>{
         // console.log("problem list", res.data);
         setTotalPages(res.data.totalPages);
@@ -429,7 +429,7 @@ export default function CreateContest(props){
             </Button>
             <SubmitSuccess
               showSubmitSuccess={showSubmitSuccess}
-              content={"You have saved contest"}/>
+              content={"You have saved contestEntity"}/>
           </CardActions>
         </Card>
       </MuiPickersUtilsProvider>

@@ -12,8 +12,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "contest_problem")
-public class UserRegistrationContest {
+@Table(name = "user_registration_contest")
+public class UserRegistrationContestEntity {
     @Id
     @Column(name = "user_registration_contest_id")
     private UUID id;
@@ -24,7 +24,7 @@ public class UserRegistrationContest {
 
     @JoinColumn(name = "contest_id", referencedColumnName = "contest_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Contest contest;
+    private ContestEntity contest;
 
     @Column(name = "status")
     private String status;

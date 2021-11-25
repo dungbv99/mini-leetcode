@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 @Builder
 @Table(name = "user_submission_contest_result")
-public class UserSubmissionContestResult {
+public class UserSubmissionContestResultEntity {
     @Id
     @Column(name = "user_submission_contest_result_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +22,7 @@ public class UserSubmissionContestResult {
 
     @JoinColumn(name = "contest_id", referencedColumnName = "contest_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Contest contest;
+    private ContestEntity contest;
 
     @JoinColumn(name = "user_id", referencedColumnName = "user_login_id")
     @ManyToOne(fetch = FetchType.LAZY)
