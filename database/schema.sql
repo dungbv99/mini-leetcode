@@ -183,7 +183,7 @@ create TABLE status_item
 create TABLE user_register
 (
     user_login_id varchar(60) NOT NULL,
-    "password" varchar(100) NOT NULL,
+    password varchar(100) NOT NULL,
     email varchar(100) NOT NULL,
     first_name varchar(100) NOT NULL,
     middle_name varchar(100) NOT NULL,
@@ -274,6 +274,8 @@ create table contest
     contest_name varchar (100),
     contest_solving_time int,
     user_create_id varchar (60),
+    try_again BOOLEAN,
+    public BOOLEAN,
     last_updated_stamp         timestamp DEFAULT current_date ,
     created_stamp              timestamp DEFAULT current_date ,
     constraint pk_contest_id primary key (contest_id),
@@ -308,15 +310,15 @@ create table contest_submission
     constraint fk_problem_submission_id_contest_submission foreign key(problem_submission_id) references problem_submission(problem_submission_id)
 );
 
-create table user_submission_result
+create table user_submission_contest_result
 (
-    user_submission_result_id UUID NOT NULL default uuid_generate_v1(),
+    user_submission_contest_result_id UUID NOT NULL default uuid_generate_v1(),
     contest_id varchar (100) not null ,
     user_id varchar (100) not null,
     point int not null,
     last_updated_stamp         date default current_date ,
     created_stamp              date default current_date ,
-    constraint pk_user_submission_result_id_user_submission_result primary key (user_submission_result_id),
+    constraint pk_user_submission_result_id_user_submission_result primary key (user_submission_contest_result_id),
     constraint fk_contest_id_user_submission_result foreign key (contest_id) references contest(contest_id),
     constraint fk_user_id_user_submission_result foreign key (user_id) references user_login(user_login_id)
 );

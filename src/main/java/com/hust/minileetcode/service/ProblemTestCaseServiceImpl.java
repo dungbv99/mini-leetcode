@@ -7,6 +7,7 @@ import com.hust.minileetcode.model.*;
 import com.hust.minileetcode.repo.*;
 import com.hust.minileetcode.rest.entity.UserLogin;
 import com.hust.minileetcode.rest.repo.UserLoginRepo;
+import com.hust.minileetcode.rest.service.NotificationsService;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
 import com.hust.minileetcode.constants.Constants;
@@ -37,9 +38,10 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private ContestRepo contestRepo;
     private Constants  constants;
     private ContestPagingAndSortingRepo contestPagingAndSortingRepo;
-    private UserSubmissionResultRepo userSubmissionResultRepo;
+    private UserSubmissionContestResultRepo userSubmissionContestResultRepo;
     private ContestSubmissionRepo contestSubmissionRepo;
     private UserRegistrationContestRepo userRegistrationContestRepo;
+    private NotificationsService notificationsService;
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
         if(problemRepo.findByProblemId(modelCreateContestProblem.getProblemId()) != null){
@@ -642,20 +644,48 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public ModelStudentRegisterCourseResponse studentRegisterContest(String contestId, String userId) {
+    public ModelStudentRegisterCourseResponse studentRegisterContest(String contestId, String userId) throws MiniLeetCodeException {
         Contest contest = contestRepo.findContestByContestId(contestId);
         UserLogin userLogin = userLoginRepo.findByUserLoginId(userId);
-        UserRegistrationContest userRegistrationContest = UserRegistrationContest.builder()
-                .contest(contest)
-                .userLogin(userLogin)
-                .status(Constants.RegistrationType.PENDING.getValue())
-                .build();
-        userRegistrationContestRepo.save(userRegistrationContest);
-
+        UserRegistrationContest existed = userRegistrationContestRepo.findUserRegistrationContestByContestAndUserLogin(contest, userLogin);
+        if(existed != null || Constants.RegisterCourseStatus.SUCCESSES.getValue().equals(existed.getStatus())){
+            throw new MiniLeetCodeException("You are already register course successful");
+        }
+        if(existed == null){
+            UserRegistrationContest userRegistrationContest = UserRegistrationContest.builder()
+                    .contest(contest)
+                    .userLogin(userLogin)
+                    .status(Constants.RegistrationType.PENDING.getValue())
+                    .build();
+            userRegistrationContestRepo.save(userRegistrationContest);
+        }
+        notificationsService.create(userId, contest.getUserLogin().getUserLoginId(), userId + " register contest "+contestId,null);
         return ModelStudentRegisterCourseResponse.builder()
                 .status(Constants.RegistrationType.PENDING.getValue())
                 .message("You have send request to register contest "+ contestId +", please wait to accept")
                 .build();
+    }
+
+    @Override
+    public void teacherManageStudentRegisterContest(String teacherId, ModelTeacherManageStudentRegisterContest modelTeacherManageStudentRegisterContest) throws MiniLeetCodeException {
+        Contest contest = contestRepo.findContestByContestId(modelTeacherManageStudentRegisterContest.getContestId());
+        UserLogin student = userLoginRepo.findByUserLoginId(modelTeacherManageStudentRegisterContest.getUserId());
+        if(contest.getUserLogin().getUserLoginId() != teacherId){
+            throw new MiniLeetCodeException(teacherId +"does not have privilege to manage contest " + modelTeacherManageStudentRegisterContest.getContestId());
+        }
+        UserRegistrationContest userRegistrationContest = userRegistrationContestRepo.findUserRegistrationContestByContestAndUserLogin(contest, student);
+
+        if(Constants.RegisterCourseStatus.SUCCESSES.getValue().equals(modelTeacherManageStudentRegisterContest.getStatus())){
+            userRegistrationContest.setStatus(Constants.RegistrationType.SUCCESSFUL.getValue());
+            userRegistrationContestRepo.save(userRegistrationContest);
+            notificationsService.create(teacherId, modelTeacherManageStudentRegisterContest.getUserId(), "Your register contest " + modelTeacherManageStudentRegisterContest.getContestId() +" is approved ", null);
+        }else if(Constants.RegisterCourseStatus.FAILED.getValue().equals(modelTeacherManageStudentRegisterContest.getStatus())){
+            userRegistrationContest.setStatus(Constants.RegistrationType.FAILED.getValue());
+            userRegistrationContestRepo.save(userRegistrationContest);
+            notificationsService.create(teacherId, modelTeacherManageStudentRegisterContest.getUserId(), "Your register contest " + modelTeacherManageStudentRegisterContest.getContestId() +" is rejected ", null);
+        }else{
+            throw new MiniLeetCodeException("Status not found");
+        }
     }
 
     private List<Problem> getContestProblemsFromListContestId(List<String> problemIds) throws MiniLeetCodeException {

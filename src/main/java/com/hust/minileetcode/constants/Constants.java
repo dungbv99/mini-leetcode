@@ -39,6 +39,20 @@ public class Constants {
     }
 
 
+    public enum RegisterCourseStatus{
+        SUCCESSES("SUCCESSES"), FAILED("FAILED");
+
+        private final String value;
+
+        RegisterCourseStatus(String value){
+            this.value = value;
+        }
+
+        public String getValue(){
+            return this.value;
+        }
+    }
+
     public enum Languages{
         CPP("CPP"),
         PYTHON3("PYTHON3"),

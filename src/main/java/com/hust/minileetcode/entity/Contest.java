@@ -35,4 +35,10 @@ public class Contest {
     )
     @OneToMany(fetch = FetchType.LAZY)
     private List<Problem> problems;
+
+    @Column(name = "try_again")
+    private boolean tryAgain;
+
+    @Column(name = "public")
+    private boolean isPublic;
 }
