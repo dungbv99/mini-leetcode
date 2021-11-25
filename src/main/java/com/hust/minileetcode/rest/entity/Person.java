@@ -19,6 +19,7 @@ import java.util.UUID;
 public class Person {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "person_id")
     private UUID personId;
 
@@ -44,15 +45,6 @@ public class Person {
     //private String birthDate;
     public String getFullName() {
         return firstName + " " + middleName + " " + lastName;
-    }
-
-    public Person(UUID personId, String firstName, String middleName, String lastName, String gender, Date birthDate) {
-        this.personId = personId;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.birthDate = birthDate;
     }
 
     public BasicInfoModel getBasicInfoModel() {

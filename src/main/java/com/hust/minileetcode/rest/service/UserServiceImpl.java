@@ -177,6 +177,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public SimpleResponse approve(ApproveRegistrationIM im) {
+        log.info("approve {}", im);
         UserRegister userRegister = userRegisterRepo.findById(im.getUserLoginId()).orElse(null);
 
         if (null == userRegister) {
@@ -211,6 +212,7 @@ public class UserServiceImpl implements UserService {
             log.info("approve, email = " + email + " fullname = " + fullName);
             EMAIL_EXECUTOR_SERVICE.execute(() -> {
                 try {
+                    log.info("email executor ");
                     Map<String, Object> model = new HashMap<>();
                     model.put("name", fullName);
                     model.put("username", im.getUserLoginId());
@@ -279,6 +281,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void createAndSaveUserLogin(PersonModel personModel) {
+        log.info("create and save user login personModel {}", personModel);
 //        void party = partyRepo.save(new void(
 //                personModel.getPartyCode(),
 //                partyTypeRepo.getOne(PartyTypeEnum.PERSON.name()),
