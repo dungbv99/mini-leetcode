@@ -231,7 +231,7 @@ create table problem_source_code_new
     last_updated_stamp         timestamp DEFAULT current_date ,
     created_stamp              timestamp DEFAULT current_date ,
     constraint pk_source_code primary key(problem_source_code_id),
-    constraint fk_contest_problem foreign key (contest_problem_id) references contest_problem(problem_id)
+    constraint fk_contest_problem foreign key (contest_problem_id) references contest_problem_new(problem_id)
 );
 
 
@@ -245,7 +245,7 @@ create table test_case_new
     last_updated_stamp         timestamp DEFAULT current_date ,
     created_stamp              timestamp DEFAULT current_date ,
     constraint pk_contest_problem_test_case primary key (test_case_id),
-    constraint fk_contest_problem_test_case_problem_id foreign key (contest_problem_id) references contest_problem(problem_id)
+    constraint fk_contest_problem_test_case_problem_id foreign key (contest_problem_id) references contest_problem_new(problem_id)
 );
 
 create table problem_submission_new
@@ -262,7 +262,7 @@ create table problem_submission_new
     test_case_pass varchar (10),
     created_stamp              varchar (25),
     constraint fk_problem_submission_id primary key(problem_submission_id),
-    constraint fk_problem_id foreign key (problem_id) references contest_problem(problem_id),
+    constraint fk_problem_id foreign key (problem_id) references contest_problem_new(problem_id),
     constraint fk_user_login_id foreign key (submitted_by_user_login_id) references user_login(user_login_id)
 );
 
@@ -288,8 +288,8 @@ create table contest_contest_problem_new
     problem_id varchar (100) not null ,
     last_updated_stamp         timestamp DEFAULT current_date ,
     created_stamp              timestamp DEFAULT current_date ,
-    constraint fk_contest_id_contest_contest_problem foreign key (contest_id) references contestEntity(contest_id),
-    constraint fk_problem_id_contest_contest_problem foreign key (problem_id) references contest_problem(problem_id)
+    constraint fk_contest_id_contest_contest_problem foreign key (contest_id) references contest_new(contest_id),
+    constraint fk_problem_id_contest_contest_problem foreign key (problem_id) references contest_problem_new(problem_id)
 );
 
 create table contest_submission_new
@@ -304,10 +304,10 @@ create table contest_submission_new
     last_updated_stamp         date default current_date ,
     created_stamp              date default current_date ,
     constraint pk_contest_submission_id_contest_submission primary key (contest_submission_id),
-    constraint fk_contest_id_contest_submission foreign key (contest_id) references contestEntity(contest_id),
-    constraint fk_problem_id_contest_submission foreign key (problem_id) references contest_problem(problem_id),
+    constraint fk_contest_id_contest_submission foreign key (contest_id) references contest_new(contest_id),
+    constraint fk_problem_id_contest_submission foreign key (problem_id) references contest_problem_new(problem_id),
     constraint fk_user_submission_id_contest_submission foreign key (user_submission_id) references user_login(user_login_id),
-    constraint fk_problem_submission_id_contest_submission foreign key(problem_submission_id) references problem_submission(problem_submission_id)
+    constraint fk_problem_submission_id_contest_submission foreign key(problem_submission_id) references problem_submission_new(problem_submission_id)
 );
 
 create table user_submission_contest_result_new
@@ -319,7 +319,7 @@ create table user_submission_contest_result_new
     last_updated_stamp         date default current_date ,
     created_stamp              date default current_date ,
     constraint pk_user_submission_result_id_user_submission_result primary key (user_submission_contest_result_id),
-    constraint fk_contest_id_user_submission_result foreign key (contest_id) references contestEntity(contest_id),
+    constraint fk_contest_id_user_submission_result foreign key (contest_id) references contest_new(contest_id),
     constraint fk_user_id_user_submission_result foreign key (user_id) references user_login(user_login_id)
 );
 
@@ -330,6 +330,7 @@ create table user_registration_contest_new
     contest_id varchar (100) not null ,
     status varchar (20) not null,
     constraint fk_user_id_user_registration_contest foreign key (user_id) references user_login(user_login_id),
-    constraint fk_contest_id_user_registration_contest foreign key (contest_id) references contestEntity(contest_id)
+    constraint fk_contest_id_user_registration_contest foreign key (contest_id) references contest_new(contest_id)
 );
 
+drop table user_submission_contest_result, contest_contest_problem, contest_submission, contest_contest_problem, contest, problem_submission, test_case, problem_source_code, contest_problem;
