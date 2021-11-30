@@ -317,13 +317,13 @@ create table contest_submission_new
 
 create table user_submission_contest_result_new
 (
-    user_submission_contest_result_id UUID NOT NULL default uuid_generate_v1(),
+--     user_submission_contest_result_id UUID NOT NULL default uuid_generate_v1(),
     contest_id varchar (100) not null ,
     user_id varchar (100) not null,
     point int not null,
     last_updated_stamp         date default current_date ,
     created_stamp              date default current_date ,
-    constraint pk_user_submission_result_id_user_submission_result primary key (user_submission_contest_result_id),
+    constraint pk_user_submission_result_id_user_submission_result primary key (contest_id, user_id),
     constraint fk_contest_id_user_submission_result foreign key (contest_id) references contest_new(contest_id),
     constraint fk_user_id_user_submission_result foreign key (user_id) references user_login(user_login_id)
 );

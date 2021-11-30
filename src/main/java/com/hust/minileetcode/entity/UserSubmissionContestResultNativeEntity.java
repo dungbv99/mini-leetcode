@@ -1,5 +1,6 @@
 package com.hust.minileetcode.entity;
 
+import com.hust.minileetcode.composite.UserSubmissionContestResultID;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,15 +15,13 @@ import java.util.UUID;
 @Builder
 //@Table(name = "user_submission_contest_result")
 @Table(name = "user_submission_contest_result_new")
+@IdClass(UserSubmissionContestResultID.class)
 public class UserSubmissionContestResultNativeEntity {
     @Id
-    @Column(name = "user_submission_contest_result_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID userSubmissionContestResultId;
-
     @Column(name = "contest_id")
     private String contestId;
 
+    @Id
     @Column(name = "user_id")
     private String userId;
 

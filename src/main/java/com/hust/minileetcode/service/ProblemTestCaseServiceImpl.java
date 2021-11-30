@@ -39,7 +39,6 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private ContestRepo contestRepo;
     private Constants  constants;
     private ContestPagingAndSortingRepo contestPagingAndSortingRepo;
-    private UserSubmissionContestResultRepo userSubmissionContestResultRepo;
     private ContestSubmissionRepo contestSubmissionRepo;
     private UserRegistrationContestRepo userRegistrationContestRepo;
     private NotificationsService notificationsService;

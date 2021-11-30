@@ -4,7 +4,7 @@ SQL_DB_HOST: localhost
 SQL_DB_PORT: 5432
 SQL_DB_USER: postgres
 SQL_DB_PASS: 123456
-POSTGRES_DB: test
+POSTGRES_DB: leetcode
 DOCKER_SERVER_HOST: http://103.56.158.222:12375
 server.servlet.context-path: '/api'
 
