@@ -15,4 +15,8 @@ public interface ProblemSubmissionRepo extends JpaRepository<ProblemSubmissionEn
     List<Object[]> getListProblemSubmissionByUserAndProblemId(@Param("user")UserLogin user, @Param("problem") ProblemEntity problem);
 
     ProblemSubmissionEntity findByProblemSubmissionId(UUID id);
+
+//    @Query(value = "select  from ProblemSubmissionEntity ", nativeQuery = true)
+//    List<Object[]> test();
+
 }

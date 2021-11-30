@@ -150,3 +150,16 @@ create table contest_problem_test_case(
     constraint fk_contest_problem_test_case_problem_id foreign key (contest_problem_id) references contest_problem(problem_id),
     constraint fk_contest_problem_test_case_problem_source_code_id foreign key (problem_source_code_id) references problem_source_code(problem_source_code_id)
 );
+
+create table test
+(
+    id uuid not null default uuid_generate_v1(),
+    user_name varchar (20),
+    problem_name varchar (20),
+    point int,
+    constraint pk_test_id primary key (id)
+);
+
+insert into test(user_name, problem_name, point) values
+    ('1','1', 10),('1','1', 5),('1','1', 7),('1','2', 5),('1','2', 10),('1','2', 3), ('1','3', 3),('1','3', 5),('1','3', 7),
+    ('2','1', 0),('2','1', 10),('2','2', 7),('2','2', 8),('2','3', 10),('3','1', 3), ('3','2', 7),('3','3', 5),('3','3', 7);

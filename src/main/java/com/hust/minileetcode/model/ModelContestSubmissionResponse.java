@@ -13,10 +13,10 @@ public class ModelContestSubmissionResponse {
     String problemId;
     String problemName;
     String submittedAt;
-    int score;
+    Integer score;
     String testCasePass;
     String runTime;
-    float memoryUsage;
+    Float memoryUsage;
     String status;
-    String runtime;
+    Float runtime;
 }

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -42,6 +43,8 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private ContestSubmissionRepo contestSubmissionRepo;
     private UserRegistrationContestRepo userRegistrationContestRepo;
     private NotificationsService notificationsService;
+    private UserSubmissionContestResultNativeRepo userSubmissionContestResultNativeRepo;
+
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
         if(problemRepo.findByProblemId(modelCreateContestProblem.getProblemId()) != null){
@@ -553,6 +556,10 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         ProblemEntity problemEntity = problemRepo.findByProblemId(modelContestSubmission.getProblemId());
         UserLogin userLogin = userLoginRepo.findByUserLoginId(userName);
         ContestEntity contestEntity = contestRepo.findContestByContestId(modelContestSubmission.getContestId());
+        UserRegistrationContestEntity userRegistrationContest = userRegistrationContestRepo.findUserRegistrationContestByContestAndUserLogin(contestEntity, userLogin);
+        if(userRegistrationContest == null){
+            throw new MiniLeetCodeException("User not register contest");
+        }
         List<TestCaseEntity> testCaseEntityList = testCaseRepo.findAllByProblem(problemEntity);
         String tempName = tempDir.createRandomScriptFileName(userName+"-"+modelContestSubmission.getContestId()+"-"+modelContestSubmission.getProblemId());
         String response = submission(modelContestSubmission.getSource(), modelContestSubmission.getLanguage(), tempName, testCaseEntityList, "language not found", problemEntity.getTimeLimit());
@@ -563,33 +570,36 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         log.info("status {}", status);
         if(status.contains("Compile Error")) {
             log.info("return problem submission compile error");
-            ProblemSubmissionEntity problemSubmissionEntity = ProblemSubmissionEntity.builder()
-                    .score(0)
-                    .userLogin(userLogin)
-                    .problem(problemEntity)
-                    .sourceCode(modelContestSubmission.getSource())
-                    .status(status)
-                    .testCasePass(0+"/"+ testCaseEntityList.size())
-                    .sourceCodeLanguages(modelContestSubmission.getLanguage())
-                    .build();
-            ProblemSubmissionEntity p = problemSubmissionRepo.save(problemSubmissionEntity);
-            ContestSubmissionEntity contestSubmissionEntity = ContestSubmissionEntity.builder()
+//            ProblemSubmissionEntity p = ProblemSubmissionEntity.builder()
+//                    .score(0)
+//                    .userLogin(userLogin)
+//                    .problem(problemEntity)
+//                    .sourceCode(modelContestSubmission.getSource())
+//                    .status(status)
+//                    .testCasePass(0+"/"+ testCaseEntityList.size())
+//                    .sourceCodeLanguages(modelContestSubmission.getLanguage())
+//                    .build();
+//            ProblemSubmissionEntity p = problemSubmissionRepo.save(problemSubmissionEntity);
+            ContestSubmissionEntity c = ContestSubmissionEntity.builder()
                     .contest(contestEntity)
-                    .status("Compile Error")
+                    .status(status)
                     .point(0)
                     .contest(contestEntity)
                     .problem(problemEntity)
                     .userLogin(userLogin)
-                    .problemSubmission(p)
+                    .testCasePass(0+"/"+ testCaseEntityList.size())
+                    .sourceCode(modelContestSubmission.getSource())
+                    .sourceCodeLanguage(modelContestSubmission.getLanguage())
+//                .problemSubmission(p)
                     .build();
-            contestSubmissionEntity = contestSubmissionRepo.save(contestSubmissionEntity);
+            c = contestSubmissionRepo.save(c);
             return ModelContestSubmissionResponse.builder()
                     .status(status)
-                    .testCasePass(p.getTestCasePass())
-                    .runtime(p.getRuntime())
-                    .memoryUsage(p.getMemoryUsage())
+                    .testCasePass(c.getTestCasePass())
+                    .runtime(c.getRuntime())
+                    .memoryUsage(c.getMemoryUsage())
                     .problemName(problemEntity.getProblemName())
-                    .contestSubmissionID(contestSubmissionEntity.getContestSubmissionId())
+                    .contestSubmissionID(c.getContestSubmissionId())
                     .build();
         }
         String []ans = response.split("testcasedone\n");
@@ -612,34 +622,37 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
             status = "Accept";
         }
         log.info("pass {}/{}", cnt, testCaseEntityList.size());
-        ProblemSubmissionEntity problemSubmissionEntity = ProblemSubmissionEntity.builder()
-                .score(score)
-                .userLogin(userLogin)
-                .problem(problemEntity)
-                .sourceCode(modelContestSubmission.getSource())
-                .status(status)
-                .testCasePass(cnt+"/"+ testCaseEntityList.size())
-                .sourceCodeLanguages(modelContestSubmission.getLanguage())
-                .build();
-        ProblemSubmissionEntity p = problemSubmissionRepo.save(problemSubmissionEntity);
+//        ProblemSubmissionEntity p = ProblemSubmissionEntity.builder()
+//                .score(score)
+//                .userLogin(userLogin)
+//                .problem(problemEntity)
+//                .sourceCode(modelContestSubmission.getSource())
+//                .status(status)
+//                .testCasePass(cnt+"/"+ testCaseEntityList.size())
+//                .sourceCodeLanguages(modelContestSubmission.getLanguage())
+//                .build();
+//        ProblemSubmissionEntity p = problemSubmissionRepo.save(problemSubmissionEntity);
 
-        ContestSubmissionEntity contestSubmissionEntity = ContestSubmissionEntity.builder()
+        ContestSubmissionEntity c = ContestSubmissionEntity.builder()
                 .contest(contestEntity)
                 .status(status)
                 .point(0)
                 .contest(contestEntity)
                 .problem(problemEntity)
                 .userLogin(userLogin)
-                .problemSubmission(p)
+                .testCasePass(cnt+"/"+ testCaseEntityList.size())
+                .sourceCode(modelContestSubmission.getSource())
+                .sourceCodeLanguage(modelContestSubmission.getLanguage())
+//                .problemSubmission(p)
                 .build();
-        contestSubmissionEntity = contestSubmissionRepo.save(contestSubmissionEntity);
+        c = contestSubmissionRepo.save(c);
         return ModelContestSubmissionResponse.builder()
                 .status(status)
-                .testCasePass(p.getTestCasePass())
-                .runtime(p.getRuntime())
-                .memoryUsage(p.getMemoryUsage())
+                .testCasePass(c.getTestCasePass())
+                .runtime(c.getRuntime())
+                .memoryUsage(c.getMemoryUsage())
                 .problemName(problemEntity.getProblemName())
-                .contestSubmissionID(contestSubmissionEntity.getContestSubmissionId())
+                .contestSubmissionID(c.getContestSubmissionId())
                 .build();
     }
 
@@ -686,6 +699,28 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         }else{
             throw new MiniLeetCodeException("Status not found");
         }
+    }
+
+    @Override
+    public void calculateContestResult(String contestId) {
+        List<Object[]> list = contestSubmissionRepo.calculatorContest(contestId);
+        log.info("size {}", list.size());
+        List<UserSubmissionContestResultNativeEntity> list1 = list.stream()
+                .map(objects -> convertObjectsToUserSubmissionContestResultNativeEntity(objects, contestId))
+                .collect(Collectors.toList());
+//        log.info("list1 {}", list1);
+        userSubmissionContestResultNativeRepo.saveAll(list1);
+    }
+
+    private UserSubmissionContestResultNativeEntity convertObjectsToUserSubmissionContestResultNativeEntity(Object[] objects, String contestId){
+        if(objects.length < 2){
+            return null;
+        }
+        return UserSubmissionContestResultNativeEntity.builder()
+                .contestId(contestId)
+                .userId(objects[0].toString())
+                .point(Integer.parseInt(objects[1].toString()))
+                .build();
     }
 
     private List<ProblemEntity> getContestProblemsFromListContestId(List<String> problemIds) throws MiniLeetCodeException {

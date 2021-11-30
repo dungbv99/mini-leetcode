@@ -33,12 +33,27 @@ public class ContestSubmissionEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private UserLogin userLogin;
 
-    @JoinColumn(name = "problem_submission_id", referencedColumnName = "problem_submission_id")
-    @OneToOne
-    private ProblemSubmissionEntity problemSubmission;
+//    @JoinColumn(name = "problem_submission_id", referencedColumnName = "problem_submission_id")
+//    @OneToOne
+//    private ProblemSubmissionEntity problemSubmission;
+
+    @Column(name = "test_case_pass")
+    private String testCasePass;
+
+    @Column(name = "source_code")
+    private String sourceCode;
+
+    @Column(name = "source_code_language")
+    private String sourceCodeLanguage;
+
+    @Column(name = "runtime")
+    private Float runtime;
+
+    @Column(name = "memory_usage")
+    private float memoryUsage;
 
     @Column(name = "point")
-    private int point;
+    private Integer point;
 
     @Column(name = "status")
     private String status;

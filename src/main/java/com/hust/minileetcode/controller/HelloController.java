@@ -1,12 +1,12 @@
 package com.hust.minileetcode.controller;
 
 import com.hust.minileetcode.docker.DockerClientBase;
+import com.hust.minileetcode.dto.ProblemContestSubmissionDto;
 import com.hust.minileetcode.entity.ProblemEntity;
 import com.hust.minileetcode.entity.TestCaseEntity;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
-import com.hust.minileetcode.repo.ProblemPagingAndSortingRepo;
-import com.hust.minileetcode.repo.ProblemRepo;
-import com.hust.minileetcode.repo.TestCaseRepo;
+import com.hust.minileetcode.repo.*;
+import com.hust.minileetcode.service.ProblemTestCaseService;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
 import com.spotify.docker.client.exceptions.DockerException;
@@ -33,6 +33,8 @@ public class HelloController {
     private static final String buildCmd = "g++ -o main main.cpp";
     private static final String suffixes =".cpp";
     private static final String SHFileStart = "#!/bin/bash\n";
+    private ContestSubmissionRepo contestSubmissionRepo;
+    private ProblemTestCaseService problemTestCaseService;
     @GetMapping("/hello")
     public String hello(){
         return "Hello World!";
@@ -131,6 +133,19 @@ public class HelloController {
     @GetMapping("/test-minileetcode-exception")
     public void testMiniLeetcodeException() throws MiniLeetCodeException {
         throw new MiniLeetCodeException("bad request");
+    }
+
+    @GetMapping("/test-query")
+    public String testQuery(){
+        problemTestCaseService.calculateContestResult("1");
+//        List<ProblemContestSubmissionDto> list = contestSubmissionRepo.calculatorContest("1");
+//        log.info("list {}", list);
+//        for(Object[] li : list){
+//            for(Object l : li){
+//                log.info("l {}", l);
+//            }
+//        }
+        return "ok";
     }
 
 

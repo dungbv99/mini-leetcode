@@ -298,16 +298,21 @@ create table contest_submission_new
     contest_id varchar (100) not null ,
     problem_id varchar (100) not null ,
     user_submission_id varchar (100) not null ,
-    problem_submission_id UUID,
+--     problem_submission_id UUID,
     status varchar (20),
     point int,
+    test_case_pass varchar (20),
+    source_code text,
+    source_code_language varchar (10),
+    runtime float ,
+    memory_usage float ,
     last_updated_stamp         date default current_date ,
     created_stamp              date default current_date ,
     constraint pk_contest_submission_id_contest_submission primary key (contest_submission_id),
     constraint fk_contest_id_contest_submission foreign key (contest_id) references contest_new(contest_id),
     constraint fk_problem_id_contest_submission foreign key (problem_id) references contest_problem_new(problem_id),
-    constraint fk_user_submission_id_contest_submission foreign key (user_submission_id) references user_login(user_login_id),
-    constraint fk_problem_submission_id_contest_submission foreign key(problem_submission_id) references problem_submission_new(problem_submission_id)
+    constraint fk_user_submission_id_contest_submission foreign key (user_submission_id) references user_login(user_login_id)
+--     constraint fk_problem_submission_id_contest_submission foreign key(problem_submission_id) references problem_submission_new(problem_submission_id)
 );
 
 create table user_submission_contest_result_new
