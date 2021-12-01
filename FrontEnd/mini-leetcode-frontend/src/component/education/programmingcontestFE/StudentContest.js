@@ -5,11 +5,13 @@ import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
 import {Button, Grid, MenuItem, Table, TableBody, TableHead, TextField} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
-import {getColorLevel, StyledTableCell, StyledTableRow} from "./lib";
+import {StyledTableCell, StyledTableRow} from "./lib";
 import {Link} from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
+import {successNoti} from "../../../utils/notification";
 
-export default function ListContest(){
+
+export function StudentContest(){
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPage] = useState(0);
@@ -43,6 +45,10 @@ export default function ListContest(){
     getContestList().then();
   }, [page, pageSize])
 
+  function handleRegister(contestId){
+
+  }
+
   return(
     <div>
       <div>
@@ -53,8 +59,7 @@ export default function ListContest(){
                 <TableRow>
                   <StyledTableCell></StyledTableCell>
                   <StyledTableCell align="left">Title</StyledTableCell>
-                  <StyledTableCell align="center">Edit</StyledTableCell>
-                  <StyledTableCell align="center">Solve</StyledTableCell>
+                  <StyledTableCell align="center">Register Contest</StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -69,26 +74,23 @@ export default function ListContest(){
 
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      <Link to={"/programming-contest/edit-contest/"+contest.contestId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
-                        <Button
-                          variant="contained"
-                          color="light"
-                        >
-                          Edit
-                        </Button>
-                      </Link>
+                      <Button
+                        variant="contained"
+                        color="light"
+                        onClick={() => {
+                          request(
+                            "post",
+                            API_URL+"/student-register-contest/"+contest.contestId,
+                            (res)=>{
+                              console.log("res ", res.data);
+                              successNoti(res.data.message, true);
+                            }
+                          ).then();
+                        }}
+                      >
+                        Register
+                      </Button>
                     </StyledTableCell>
-                    <StyledTableCell align="center">
-                      <Link to={"/programming-contest/solving-contest/"+contest.contestId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
-                        <Button
-                          variant="contained"
-                          color="light"
-                        >
-                          Solve
-                        </Button>
-                      </Link>
-                    </StyledTableCell>
-
                   </StyledTableRow>
                 ))}
               </TableBody>

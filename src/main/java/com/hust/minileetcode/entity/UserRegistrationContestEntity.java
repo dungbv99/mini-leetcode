@@ -17,6 +17,7 @@ import java.util.UUID;
 public class UserRegistrationContestEntity {
     @Id
     @Column(name = "user_registration_contest_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @JoinColumn(name = "user_id", referencedColumnName = "user_login_id")

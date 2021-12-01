@@ -1,6 +1,5 @@
 package com.hust.minileetcode.repo;
 
-import com.hust.minileetcode.dto.ProblemContestSubmissionDto;
 import com.hust.minileetcode.entity.ContestSubmissionEntity;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;

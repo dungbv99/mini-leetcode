@@ -1,7 +1,6 @@
 package com.hust.minileetcode.controller;
 
 import com.hust.minileetcode.docker.DockerClientBase;
-import com.hust.minileetcode.dto.ProblemContestSubmissionDto;
 import com.hust.minileetcode.entity.ProblemEntity;
 import com.hust.minileetcode.entity.TestCaseEntity;
 import com.hust.minileetcode.exception.MiniLeetCodeException;

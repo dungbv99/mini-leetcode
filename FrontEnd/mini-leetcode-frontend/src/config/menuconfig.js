@@ -6,14 +6,16 @@ import { GiTeacher } from "react-icons/gi";
 import TeachingIcon from "../assets/icons/mathematics.svg";
 import { buildMapPathMenu } from "../utils/MenuUtils";
 import { general } from "./menuconfig/general";
-import { ProgrammingContest } from "./menuconfig/ProgramingContest";
+import {ProgrammingContestMenuStudent, ProgrammingContestMenuTeacher} from "./menuconfig/ProgramingContest";
 import {user} from "./menuconfig/user";
 import PeopleIcon from "@material-ui/icons/People";
+import PersonIcon from "@material-ui/icons/Person";
 
 export const MENU_LIST = [];
 MENU_LIST.push(general);
-MENU_LIST.push(ProgrammingContest);
+MENU_LIST.push(ProgrammingContestMenuTeacher);
 MENU_LIST.push(user);
+MENU_LIST.push(ProgrammingContestMenuStudent);
 
 export const menuIconMap = new Map();
 menuIconMap.set(
@@ -27,8 +29,11 @@ menuIconMap.set(
 );
 menuIconMap.set("DashboardIcon", <DashboardRoundedIcon />);
 menuIconMap.set("GiTeacher", <GiTeacher size={24} />);
-menuIconMap.set("LocalLibraryIcon", <LocalLibraryIcon />);
-menuIconMap.set("PeopleIcon", <PeopleIcon/>);
-menuIconMap.set("LocalLibraryIcon", <LocalLibraryIcon />);
+menuIconMap.set("LocalLibraryIcon", <LocalLibraryIcon size={24}/>);
+menuIconMap.set("PeopleIcon", <PeopleIcon size={24}/>);
+menuIconMap.set("LocalLibraryIcon", <LocalLibraryIcon size={24}/>);
+menuIconMap.set("PersonIcon", <PersonIcon />);
+
+
 
 export const mapPathMenu = buildMapPathMenu(MENU_LIST);

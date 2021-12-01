@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -169,9 +170,11 @@ public class ContestProblemController {
 
     @GetMapping("/get-contest-paging")
     public ResponseEntity<?> getContestPaging(Pageable pageable, @Param("sortBy") String sortBy){
-        log.info("getContestPageing sortBy {} pageable {}", sortBy, pageable);
+        log.info("getContestPaging sortBy {} pageable {}", sortBy, pageable);
         if(sortBy != null){
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy));
+        }else{
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").ascending());
         }
         ModelGetContestPageResponse modelGetContestPageResponse = problemTestCaseService.getContestPaging(pageable);
         return ResponseEntity.status(200).body(modelGetContestPageResponse);
@@ -182,6 +185,27 @@ public class ContestProblemController {
         log.info("getContestDetail");
         ModelGetContestDetailResponse response = problemTestCaseService.getContestDetailByContestId(contestId);
         return ResponseEntity.status(200).body(response);
+    }
+
+    @Secured("ROLE_STUDENT")
+    @PostMapping("/student-register-contest/{contestId}")
+    public ResponseEntity<?> studentRegisterContest(@PathVariable("contestId") String contestId, Principal principal) throws MiniLeetCodeException {
+        log.info("studentRegisterContest {}", contestId);
+        ModelStudentRegisterContestResponse resp = problemTestCaseService.studentRegisterContest(contestId, principal.getName());
+        return ResponseEntity.status(200).body(resp);
+    }
+
+    @Secured("ROLE_TEACHER")
+    @GetMapping("/get-contest-paging-by-user-create")
+    public ResponseEntity<?> getContestPagingByUserCreate(Principal principal, Pageable pageable, @Param("sortBy") String sortBy){
+        log.info("getContestPagingByUserCreate");
+        if(sortBy != null){
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy));
+        }else{
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").ascending());
+        }
+        ModelGetContestPageResponse resp = problemTestCaseService.getContestPagingByUserCreatedContest(principal.getName(), pageable);
+        return ResponseEntity.status(200).body(resp);
     }
 
 

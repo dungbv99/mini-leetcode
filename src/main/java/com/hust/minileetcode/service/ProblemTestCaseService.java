@@ -56,9 +56,11 @@ public interface ProblemTestCaseService {
 
     ModelContestSubmissionResponse submitContestProblem(ModelContestSubmission modelContestSubmission, String userName) throws Exception;
 
-    ModelStudentRegisterCourseResponse studentRegisterContest(String contestId, String userId) throws MiniLeetCodeException;
+    ModelStudentRegisterContestResponse studentRegisterContest(String contestId, String userId) throws MiniLeetCodeException;
 
     void teacherManageStudentRegisterContest(String teacherId, ModelTeacherManageStudentRegisterContest modelTeacherManageStudentRegisterContest) throws MiniLeetCodeException;
 
     void calculateContestResult(String contestId);
+
+    ModelGetContestPageResponse getContestPagingByUserCreatedContest(String userName, Pageable pageable);
 }

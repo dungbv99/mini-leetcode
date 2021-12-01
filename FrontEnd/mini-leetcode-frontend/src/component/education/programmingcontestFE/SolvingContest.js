@@ -18,7 +18,6 @@ import {Markup} from "interweave";
 import CodeMirror from "@uiw/react-codemirror";
 import {API_URL} from "../../../config/config";
 import {Console} from "./Console";
-// import './css/splitter.css'
 import SplitPane, { Pane } from 'react-split-pane';
 import {TabPanelHorizontal, TabPanelVertical} from "./TabPanel";
 import ContestRunTestCase from "./ContestRunTestCase";

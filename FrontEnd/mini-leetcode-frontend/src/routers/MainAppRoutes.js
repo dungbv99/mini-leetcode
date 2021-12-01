@@ -63,7 +63,7 @@ function MainAppRoute(props) {
 
           <PrivateRoute component={UserLoginRoute} path="/userlogin" />
 
-          <PrivateRoute component={ProgrammingContestRoutes} path="/programming-contestEntity" />
+          <PrivateRoute component={ProgrammingContestRoutes} path="/programming-contest" />
 
           <PrivateRoute
             component={UserRoute}

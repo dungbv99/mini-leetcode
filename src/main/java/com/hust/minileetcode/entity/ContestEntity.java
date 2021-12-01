@@ -4,6 +4,7 @@ import com.hust.minileetcode.rest.entity.UserLogin;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -24,13 +25,13 @@ public class ContestEntity {
 
     @OneToOne
     @JoinColumn(name = "user_create_id", referencedColumnName = "user_login_id")
-    private UserLogin userLogin;
+    private UserLogin userCreatedContest;
 
     @Column(name = "contest_solving_time")
     private int contestSolvingTime;
 
     @JoinTable(
-            name = "contest_contest_problem",
+            name = "contest_contest_problem_new",
             joinColumns = @JoinColumn(name = "contest_id", referencedColumnName = "contest_id"),
             inverseJoinColumns = @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
     )
@@ -42,4 +43,8 @@ public class ContestEntity {
 
     @Column(name = "public")
     private boolean isPublic;
+
+    @Column(name = "created_stamp")
+    private Date createdAt;
+
 }

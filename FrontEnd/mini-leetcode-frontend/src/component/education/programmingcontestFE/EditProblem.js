@@ -106,11 +106,11 @@ function EditProblem(){
 
   useEffect( () =>{
     console.log("problemid ", problemId);
-    let url = API_URL+"/problemEntity-details/"+problemId;
+    let url = API_URL+"/problem-details/"+problemId;
     console.log("url ", url);
     request(
       "get",
-      API_URL + "/problemEntity-details/" + problemId,
+      API_URL + "/problem-details/" + problemId,
       (res) => {
         console.log("res data", res.data);
         console.log(res.data.levelId);
@@ -222,7 +222,7 @@ function EditProblem(){
     }
     request(
       "post",
-      API_URL+"/update-problemEntity-detail/"+problemId,
+      API_URL+"/update-problem-detail/"+problemId,
       (res) =>{
         console.log("res ", res);
         setShowSubmitSuccess(true);
@@ -410,7 +410,7 @@ function EditProblem(){
             />
             <SubmitSuccess
               showSubmitSuccess={showSubmitSuccess}
-              content={"You have saved problemEntity"}/>
+              content={"You have saved problem"}/>
           </CardActions>
         </Card>
       </MuiPickersUtilsProvider>
