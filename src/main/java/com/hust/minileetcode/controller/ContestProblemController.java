@@ -82,7 +82,7 @@ public class ContestProblemController {
 
     @GetMapping("/get-contest-problem-paging")
     public ResponseEntity<?> getContestProblemPaging(Pageable pageable, @Param("sortBy") String sortBy, @Param("desc") String desc) throws Exception {
-        log.info("getContestProblemPaging");
+        log.info("getContestProblemPaging pageable {}", pageable);
         log.info("sortBy {}", sortBy);
         try {
             if(sortBy != null){
@@ -208,5 +208,20 @@ public class ContestProblemController {
         return ResponseEntity.status(200).body(resp);
     }
 
+    @Secured("ROLE_TEACHER")
+    @GetMapping("/get-user-register-successful-contest/{contestId}")
+    public ResponseEntity<?> getUserRegisterSuccessfulContest(@PathVariable("contestId") String contestId, Pageable pageable){
+        log.info("getUserRegisterSuccessfulContest ");
+        ListModelUserRegisteredContestInfo resp = problemTestCaseService.getListUserRegisterContestSuccessfulPaging(pageable, contestId);
+        return ResponseEntity.status(200).body(resp);
+    }
 
+
+    @Secured("ROLE_TEACHER")
+    @GetMapping("/get-user-register-pending-contest/{contestId}")
+    public ResponseEntity<?> getUserRegisterPendingContest(@PathVariable("contestId") String contestId, Pageable pageable, @Param("size") String size, @Param("page") String page){
+        log.info("getUserRegisterPendingContest pageable {} size {} page {} contest id {}", pageable, size, page, contestId);
+        ListModelUserRegisteredContestInfo resp = problemTestCaseService.getListUserRegisterContestPendingPaging(pageable, contestId);
+        return ResponseEntity.status(200).body(resp);
+    }
 }

@@ -11,6 +11,7 @@ import ListContest from "../component/education/programmingcontestFE/ListContest
 import SolvingContest from "../component/education/programmingcontestFE/SolvingContest";
 import {StudentContest} from "../component/education/programmingcontestFE/StudentContest";
 import {ListContestManager} from "../component/education/programmingcontestFE/ListContestManager";
+import {ContestManager} from "../component/education/programmingcontestFE/ContestManager";
 
 export default function ProgrammingContestRoutes(){
   let { path } = useRouteMatch();
@@ -62,7 +63,11 @@ export default function ProgrammingContestRoutes(){
           />
         <Route
           component={ListContestManager}
-          path={`${path}/list-contest-manager`}
+          path={`${path}/teacher-list-contest-manager`}
+          />
+        <Route
+          component={ContestManager}
+          path={`${path}/contest-manager/:contestId`}
           />
       </Switch>
     </div>

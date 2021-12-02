@@ -14,6 +14,8 @@ import {authPost} from "../../../api";
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import {OutputWithLoading} from "./OutputWithLoading";
+import {NavLink} from "react-router-dom";
+import {NavHashLink} from "react-router-hash-link";
 
 function IDE(){
   const dispatch = useDispatch();
@@ -93,6 +95,11 @@ function IDE(){
 
   return(
     <div>
+
+      {/*<NavLink to='/programming-contest/contest-manager/test2#test'   isActive={() => {*/}
+      {/*  return window.location.hash === '#test';*/}
+      {/*}}>test</NavLink>*/}
+
 
       <TextField
         variant="outlined"

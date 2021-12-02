@@ -63,4 +63,8 @@ public interface ProblemTestCaseService {
     void calculateContestResult(String contestId);
 
     ModelGetContestPageResponse getContestPagingByUserCreatedContest(String userName, Pageable pageable);
+
+    ListModelUserRegisteredContestInfo getListUserRegisterContestSuccessfulPaging(Pageable pageable, String contestId);
+
+    ListModelUserRegisteredContestInfo getListUserRegisterContestPendingPaging(Pageable pageable, String contestId);
 }

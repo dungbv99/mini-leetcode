@@ -1,9 +1,4 @@
-CREATE DATABASE "leetcode"
-    WITH OWNER "postgres"
-    ENCODING 'UTF8'
-    LC_COLLATE = 'en_US.UTF-8'
-    LC_CTYPE = 'en_US.UTF-8'
-    TEMPLATE template0;
+CREATE DATABASE "leetcode";
 -- user defind
 CREATE OR REPLACE FUNCTION public.uuid_generate_v1()
  RETURNS uuid
@@ -61,6 +56,7 @@ create TABLE user_login
     current_password         VARCHAR(60),
     otp_secret               VARCHAR(60),
     client_token             VARCHAR(512),
+    email                    VARCHAR(50),
     password_hint            TEXT,
     is_system                BOOLEAN,
     enabled                  BOOLEAN,
@@ -338,4 +334,6 @@ create table user_registration_contest_new
     constraint fk_contest_id_user_registration_contest foreign key (contest_id) references contest_new(contest_id)
 );
 
-drop table user_submission_contest_result, contest_contest_problem, contest_submission, contest_contest_problem, contest, problem_submission, test_case, problem_source_code, contest_problem;
+-- alter table user_login add column email varchar(20);
+
+-- drop table user_submission_contest_result, contest_contest_problem, contest_submission, contest_contest_problem, contest, problem_submission, test_case, problem_source_code, contest_problem;

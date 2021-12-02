@@ -43,6 +43,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private UserRegistrationContestRepo userRegistrationContestRepo;
     private NotificationsService notificationsService;
     private UserSubmissionContestResultNativeRepo userSubmissionContestResultNativeRepo;
+    private UserRegistrationContestPagingAndSortingRepo userRegistrationContestPagingAndSortingRepo;
 
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
@@ -717,6 +718,27 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         Page<ContestEntity> contestPage =  contestPagingAndSortingRepo.findAllByUserCreatedContest(pageable, userCreateContest);
         return getModelGetContestPageResponse(contestPage);
     }
+
+    @Override
+    public ListModelUserRegisteredContestInfo getListUserRegisterContestSuccessfulPaging(Pageable pageable, String contestId) {
+        ContestEntity contest = contestRepo.findContestByContestId(contestId);
+//        List<UserRegistrationContestEntity> list = userRegistrationContestPagingAndSortingRepo.findUserRegistrationContestEntityByContest(pageable, contest);
+        Page<ModelUserRegisteredClassInfo> list = userRegistrationContestPagingAndSortingRepo.getAllUserRegisteredByContestAndStatusInfo(pageable,contest, Constants.RegistrationType.SUCCESSFUL.getValue());
+        return ListModelUserRegisteredContestInfo.builder()
+                .contents(list)
+                .build();
+    }
+
+    @Override
+    public ListModelUserRegisteredContestInfo getListUserRegisterContestPendingPaging(Pageable pageable, String contestId) {
+        ContestEntity contest = contestRepo.findContestByContestId(contestId);
+        Page<ModelUserRegisteredClassInfo> list = userRegistrationContestPagingAndSortingRepo.getAllUserRegisteredByContestAndStatusInfo(pageable,contest, Constants.RegistrationType.PENDING.getValue());
+//        log.info("list pending {}", list.size());
+//        List<UserRegistrationContestEntity> list1 = userRegistrationContestPagingAndSortingRepo.findUserRegistrationContestEntityByContestAndStatus(pageable, contest, Constants.RegistrationType.PENDING.getValue());
+//        log.info("lllll {}", list1.size());
+        return ListModelUserRegisteredContestInfo.builder()
+                .contents(list)
+                .build();    }
 
     private ModelGetContestPageResponse getModelGetContestPageResponse(Page<ContestEntity> contestPage) {
         List<ModelGetContestResponse> lists = new ArrayList<>();

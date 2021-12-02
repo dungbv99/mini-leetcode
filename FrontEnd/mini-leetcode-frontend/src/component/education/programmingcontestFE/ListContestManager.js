@@ -62,7 +62,6 @@ export function ListContestManager(){
                     <StyledTableCell component="th" scope="row">
                       {pageSize*(page-1) + index +1}
                     </StyledTableCell>
-
                     <StyledTableCell align="left">
                       <Link to={"/programming-contest/contest-manager/"+contest.contestId}  style={{ textDecoration: 'none', color:"#000000", hover:{color:"#00D8FF", textPrimary:"#00D8FF"}}} >
                         <b>{contest.contestName}</b>

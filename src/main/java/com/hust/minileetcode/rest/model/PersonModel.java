@@ -1,15 +1,12 @@
 package com.hust.minileetcode.rest.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Date;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonModel {
@@ -33,4 +30,6 @@ public class PersonModel {
     private Date birthDate;
 
     private String affiliations;
+
+    private String email;
 }

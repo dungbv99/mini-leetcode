@@ -188,16 +188,29 @@ public class UserServiceImpl implements UserService {
             return new SimpleResponse(400, "approved", "Tài khoản đã được phê duyệt trước đó");
         }
 
-        createAndSaveUserLogin(new PersonModel(
-                userRegister.getUserLoginId(),
-                userRegister.getPassword(),
-                im.getRoles(),
-                userRegister.getUserLoginId(),
-                userRegister.getFirstName(),
-                userRegister.getLastName(),
-                userRegister.getMiddleName(),
-                null,
-                null,userRegister.getAffiliations()));
+//        createAndSaveUserLogin(new PersonModel(
+//                userRegister.getUserLoginId(),
+//                userRegister.getPassword(),
+//                im.getRoles(),
+//                userRegister.getUserLoginId(),
+//                userRegister.getFirstName(),
+//                userRegister.getLastName(),
+//                userRegister.getMiddleName(),
+//                null,
+//                null,userRegister.getAffiliations()));
+
+        createAndSaveUserLogin(PersonModel.builder()
+                .userName(userRegister.getUserLoginId())
+                .password(userRegister.getPassword())
+                .roles(im.getRoles())
+                .firstName(userRegister.getFirstName())
+                .lastName(userRegister.getLastName())
+                .middleName(userRegister.getMiddleName())
+                .gender(null)
+                .birthDate(null)
+                .affiliations(userRegister.getAffiliations())
+                .email(userRegister.getEmail())
+                .build());
 
         StatusItem userApproved = statusItemRepo.findById("USER_APPROVED").orElseThrow(NoSuchElementException::new);
         userRegister.setStatusItem(userApproved);
@@ -313,6 +326,7 @@ public class UserServiceImpl implements UserService {
                 .userLoginId(personModel.getUserName())
                 .password(UserLogin.PASSWORD_ENCODER.encode(personModel.getPassword()))
                 .roles(roles)
+                .email(personModel.getEmail())
                 .enabled(true)
                 .person(person)
                 .build();

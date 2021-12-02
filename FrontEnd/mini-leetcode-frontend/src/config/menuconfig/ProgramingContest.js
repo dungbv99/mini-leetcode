@@ -47,7 +47,7 @@ export const ProgrammingContestMenuTeacher = {
     },
     {
       id: "MENU_TEACHER",
-      path: "/programming-contest/list-contest-manager",
+      path: "/programming-contest/teacher-list-contest-manager",
       isPublic: false,
       icon: null,
       text: "List Contest Manager",

@@ -1,12 +1,5 @@
 import * as React from 'react';
-import Typography from '@mui/material/Typography';
 import {useEffect, useState} from "react";
-import {cpp, cppLanguage} from '@codemirror/lang-cpp';
-import {java} from '@codemirror/lang-java';
-import {pythonLanguage} from '@codemirror/lang-python';
-import { go } from '@codemirror/legacy-modes/mode/go';
-import { javascript } from '@codemirror/lang-javascript';
-import { StreamLanguage } from '@codemirror/stream-parser';
 import CodeMirror from "@uiw/react-codemirror";
 import {
   Tabs,
@@ -238,7 +231,7 @@ export default function ProblemDetail(props){
               // variant={"fullWidth"}
               aria-label="basic tabs example"
             >
-              <Tab label="Description" {...a11yProps(0)} style={{width:"25%"}}/>
+              <Tab label="Description" {...a11yProps(0)} style={{width:"25%"}} />
               <Tab label="Solution" {...a11yProps(1)} style={{width:"25%"}}/>
               <Tab label="Discuss" {...a11yProps(2)} style={{width:"25%"}}/>
               <Tab label="Submissions" {...a11yProps(3)} style={{width:"25%"}}/>

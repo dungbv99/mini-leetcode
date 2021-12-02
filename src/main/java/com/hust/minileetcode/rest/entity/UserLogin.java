@@ -43,6 +43,8 @@ public class UserLogin {
 
     private int otpResendNumber;
 
+    private String email;
+
 
     @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     @OneToOne(fetch = FetchType.EAGER)
