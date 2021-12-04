@@ -168,7 +168,7 @@ export default function SolvingContest(props){
         let arr = problems.map(()=>false);
         setSubmitted(arr);
 
-        let a = "startTime-"+res.data.contestTime;
+        let a = "startTime-"+res.data.contestTime+"-"+contestId;
 
         if(localStorage.getItem(a) == null){
           console.log("set start time");

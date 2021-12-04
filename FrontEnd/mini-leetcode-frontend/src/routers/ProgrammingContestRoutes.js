@@ -9,9 +9,10 @@ import ProblemSubmissionDetail from "../component/education/programmingcontestFE
 import CreateContest from "../component/education/programmingcontestFE/CreateContest";
 import ListContest from "../component/education/programmingcontestFE/ListContest";
 import SolvingContest from "../component/education/programmingcontestFE/SolvingContest";
-import {StudentContest} from "../component/education/programmingcontestFE/StudentContest";
+import {StudentContestNotRegistered} from "../component/education/programmingcontestFE/StudentContestNotRegistered";
 import {ListContestManager} from "../component/education/programmingcontestFE/ListContestManager";
 import {ContestManager} from "../component/education/programmingcontestFE/ContestManager";
+import {StudentContestRegistered} from "../component/education/programmingcontestFE/StudentContestRegistered";
 
 export default function ProgrammingContestRoutes(){
   let { path } = useRouteMatch();
@@ -58,9 +59,13 @@ export default function ProgrammingContestRoutes(){
           path={`${path}/solving-contest/:contestId`}
         />
         <Route
-          component={StudentContest}
-          path={`${path}/student-list-contest`}
+          component={StudentContestNotRegistered}
+          path={`${path}/student-list-contest-not-registered`}
           />
+        <Route
+          component={StudentContestRegistered}
+          path={`${path}/student-list-contest-registered`}
+        />
         <Route
           component={ListContestManager}
           path={`${path}/teacher-list-contest-manager`}

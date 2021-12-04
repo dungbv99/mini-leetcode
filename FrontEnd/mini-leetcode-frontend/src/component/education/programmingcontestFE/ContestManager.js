@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Link, useParams, NavLink} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {Fragment, useEffect, useState} from "react";
 import {request} from "./Request";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -11,6 +11,8 @@ import TableRow from "@material-ui/core/TableRow";
 import {getColorLevel, StyledTableCell, StyledTableRow} from "./lib";
 import TableBody from "@mui/material/TableBody";
 import Pagination from "@material-ui/lab/Pagination";
+import {API_URL} from "../../../config/config";
+import {successNoti} from "../../../utils/notification";
 // import { HashLink } from 'react-router-hash-link';
 
 
@@ -29,6 +31,7 @@ export function ContestManager(){
   const [pagePending, setPagePending] = useState(1);
   const [pageSuccessful, setPageSuccessful] = useState(1);
   const [successful, setSuccessful] = useState([]);
+  const [load, setLoad] = useState(true);
   const handlePagePendingSizeChange = (event) => {
     setPagePendingSize(event.target.value);
     setPagePending(1);
@@ -58,7 +61,7 @@ export function ContestManager(){
   function getUserSuccessful(){
     request(
       "get",
-      "/get-user-register-pending-contest/"+contestId+"?size="+pageSuccessfulSize+"&page="+(pageSuccessful-1),
+      "/get-user-register-successful-contest/"+contestId+"?size="+pageSuccessfulSize+"&page="+(pageSuccessful-1),
       (res) => {
         console.log("res pending", res.data);
         setSuccessful(res.data.contents.content);
@@ -81,7 +84,7 @@ export function ContestManager(){
     ).then();
 
     getUserPending();
-
+    getUserSuccessful()
   },[])
 
 
@@ -154,43 +157,52 @@ export function ContestManager(){
           List Student Registered Contest
         </Typography>
       </section>
-      <TableContainer component={Paper}>
-        <Table sx={{minWidth:window.innerWidth-500}}  aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell align="center">User Name</StyledTableCell>
-              <StyledTableCell align="center">Full Name</StyledTableCell>
-              <StyledTableCell align="center">Email</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-              successful.map((s, index) =>(
-                <StyledTableRow>
-                  <StyledTableCell>
-                    <b>{index+1+pageSuccessful*pageSuccessfulSize}</b>
-                  </StyledTableCell>
+      {/*<TableContainer component={Paper}>*/}
+      {/*  <Table sx={{minWidth:window.innerWidth-500}}  aria-label="customized table">*/}
+      {/*    <TableHead>*/}
+      {/*      <TableRow>*/}
+      {/*        <StyledTableCell align="center"></StyledTableCell>*/}
+      {/*        <StyledTableCell align="center">User Name</StyledTableCell>*/}
+      {/*        <StyledTableCell align="center">Full Name</StyledTableCell>*/}
+      {/*        <StyledTableCell align="center">Email</StyledTableCell>*/}
+      {/*      </TableRow>*/}
+      {/*    </TableHead>*/}
+      {/*    <TableBody>*/}
+      {/*      {*/}
+      {/*        successful.map((s, index) =>(*/}
+      {/*          <StyledTableRow>*/}
+      {/*            <StyledTableCell>*/}
+      {/*              <b>{index+1+(pageSuccessful-1)*pageSuccessfulSize}</b>*/}
+      {/*            </StyledTableCell>*/}
 
-                  <StyledTableCell align="center">
-                    <b>{s.userName}</b>
+      {/*            <StyledTableCell align="center">*/}
+      {/*              <b>{s.userName}</b>*/}
 
-                  </StyledTableCell>
+      {/*            </StyledTableCell>*/}
 
-                  <StyledTableCell align="center">
-                    <b>{s.firstName}{" "}{s.middleName}{" "}{s.lastName}</b>
+      {/*            <StyledTableCell align="center">*/}
+      {/*              <b>{s.firstName}{" "}{s.middleName}{" "}{s.lastName}</b>*/}
 
-                  </StyledTableCell>
+      {/*            </StyledTableCell>*/}
 
-                  <StyledTableCell align="center">
-                    <b>{s.email}</b>
-                  </StyledTableCell>
+      {/*            <StyledTableCell align="center">*/}
+      {/*              <b>{s.email}</b>*/}
+      {/*            </StyledTableCell>*/}
 
-                </StyledTableRow>
-              ))
-            }
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {/*          </StyledTableRow>*/}
+      {/*        ))*/}
+      {/*      }*/}
+      {/*    </TableBody>*/}
+      {/*  </Table>*/}
+      {/*</TableContainer>*/}
+      <RegisteredTable
+        successful={successful}
+        pageSuccessful={pageSuccessful}
+        pageSuccessfulSize={pageSuccessfulSize}
+        load={load}
+      />
+
+
       <br></br>
       <Grid container spacing={12}>
         <Grid item xs={6}>
@@ -269,11 +281,67 @@ export function ContestManager(){
                   </StyledTableCell>
 
                   <StyledTableCell align="center">
+                    <Button
+                      variant="contained"
+                      color="light"
+                      onClick={() => {
+                        let body = {
+                          contestId: contestId,
+                          userId: s.userName,
+                          status: "SUCCESSES"
+                        }
+                        request(
+                          "post",
+                          "/techer-manager-student-register-contest",
+                          ()=>{
+                            successful.push(s);
+                            // setSuccessful(successful)
+                            // setSuccessful(successful)
+                            pendings.splice(index,1);
+                            // setPendings(pendings);
+                            console.log("successful ", successful);
+                            console.log("pendings ", pendings);
+                            setLoad(false);
+                            setLoad(true);
+                          },
+                          {}
+                          ,
+                          body
 
+                        ).then()
+                      }}
+                    >
+                      Approve
+                    </Button>
                   </StyledTableCell>
 
                   <StyledTableCell align="center">
+                    <Button
+                      variant="contained"
+                      color="light"
+                      onClick={() => {
+                        let body = {
+                          contestId: contestId,
+                          userId: s.userName,
+                          status: "FAILED"
+                        }
+                        request(
+                          "post",
+                          "/techer-manager-student-register-contest",
+                          ()=>{
+                            pendings.splice(index,1);
+                            setLoad(false);
+                            setLoad(true)
+                          },
+                          {}
+                          ,
+                          body
 
+                        ).then()
+                      }}
+                    >
+                      Reject
+                    </Button>
                   </StyledTableCell>
 
                 </StyledTableRow>
@@ -324,4 +392,57 @@ export function ContestManager(){
 
     </div>
   );
+}
+
+function RegisteredTable(props){
+  const {successful, pageSuccessful, pageSuccessfulSize, load} = props;
+  if(load){
+    return(
+      <div>
+        <TableContainer component={Paper}>
+          <Table sx={{minWidth:window.innerWidth-500}}  aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell align="center"></StyledTableCell>
+                <StyledTableCell align="center">User Name</StyledTableCell>
+                <StyledTableCell align="center">Full Name</StyledTableCell>
+                <StyledTableCell align="center">Email</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {
+                successful.map((s, index) =>(
+                  <StyledTableRow>
+                    <StyledTableCell>
+                      <b>{index+1+(pageSuccessful-1)*pageSuccessfulSize}</b>
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      <b>{s.userName}</b>
+
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      <b>{s.firstName}{" "}{s.middleName}{" "}{s.lastName}</b>
+
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      <b>{s.email}</b>
+                    </StyledTableCell>
+
+                  </StyledTableRow>
+                ))
+              }
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+    );
+  }else{
+    return (
+      <div></div>
+    );
+  }
+
 }

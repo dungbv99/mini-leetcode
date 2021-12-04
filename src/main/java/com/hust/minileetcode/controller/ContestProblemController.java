@@ -211,7 +211,7 @@ public class ContestProblemController {
     @Secured("ROLE_TEACHER")
     @GetMapping("/get-user-register-successful-contest/{contestId}")
     public ResponseEntity<?> getUserRegisterSuccessfulContest(@PathVariable("contestId") String contestId, Pageable pageable){
-        log.info("getUserRegisterSuccessfulContest ");
+        log.info("get User Register Successful Contest ");
         ListModelUserRegisteredContestInfo resp = problemTestCaseService.getListUserRegisterContestSuccessfulPaging(pageable, contestId);
         return ResponseEntity.status(200).body(resp);
     }
@@ -220,8 +220,42 @@ public class ContestProblemController {
     @Secured("ROLE_TEACHER")
     @GetMapping("/get-user-register-pending-contest/{contestId}")
     public ResponseEntity<?> getUserRegisterPendingContest(@PathVariable("contestId") String contestId, Pageable pageable, @Param("size") String size, @Param("page") String page){
-        log.info("getUserRegisterPendingContest pageable {} size {} page {} contest id {}", pageable, size, page, contestId);
+        log.info("get User Register Pending Contest pageable {} size {} page {} contest id {}", pageable, size, page, contestId);
         ListModelUserRegisteredContestInfo resp = problemTestCaseService.getListUserRegisterContestPendingPaging(pageable, contestId);
         return ResponseEntity.status(200).body(resp);
     }
+
+    @Secured("ROLE_TEACHER")
+    @PostMapping("/techer-manager-student-register-contest")
+    public ResponseEntity<?> teacherManagerStudentRegisterContest(Principal principal, @RequestBody ModelTeacherManageStudentRegisterContest request) throws MiniLeetCodeException {
+        log.info("teacherManagerStudentRegisterContest");
+        problemTestCaseService.teacherManageStudentRegisterContest(principal.getName(), request);
+        return ResponseEntity.status(200).body(null);
+    }
+
+
+    @GetMapping("/get-contest-paging-registered")
+    public ResponseEntity<?> getContestRegisteredByStudentPaging(Pageable pageable, @Param("sortBy") String sortBy, Principal principal){
+        log.info("getContestRegisteredByStudentPaging sortBy {} pageable {}", sortBy, pageable);
+        if(sortBy != null){
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy));
+        }else{
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").ascending());
+        }
+        ModelGetContestPageResponse modelGetContestPageResponse = problemTestCaseService.getRegisteredContestByUser(pageable, principal.getName());
+        return ResponseEntity.status(200).body(modelGetContestPageResponse);
+    }
+
+    @GetMapping("/get-contest-paging-not-registered")
+    public ResponseEntity<?> getContestNotRegisteredByStudentPaging(Pageable pageable, @Param("sortBy") String sortBy, Principal principal){
+        log.info("getContestRegisteredByStudentPaging sortBy {} pageable {}", sortBy, pageable);
+        if(sortBy != null){
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy));
+        }else{
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").ascending());
+        }
+        ModelGetContestPageResponse modelGetContestPageResponse = problemTestCaseService.getNotRegisteredContestByUser(pageable, principal.getName());
+        return ResponseEntity.status(200).body(modelGetContestPageResponse);
+    }
+
 }

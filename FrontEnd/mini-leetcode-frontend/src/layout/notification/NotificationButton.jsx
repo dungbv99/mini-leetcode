@@ -207,7 +207,10 @@ function NotificationButton() {
 
     // let count = 0;
 
+
+
     function setupEventSource() {
+
       fetchNotification();
 
       es = new EventSourcePolyfill(`${API_URL}/notification/subscription`, {

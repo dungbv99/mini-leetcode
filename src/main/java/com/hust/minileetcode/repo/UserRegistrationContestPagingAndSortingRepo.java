@@ -3,6 +3,7 @@ package com.hust.minileetcode.repo;
 import com.hust.minileetcode.entity.ContestEntity;
 import com.hust.minileetcode.entity.UserRegistrationContestEntity;
 import com.hust.minileetcode.model.ModelUserRegisteredClassInfo;
+import com.hust.minileetcode.rest.entity.UserLogin;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +23,10 @@ public interface UserRegistrationContestPagingAndSortingRepo extends PagingAndSo
     List<UserRegistrationContestEntity> findUserRegistrationContestEntityByContest(Pageable pageable,ContestEntity contest);
 
     List<UserRegistrationContestEntity> findUserRegistrationContestEntityByContestAndStatus(Pageable pageable, ContestEntity contest, String status);
+
+    @Query("select ce from ContestEntity ce where ce in (select urce.contest from UserRegistrationContestEntity urce where urce.userLogin = :userLogin and urce.status = 'SUCCESSFUL')")
+    Page<ContestEntity> getContestByUserAndStatusSuccessful(Pageable pageable, @Param("userLogin") UserLogin userLogin);
+
+    @Query("select ce from ContestEntity ce where ce not in (select urce.contest from UserRegistrationContestEntity urce where urce.userLogin = :userLogin and urce.status = 'SUCCESSFUL')")
+    Page<ContestEntity> getNotRegisteredContestByUserLogin(Pageable pageable, @Param("userLogin") UserLogin userLogin);
 }

@@ -10,8 +10,7 @@ import {Link} from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import {successNoti} from "../../../utils/notification";
 
-
-export function StudentContest(){
+export function StudentContestRegistered(){
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPage] = useState(0);
@@ -31,7 +30,7 @@ export function StudentContest(){
   async function getContestList() {
     request(
       "get",
-      API_URL+"/get-contest-paging?size="+pageSize+"&page="+(page-1),
+      API_URL+"/get-contest-paging-registered?size="+pageSize+"&page="+(page-1),
       (res)=>{
         console.log("contest list", res.data);
         setTotalPage(res.data.totalPages);
@@ -74,22 +73,14 @@ export function StudentContest(){
 
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      <Button
-                        variant="contained"
-                        color="light"
-                        onClick={() => {
-                          request(
-                            "post",
-                            API_URL+"/student-register-contest/"+contest.contestId,
-                            (res)=>{
-                              console.log("res ", res.data);
-                              successNoti(res.data.message, true);
-                            }
-                          ).then();
-                        }}
-                      >
-                        Register
-                      </Button>
+                      <Link to={"/programming-contest/solving-contest/"+contest.contestId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
+                        <Button
+                          variant="contained"
+                          color="light"
+                        >
+                          Solve
+                        </Button>
+                      </Link>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}

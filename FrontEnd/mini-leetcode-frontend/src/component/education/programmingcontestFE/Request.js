@@ -67,12 +67,14 @@ export async function request(
           } else {
             e.response.data.message != undefined? errorNoti(e.response.data.message, true) : errorNoti("Bad Request");
           }
+          break;
         case 500:
           if (isFunction(errorHandlers[500])) {
             errorHandlers[500](e);
           } else {
             e.response.data.message != undefined? errorNoti(e.response.data.message, true) : errorNoti("Something is wrong in server")
           }
+          break;
         default:
           if (isFunction(errorHandlers[e.response.status])) {
             errorHandlers[e.response.status](e);
@@ -80,6 +82,7 @@ export async function request(
             errorHandlers["rest"](e);
           } else {
           }
+          break;
       }
     } else if (e.request) {
       // The request was made but no response was received

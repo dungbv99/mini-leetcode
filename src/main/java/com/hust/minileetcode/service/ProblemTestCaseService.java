@@ -7,6 +7,7 @@ import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 
 import java.util.UUID;
 
@@ -67,4 +68,9 @@ public interface ProblemTestCaseService {
     ListModelUserRegisteredContestInfo getListUserRegisterContestSuccessfulPaging(Pageable pageable, String contestId);
 
     ListModelUserRegisteredContestInfo getListUserRegisterContestPendingPaging(Pageable pageable, String contestId);
+
+    ModelGetContestPageResponse getRegisteredContestByUser(Pageable pageable, String userName);
+
+    ModelGetContestPageResponse getNotRegisteredContestByUser(Pageable pageable, String userName);
+
 }
