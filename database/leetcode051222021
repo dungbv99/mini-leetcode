@@ -358,7 +358,8 @@ CREATE TABLE public.user_login (
     successive_failed_logins integer,
     last_updated_stamp timestamp without time zone,
     created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    otp_resend_number integer DEFAULT 0
+    otp_resend_number integer DEFAULT 0,
+    email character varying(20)
 );
 
 
@@ -421,6 +422,8 @@ CREATE TABLE public.user_submission_contest_result_new (
     contest_id character varying(100) NOT NULL,
     user_id character varying(100) NOT NULL,
     point integer NOT NULL,
+    email character varying(20),
+    full_name character varying(50),
     last_updated_stamp date DEFAULT CURRENT_DATE,
     created_stamp date DEFAULT CURRENT_DATE
 );
@@ -460,11 +463,16 @@ ENTITY	Entity application type	2021-11-24 16:56:52.177323	2021-11-24 16:56:52.17
 --
 
 COPY public.contest_contest_problem_new (contest_id, problem_id, last_updated_stamp, created_stamp) FROM stdin;
-1	1	2021-11-30 00:00:00	2021-11-30 00:00:00
-1	2	2021-11-30 00:00:00	2021-11-30 00:00:00
-1	3	2021-11-30 00:00:00	2021-11-30 00:00:00
-2	5	2021-11-30 00:00:00	2021-11-30 00:00:00
-2	1	2021-11-30 00:00:00	2021-11-30 00:00:00
+test1	ADD 2 NUMBER	2021-12-01 00:00:00	2021-12-01 00:00:00
+test2	ADD 2 NUMBER	2021-12-01 00:00:00	2021-12-01 00:00:00
+test3	ADD 2 NUMBER	2021-12-04 00:00:00	2021-12-04 00:00:00
+test4	ADD 2 NUMBER	2021-12-04 00:00:00	2021-12-04 00:00:00
+test6	ADD 2 NUMBER	2021-12-04 00:00:00	2021-12-04 00:00:00
+test7	ADD 2 NUMBER	2021-12-04 00:00:00	2021-12-04 00:00:00
+contest1	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+contest2	ADD 2 NUMBER	2021-12-05 00:00:00	2021-12-05 00:00:00
+contest2	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+contest2	tru 2 so	2021-12-05 00:00:00	2021-12-05 00:00:00
 \.
 
 
@@ -473,9 +481,15 @@ COPY public.contest_contest_problem_new (contest_id, problem_id, last_updated_st
 --
 
 COPY public.contest_new (contest_id, contest_name, contest_solving_time, user_create_id, try_again, public, last_updated_stamp, created_stamp) FROM stdin;
-1	1	\N	\N	\N	\N	2021-11-30 00:00:00	2021-11-30 00:00:00
-2	2	\N	\N	\N	\N	2021-11-30 00:00:00	2021-11-30 00:00:00
-3	3	\N	\N	\N	\N	2021-11-30 00:00:00	2021-11-30 00:00:00
+test1	test1	90	admin	f	f	2021-12-01 00:00:00	\N
+test2	test2	1	admin	f	f	2021-12-01 00:00:00	\N
+test3	test3	50	admin	f	f	2021-12-04 00:00:00	\N
+test4	test4	120	admin	f	f	2021-12-04 00:00:00	\N
+test5	test5	90	admin	f	f	2021-12-04 00:00:00	\N
+test6	test6	90	admin	f	f	2021-12-04 00:00:00	\N
+test7	test7	75	admin	f	f	2021-12-04 00:00:00	\N
+contest1	contest1	20	admin	f	f	2021-12-05 00:00:00	\N
+contest2	contest2	1	admin	f	f	2021-12-05 00:00:00	\N
 \.
 
 
@@ -484,11 +498,9 @@ COPY public.contest_new (contest_id, contest_name, contest_solving_time, user_cr
 --
 
 COPY public.contest_problem_new (problem_id, problem_name, problem_description, created_by_user_login_id, time_limit, memory_limit, level_id, category_id, last_updated_stamp, created_stamp, solution, level_order, correct_solution_source_code, correct_solution_language) FROM stdin;
-1	1	\N	\N	\N	\N	\N	\N	2021-11-30 00:00:00	2021-11-30 00:00:00	\N	\N	\N	\N
-2	2	\N	\N	\N	\N	\N	\N	2021-11-30 00:00:00	2021-11-30 00:00:00	\N	\N	\N	\N
-3	3	\N	\N	\N	\N	\N	\N	2021-11-30 00:00:00	2021-11-30 00:00:00	\N	\N	\N	\N
-4	4	\N	\N	\N	\N	\N	\N	2021-11-30 00:00:00	2021-11-30 00:00:00	\N	\N	\N	\N
-5	5	\N	\N	\N	\N	\N	\N	2021-11-30 00:00:00	2021-11-30 00:00:00	\N	\N	\N	\N
+ADD 2 NUMBER	ADD 2 NUMBER	<p>ADD 2 NUMBER</p>\n	\N	1	1	easy	\N	2021-12-01 00:00:00	2021-12-01 11:48:35.681	<p></p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << "1";\n}	CPP
+multiple 2 number	multiple 2 number	<p>give 2 number a and b</p>\n<p>return a*b</p>\n	\N	1	1	easy	\N	2021-12-05 00:00:00	2021-12-05 09:09:19.303	<p></p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a;\n  int b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP
+tru 2 so	\N	<p>1</p>\n	\N	1	1	easy	\N	2021-12-05 00:00:00	2021-12-05 20:51:32.392	<p>1</p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a-b;\n}	CPP
 \.
 
 
@@ -497,24 +509,20 @@ COPY public.contest_problem_new (problem_id, problem_name, problem_description, 
 --
 
 COPY public.contest_submission_new (contest_submission_id, contest_id, problem_id, user_submission_id, status, point, test_case_pass, source_code, source_code_language, runtime, memory_usage, last_updated_stamp, created_stamp) FROM stdin;
-ba2f691e-51ae-11ec-ba86-0242ac110002	1	1	admin	\N	2	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f6dce-51ae-11ec-ba86-0242ac110002	1	1	admin	\N	3	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f6f0e-51ae-11ec-ba86-0242ac110002	1	1	admin	\N	5	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f6f5e-51ae-11ec-ba86-0242ac110002	1	1	admin	\N	2	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f6fae-51ae-11ec-ba86-0242ac110002	1	1	test2	\N	6	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f6fea-51ae-11ec-ba86-0242ac110002	1	1	test2	\N	10	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f70d0-51ae-11ec-ba86-0242ac110002	1	1	test5	\N	7	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f7116-51ae-11ec-ba86-0242ac110002	1	2	admin	\N	5	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f7152-51ae-11ec-ba86-0242ac110002	1	2	admin	\N	7	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f7198-51ae-11ec-ba86-0242ac110002	1	2	admin	\N	5	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f71de-51ae-11ec-ba86-0242ac110002	1	2	admin	\N	10	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f7224-51ae-11ec-ba86-0242ac110002	1	2	test2	\N	10	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f7260-51ae-11ec-ba86-0242ac110002	1	2	test5	\N	4	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f72b0-51ae-11ec-ba86-0242ac110002	1	1	test5	\N	9	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f72f6-51ae-11ec-ba86-0242ac110002	1	3	admin	\N	2	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f7332-51ae-11ec-ba86-0242ac110002	1	3	test2	\N	6	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f736e-51ae-11ec-ba86-0242ac110002	1	3	test5	\N	4	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
-ba2f73b4-51ae-11ec-ba86-0242ac110002	2	1	admin	\N	2	\N	\N	\N	\N	\N	2021-11-30	2021-11-30
+2417f59a-0e0a-4ab4-aed6-4a520fcffcd9	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+b1fad0f7-020b-413a-a196-cfc32b879d91	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+4e30945b-efca-4cfa-bb10-bbc9e572fc73	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+97fc0034-d4cc-4fcb-8114-5a2de78c6c70	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+352f7432-b2c4-4272-89fb-3070bfdad487	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+f3366e6b-ee9b-4e3f-9ee3-be0d5aba9281	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+673a0ea8-84b6-40a1-ae5c-98b859024f13	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+cd0bb3e9-3aa9-449c-bcc9-d28ca1b1a4da	contest1	multiple 2 number	admin	Accept	10	3/3	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	\N	0	\N	\N
+2f888c38-e46a-4044-b537-9f2067dd1657	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+322357c7-240d-4b92-835a-5634a9810198	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	2021-12-05
+703c3482-5690-448f-a387-c69a7d2fd7ab	contest1	multiple 2 number	admin	Wrong Answer	0	1/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  cout << 2;\n}	CPP	\N	0	\N	2021-12-05
+c98bd571-7c31-4138-bab3-d1e84c79b873	contest1	multiple 2 number	admin	Accept	0	4/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a , b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	\N	0	\N	2021-12-05
+c0b2a85c-dd8b-4023-9439-d5fa167ec3d5	contest1	multiple 2 number	test5	\nCompile Error	0	0/4	#include<bit/stdc++.h>\nusing namespace  std;\n\nint main(){\n  int a , b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	\N	0	\N	2021-12-05
+e561dca7-dfc8-4293-80fe-1d95bc808dc1	contest1	multiple 2 number	test5	Accept	0	4/4	#include<bits/stdc++.h>\nusing namespace  std;\n\nint main(){\n  int a , b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	\N	0	\N	2021-12-05
 \.
 
 
@@ -524,11 +532,58 @@ ba2f73b4-51ae-11ec-ba86-0242ac110002	2	1	admin	\N	2	\N	\N	\N	\N	\N	2021-11-30	20
 
 COPY public.notifications (id, content, from_user, to_user, url, status_id, last_updated_stamp, created_stamp) FROM stdin;
 7eabcf1c-5669-4664-878f-3e340181402c	Dũng Viet Bui đã đăng kí tài khoản. Phê duyệt ngay.	test1	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-11-25 00:26:46.131	2021-11-25 00:26:07.179
-7576d2c9-96d7-4cd5-8b9e-479d09788685	1 2 3 đã đăng kí tài khoản. Phê duyệt ngay.	test4	admin	/user-group/user/approve-register	NOTIFICATION_CREATED	2021-11-25 08:49:23.299	2021-11-25 08:49:23.299
 7190771e-1332-4db8-9aee-614115632c27	Dũng Viet Bui đã đăng kí tài khoản. Phê duyệt ngay.	test2	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-11-25 08:49:35.86	2021-11-25 00:27:54.428
-f7ef50d9-77b4-45c3-b30d-aafdcfede762	1 2 3 đã đăng kí tài khoản. Phê duyệt ngay.	test5	admin	/user-group/user/approve-register	NOTIFICATION_CREATED	2021-11-25 08:56:31.48	2021-11-25 08:56:31.48
 1a92d5b2-7016-4a12-990a-c82e6709a24c	2 2 4 đã đăng kí tài khoản. Phê duyệt ngay.	test6	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-11-25 08:59:51.785	2021-11-25 08:59:40.664
-51f1a8b0-30e5-443f-b021-fa46b8160119	Dũng Viet Bui đã đăng kí tài khoản. Phê duyệt ngay.	test111	admin	/user-group/user/approve-register	NOTIFICATION_CREATED	2021-11-25 10:14:43.28	2021-11-25 10:14:43.28
+1a619e90-f6b1-4b68-94c4-f8f0e9b50534	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-01 14:09:25.033	2021-12-01 14:09:19.171
+eae51f8c-ac9c-4d92-9618-e8ea06829ee3	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-02 10:10:03.836	2021-12-01 14:09:36.583
+e4e81fc8-a47a-4800-8674-d00d11ac4e5d	Your register contest test1 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-04 12:22:22.87	2021-12-04 12:22:22.87
+e52a1033-135f-48a3-9211-d26fc32123b9	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-04 12:33:34.348	2021-12-04 12:28:15.215
+c9b8333c-579e-4f9a-9b6a-f0f7e7e6829c	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-04 12:33:35.506	2021-12-04 12:28:01.623
+9a5e21ff-cc41-4788-9144-ad5d45f3af2b	Your register contest test1 is rejected 	admin	admin	\N	NOTIFICATION_READ	2021-12-04 12:33:37.081	2021-12-04 12:23:11.745
+7576d2c9-96d7-4cd5-8b9e-479d09788685	1 2 3 đã đăng kí tài khoản. Phê duyệt ngay.	test4	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-12-04 12:33:47.034	2021-11-25 08:49:23.299
+f7ef50d9-77b4-45c3-b30d-aafdcfede762	1 2 3 đã đăng kí tài khoản. Phê duyệt ngay.	test5	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-12-04 12:33:47.035	2021-11-25 08:56:31.48
+51f1a8b0-30e5-443f-b021-fa46b8160119	Dũng Viet Bui đã đăng kí tài khoản. Phê duyệt ngay.	test111	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-12-04 12:33:47.035	2021-11-25 10:14:43.28
+2c8b951f-3201-4b9f-8803-75281a4b6f9e	test5 register contest test1	test5	admin	\N	NOTIFICATION_READ	2021-12-04 12:33:47.036	2021-12-02 10:09:54.416
+a70fe8ff-5154-4e09-bb60-e38193c575df	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-04 12:33:47.036	2021-12-04 12:29:03.99
+daa6df8c-15ab-4c74-ac7a-aff9696679f9	Your register contest test1 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-04 14:58:17.963	2021-12-04 14:58:17.963
+88f892c2-3405-4a06-af9c-8cb87d0bd876	Your register contest test1 is rejected 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-04 14:59:09.204	2021-12-04 14:59:09.204
+ec489f1d-336e-4504-9097-acd72b0397d8	admin register contest test1	admin	admin	/programming-contest/contest-manager/test1#pending	NOTIFICATION_READ	2021-12-04 15:05:49.53	2021-12-04 15:05:46.052
+df814a9d-cf14-4da1-8038-d16adc59c529	Your register contest test1 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-04 15:42:00.682	2021-12-04 15:42:00.682
+c780dacc-8310-43f5-b991-18f3793cbd35	admin register contest contest1	admin	admin	/programming-contest/contest-manager/contest1#pending	NOTIFICATION_READ	2021-12-05 09:18:37.309	2021-12-05 09:18:32.352
+f0e9c679-163c-41de-b664-9ee33d6806f7	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.065	2021-12-04 12:35:32.034
+d56e6a92-8bc6-450e-9ead-0a684091f213	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.075	2021-12-04 12:37:25.663
+c716ec84-b6e5-4a5f-9c60-2064410c0761	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.077	2021-12-04 12:37:31.879
+84721a3d-e0f8-46b6-b9bc-42b6abe1e453	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.079	2021-12-04 14:44:16.137
+070429ac-8c11-4dc6-902c-11248d633b7a	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.081	2021-12-04 14:44:22.677
+069eb446-28ff-4b0b-8360-efc0c483d621	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.082	2021-12-04 14:45:16.203
+c56d19f4-eed5-4834-95d8-701fd3945fdd	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.084	2021-12-04 14:45:23.899
+b53882a1-fc8e-4f93-9476-bcef734dd887	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.086	2021-12-04 14:51:58.022
+8cde7a07-ef7b-4c3b-998b-67b3568d7c24	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.087	2021-12-04 14:52:07.665
+035bc249-a5b5-4aa9-95ae-f7a758f92f72	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.09	2021-12-04 14:52:46.7
+3eaac94b-fc70-4b05-8a17-6df4e7fed0e6	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.091	2021-12-04 14:52:51.386
+aabd43aa-7307-4e7a-b5bf-970fce1c216a	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.094	2021-12-04 14:56:41.206
+98be26dd-9572-496b-95a5-e84a2da49e67	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.095	2021-12-04 14:56:45.955
+93fc6441-8e49-4382-aa9d-c6d25f0067c4	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.097	2021-12-04 14:57:13.536
+d0fbbbde-dbfb-4d16-9b39-fd2084b67049	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.098	2021-12-04 14:57:18
+40295304-9be7-4f56-a7d5-158beb1ded8e	test5 register contest test1	test5	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.102	2021-12-04 14:58:05.293
+3a378783-672d-434e-be0d-7f5b5cbf7885	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.104	2021-12-04 14:58:09.962
+db110150-cd8b-4d22-9d04-b92c3d730389	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.105	2021-12-04 14:58:19.16
+99e2bf7f-ff39-4a12-8de1-247d2fa4fab1	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.106	2021-12-04 14:58:32.377
+45bc0486-c871-422c-ab85-597dc8d36e35	test5 register contest test1	test5	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.107	2021-12-04 14:58:34.556
+1de59ec1-5471-4d94-856f-bc886e1b4cb5	Your register contest test1 is rejected 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.109	2021-12-04 14:58:40.634
+a4bb1253-4921-411a-aef1-85dc587350a9	admin register contest test1	admin	admin	/programming-contest/contest-manager/test1#pending	NOTIFICATION_READ	2021-12-05 20:44:16.11	2021-12-04 15:12:28.437
+3d9f442c-af96-43c9-9982-2fde99c372db	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.111	2021-12-04 15:12:38.734
+c668808e-81f1-487f-84f3-72b5fcc7118e	test5 register contest test1	test5	admin	/programming-contest/contest-manager/test1#pending	NOTIFICATION_READ	2021-12-05 20:44:16.111	2021-12-04 15:41:54.594
+b4d8b61b-39fe-4d0b-9a05-bad0b9c0a71e	Your register contest contest1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.113	2021-12-05 09:18:39.289
+a4faf15e-5a6f-48dd-bc9c-8c2539e120a6	admin register contest test2	admin	admin	/programming-contest/contest-manager/test2#pending	NOTIFICATION_CREATED	2021-12-05 20:44:18.028	2021-12-05 20:44:18.028
+26cdf812-336c-4329-877b-138ccae94b11	admin register contest test2	admin	admin	/programming-contest/contest-manager/test2#pending	NOTIFICATION_CREATED	2021-12-05 20:44:25.106	2021-12-05 20:44:25.106
+2e24359b-86af-4daa-9b63-9702079c818a	admin register contest test2	admin	admin	/programming-contest/contest-manager/test2#pending	NOTIFICATION_CREATED	2021-12-05 20:44:25.771	2021-12-05 20:44:25.771
+f00c3779-776a-4020-90cc-9bc236b6ccb7	admin register contest test2	admin	admin	/programming-contest/contest-manager/test2#pending	NOTIFICATION_READ	2021-12-05 20:44:33.427	2021-12-05 20:44:25.977
+bf1e03e3-c226-469d-9981-3498be4bb05f	Your register contest test2 is approved 	admin	admin	\N	NOTIFICATION_CREATED	2021-12-05 20:45:04.784	2021-12-05 20:45:04.784
+c48c5247-4407-4a8a-9748-271f3e816c73	test5 register contest contest1	test5	admin	/programming-contest/contest-manager/contest1#pending	NOTIFICATION_READ	2021-12-05 20:48:37.079	2021-12-05 20:48:34.218
+7ee7242d-0955-4648-9de9-d938d399704b	Your register contest contest1 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-05 20:48:39.786	2021-12-05 20:48:39.786
+08b1dce3-62de-48b0-b16d-58a04b912242	test5 register contest contest2	test5	admin	/programming-contest/contest-manager/contest2#pending	NOTIFICATION_READ	2021-12-05 20:52:10.367	2021-12-05 20:52:06.499
+1a772384-3b81-48b0-a9e3-969300e86fde	Your register contest contest2 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-05 20:52:14.769	2021-12-05 20:52:14.769
 \.
 
 
@@ -556,6 +611,7 @@ COPY public.problem_source_code_new (problem_source_code_id, base_source, main_s
 --
 
 COPY public.problem_submission_new (problem_submission_id, problem_id, submitted_by_user_login_id, source_code, source_code_language, status, score, runtime, memory_usage, test_case_pass, created_stamp) FROM stdin;
+e8d88feb-2112-4dd5-a352-e6cd7b1627c9	ADD 2 NUMBER	admin	\N	CPP	\nCompile Error	0	\N	0	0/0	05/12/2021 08:59:50
 \.
 
 
@@ -653,6 +709,10 @@ f361ef02-5188-11ec-9621-0242ac110002	3	3	7
 --
 
 COPY public.test_case_new (test_case_id, test_case_point, test_case, correct_answer, contest_problem_id, last_updated_stamp, created_stamp) FROM stdin;
+0f6a020c-c377-46ab-8d7f-e1489ed864a3	0	1 2	2	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+416942bd-5382-48ff-ae4e-665a8679073c	0	2 3	6	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+4e176d08-7419-475e-831d-3c8dc3d90abf	0	3 4	12	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+089ee5c4-dc2c-4694-87f2-77b11006a99a	10	6 7	42	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
 \.
 
 
@@ -660,10 +720,10 @@ COPY public.test_case_new (test_case_id, test_case_point, test_case, correct_ans
 -- Data for Name: user_login; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.user_login (user_login_id, person_id, current_password, otp_secret, client_token, password_hint, is_system, enabled, has_logged_out, require_password_change, disabled_date_time, successive_failed_logins, last_updated_stamp, created_stamp, otp_resend_number) FROM stdin;
-admin	f265ff04-4d90-11ec-9f6c-0242ac110002	$2a$10$0IOYLdfBGy5whZGnBaqmK.KYvFGcLZPIgtexl8YR9f7FZ79loFk36	\N	\N	\N	f	t	f	f	\N	\N	2021-11-24 16:55:07.652745	2021-11-24 16:55:07.652745	0
-test2	08fd0809-95bb-469f-966f-64362d1c354e	$2a$10$2B4dRti7pazWOf33ZU6.n.o7Ni3Apepjtg3w6OBG6Dw4ENlZ1uSpS	\N	\N	\N	f	t	f	f	\N	\N	\N	2021-11-25 08:48:47.755545	0
-test5	6971d571-2b54-40aa-b10d-9132081b0802	$2a$10$3jY47zS63q2Pl67TJM7sEOwklaCEtUqau3Frxf0gsMeYbNVdvRR5W	\N	\N	\N	f	t	f	f	\N	\N	\N	2021-11-25 08:57:00.737041	0
+COPY public.user_login (user_login_id, person_id, current_password, otp_secret, client_token, password_hint, is_system, enabled, has_logged_out, require_password_change, disabled_date_time, successive_failed_logins, last_updated_stamp, created_stamp, otp_resend_number, email) FROM stdin;
+admin	f265ff04-4d90-11ec-9f6c-0242ac110002	$2a$10$0IOYLdfBGy5whZGnBaqmK.KYvFGcLZPIgtexl8YR9f7FZ79loFk36	\N	\N	\N	f	t	f	f	\N	\N	2021-11-24 16:55:07.652745	2021-11-24 16:55:07.652745	0	\N
+test2	08fd0809-95bb-469f-966f-64362d1c354e	$2a$10$2B4dRti7pazWOf33ZU6.n.o7Ni3Apepjtg3w6OBG6Dw4ENlZ1uSpS	\N	\N	\N	f	t	f	f	\N	\N	\N	2021-11-25 08:48:47.755545	0	\N
+test5	6971d571-2b54-40aa-b10d-9132081b0802	$2a$10$3jY47zS63q2Pl67TJM7sEOwklaCEtUqau3Frxf0gsMeYbNVdvRR5W	\N	\N	\N	f	t	f	f	\N	\N	\N	2021-11-25 08:57:00.737041	0	\N
 \.
 
 
@@ -699,10 +759,12 @@ test111	sscm@123456	dung.bv173045@sis.hust.edu.vn	Dũng	Viet	Bui	USER_REGISTERED
 --
 
 COPY public.user_registration_contest_new (user_registration_contest_id, user_id, contest_id, status) FROM stdin;
-e433b8f4-5191-11ec-9621-0242ac110002	admin	1	SUCCESSFUL
-e433c056-5191-11ec-9621-0242ac110002	test2	1	SUCCESSFUL
-e433c11e-5191-11ec-9621-0242ac110002	test5	1	SUCCESSFUL
-e433c1a0-5191-11ec-9621-0242ac110002	admin	2	SUCCESSFUL
+bd592b0a-c4f7-4b9c-929e-a08b1921a823	admin	test1	SUCCESSFUL
+0010b989-345e-41a3-99ed-375e91253bc2	test5	test1	SUCCESSFUL
+f0b1f09f-2afd-40cb-81cb-aec56e76e08f	admin	contest1	SUCCESSFUL
+02b72142-31a2-48c2-bb43-689786f8c3cd	admin	test2	SUCCESSFUL
+dabf8177-4795-437e-8763-b42786b0a738	test5	contest1	SUCCESSFUL
+a55a09c8-a1e1-4d58-bf91-118c9fed4bb2	test5	contest2	SUCCESSFUL
 \.
 
 
@@ -710,10 +772,9 @@ e433c1a0-5191-11ec-9621-0242ac110002	admin	2	SUCCESSFUL
 -- Data for Name: user_submission_contest_result_new; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.user_submission_contest_result_new (contest_id, user_id, point, last_updated_stamp, created_stamp) FROM stdin;
-1	admin	17	\N	\N
-1	test2	26	\N	\N
-1	test5	17	\N	\N
+COPY public.user_submission_contest_result_new (contest_id, user_id, point, email, full_name, last_updated_stamp, created_stamp) FROM stdin;
+contest1	admin	10	\N	Bui Viet Dung 	\N	\N
+contest1	test5	0	\N	1 2 3 	\N	\N
 \.
 
 
