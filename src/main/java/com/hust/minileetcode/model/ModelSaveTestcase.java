@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ModelSaveTestcase {
-    String input;
-    String result;
+    private String input;
+    private String result;
+    private int point;
 }

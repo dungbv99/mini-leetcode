@@ -317,6 +317,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         TestCaseEntity testCaseEntity = TestCaseEntity.builder()
                 .correctAnswer(modelSaveTestcase.getResult())
                 .testCase(modelSaveTestcase.getInput())
+                .testCasePoint(modelSaveTestcase.getPoint())
                 .problem(problemEntity)
                 .build();
         return testCaseRepo.save(testCaseEntity);

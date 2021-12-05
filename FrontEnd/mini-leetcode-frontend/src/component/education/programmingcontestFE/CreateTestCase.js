@@ -13,6 +13,7 @@ import {OutputWithLoading} from "./OutputWithLoading";
 import {API_URL} from "../../../config/config";
 import {SubmitWarming} from "./SubmitWarming";
 import {SubmitSuccess} from "./SubmitSuccess";
+import {successNoti, warningNoti} from "../../../utils/notification";
 
 
 export default function CreateTestCase(props){
@@ -30,6 +31,7 @@ export default function CreateTestCase(props){
   const [checkTestcaseResult, setCheckTestcaseResult] = useState(false);
   const [showSubmitWarming, setShowSubmitWarming] = useState(false);
   const [showSubmitSuccess, setShowSubmitSuccess] =useState(false);
+  const [point, setPoint] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -55,19 +57,22 @@ export default function CreateTestCase(props){
 
   const saveTestCase = ()=>{
     if(!checkTestcaseResult){
-      setShowSubmitWarming(true);
+      // setShowSubmitWarming(true);
+      warningNoti("You must test your test case result before save", true);
       return;
     }
 
     let body = {
       input: input,
       result: result,
+      point: point
     }
 
     authPost(dispatch, token, "/save-test-case/"+problemId, body).then(
       (res) =>{
         console.log("res", res);
-        setShowSubmitSuccess(true);
+        // setShowSubmitSuccess(true);
+        successNoti("Your test case is saved", true);
       }
     )
 
@@ -133,6 +138,21 @@ export default function CreateTestCase(props){
           <Typography variant={"h5"}>
             Testcase
           </Typography>
+
+          <TextField
+            autoFocus
+            required
+            id="point"
+            label="Point"
+            placeholder="Point"
+            onChange={(event) => {
+              setPoint(event.target.value);
+            }}
+          >
+          </TextField>
+
+          <br/> <br/>
+
           <CodeMirror
             height={"200px"}
             width="100%"
@@ -167,13 +187,13 @@ export default function CreateTestCase(props){
           >
             save test case
           </Button>
-          <SubmitWarming
-            showSubmitWarming={showSubmitWarming}
-            content={"You must test your test case result before save"}/>
-          <SubmitSuccess
-            showSubmitSuccess={showSubmitSuccess}
-            content={"Your test case is saved"}
-            />
+          {/*<SubmitWarming*/}
+          {/*  showSubmitWarming={showSubmitWarming}*/}
+          {/*  content={"You must test your test case result before save"}/>*/}
+          {/*<SubmitSuccess*/}
+          {/*  showSubmitSuccess={showSubmitSuccess}*/}
+          {/*  content={"Your test case is saved"}*/}
+          {/*  />*/}
         </Grid>
       </Grid>
 
