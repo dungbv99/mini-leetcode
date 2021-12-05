@@ -2,6 +2,7 @@ package com.hust.minileetcode.controller;
 
 import com.hust.minileetcode.entity.ProblemEntity;
 import com.hust.minileetcode.entity.TestCaseEntity;
+import com.hust.minileetcode.entity.UserSubmissionContestResultNativeEntity;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
 import com.hust.minileetcode.service.ProblemTestCaseService;
@@ -264,6 +265,22 @@ public class ContestProblemController {
         ModelContestSubmissionResponse resp = problemTestCaseService.submitContestProblem(request, principal.getName());
         log.info("resp {}", resp);
         return ResponseEntity.status(200).body(resp);
+    }
+
+    @GetMapping("/get-ranking-contest/{contestId}")
+    public ResponseEntity<?> getRankingContest(@PathVariable("contestId") String contestId, Pageable pageable){
+        log.info("getRankingContest page {}", pageable);
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("point"));
+        Page<UserSubmissionContestResultNativeEntity> page = problemTestCaseService.getRankingByContestId(pageable, contestId);
+        log.info("ranking page {}", page);
+        return ResponseEntity.status(200).body(page);
+    }
+    
+    @PostMapping("/recalculate-ranking/{contestId}")
+    public ResponseEntity<?> recalculateRanking(@PathVariable("contestId") String contestId){
+        log.info("/recalculate-ranking/ contestid {}", contestId);
+        problemTestCaseService.calculateContestResult(contestId);
+        return ResponseEntity.status(200).body(null);
     }
 
 }

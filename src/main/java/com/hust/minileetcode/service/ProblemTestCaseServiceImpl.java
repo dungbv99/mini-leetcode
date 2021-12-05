@@ -772,6 +772,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         return getModelGetContestPageResponse(list);
     }
 
+    @Override
+    public Page<UserSubmissionContestResultNativeEntity> getRankingByContestId(Pageable pageable, String contestId) {
+        return userSubmissionContestResultNativePagingRepo.findAllByContestId(pageable, contestId);
+    }
+
     private ModelGetContestPageResponse getModelGetContestPageResponse(Page<ContestEntity> contestPage) {
         List<ModelGetContestResponse> lists = new ArrayList<>();
         if(contestPage != null){

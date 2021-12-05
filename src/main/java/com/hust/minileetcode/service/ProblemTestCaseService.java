@@ -3,8 +3,10 @@ package com.hust.minileetcode.service;
 import com.hust.minileetcode.entity.ContestEntity;
 import com.hust.minileetcode.entity.ProblemEntity;
 import com.hust.minileetcode.entity.TestCaseEntity;
+import com.hust.minileetcode.entity.UserSubmissionContestResultNativeEntity;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
+import com.hust.minileetcode.repo.UserSubmissionContestResultNativeRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.parameters.P;
@@ -72,5 +74,7 @@ public interface ProblemTestCaseService {
     ModelGetContestPageResponse getRegisteredContestByUser(Pageable pageable, String userName);
 
     ModelGetContestPageResponse getNotRegisteredContestByUser(Pageable pageable, String userName);
+
+    Page<UserSubmissionContestResultNativeEntity> getRankingByContestId(Pageable pageable, String contestId);
 
 }
