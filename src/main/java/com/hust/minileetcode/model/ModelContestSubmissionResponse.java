@@ -3,6 +3,7 @@ package com.hust.minileetcode.model;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -12,7 +13,7 @@ public class ModelContestSubmissionResponse {
     String contestId;
     String problemId;
     String problemName;
-    String submittedAt;
+    Date submittedAt;
     Integer score;
     String testCasePass;
     String runTime;

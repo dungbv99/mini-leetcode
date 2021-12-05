@@ -22,6 +22,7 @@ import SplitPane, { Pane } from 'react-split-pane';
 import {TabPanelHorizontal, TabPanelVertical} from "./TabPanel";
 import ContestRunTestCase from "./ContestRunTestCase";
 import {useSelector} from "react-redux";
+import {ConsoleContest} from "./ConsoleContest";
 
 
 
@@ -132,7 +133,7 @@ export default function SolvingContest(props){
   }
 
   const startTimer = (e) => {
-    console.log("start timer ", e);
+    // console.log("start timer ", e);
     let { total, hours, minutes, seconds }
       = getTimeRemaining(e);
     if (total >= 0) {
@@ -278,39 +279,44 @@ export default function SolvingContest(props){
               <TabPanelHorizontal value={value} index={index+1}>
                 <SplitPane split="vertical" >
                   <div>
-                    <Tabs
-                      value={valueTab1}
-                      onChange={handleValueTab1Change}
-                      indicatorColor={"primary"}
-                      autoFocus
-                      style={{
-                        width:"100%",
-                        display:"inline-table",
-                        border: "1px solid transparent ",
-                        position: "relative",
-                        borderBottom:"none",
-                        marginLeft:1
-                      }}
-                      variant={"fullWidth"}
-                      aria-label="basic tabs example"
-                    >
-                      <Tab label="Description" {...a11yProps(0)} style={{width:"50%"}}/>
-                      <Tab label="Run Test Case Result" {...a11yProps(1)} style={{width:"50%"}}/>
-                    </Tabs>
-                    <TabPanelVertical value={valueTab1} index={0}>
-                      <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-150) + "px"}}>
-                        <Typography variant={"h5"}><b>{index+1}. {problem.problemName}</b></Typography>
-                        <Divider />
-                        <Markup content={problem.problemDescription} />
-                      </ScrollBox>
-                    </TabPanelVertical>
+                    <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-150) + "px"}}>
+                      <Typography variant={"h5"}><b>{index+1}. {problem.problemName}</b></Typography>
+                      <Divider />
+                      <Markup content={problem.problemDescription} />
+                    </ScrollBox>
+                    {/*<Tabs*/}
+                    {/*  value={valueTab1}*/}
+                    {/*  onChange={handleValueTab1Change}*/}
+                    {/*  indicatorColor={"primary"}*/}
+                    {/*  autoFocus*/}
+                    {/*  style={{*/}
+                    {/*    width:"100%",*/}
+                    {/*    display:"inline-table",*/}
+                    {/*    border: "1px solid transparent ",*/}
+                    {/*    position: "relative",*/}
+                    {/*    borderBottom:"none",*/}
+                    {/*    marginLeft:1*/}
+                    {/*  }}*/}
+                    {/*  variant={"fullWidth"}*/}
+                    {/*  aria-label="basic tabs example"*/}
+                    {/*>*/}
+                    {/*  <Tab label="Description" {...a11yProps(0)} style={{width:"50%"}}/>*/}
+                    {/*  <Tab label="Run Test Case Result" {...a11yProps(1)} style={{width:"50%"}}/>*/}
+                    {/*</Tabs>*/}
+                    {/*<TabPanelVertical value={valueTab1} index={0}>*/}
+                    {/*  <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-150) + "px"}}>*/}
+                    {/*    <Typography variant={"h5"}><b>{index+1}. {problem.problemName}</b></Typography>*/}
+                    {/*    <Divider />*/}
+                    {/*    <Markup content={problem.problemDescription} />*/}
+                    {/*  </ScrollBox>*/}
+                    {/*</TabPanelVertical>*/}
 
-                    <TabPanelVertical value={valueTab1} index={1}>
-                      <ContestRunTestCase
-                        load={runTestCaseLoad}
-                        show={runTestCaseShow}
-                        testCaseResult={testCaseResult}/>
-                    </TabPanelVertical>
+                    {/*<TabPanelVertical value={valueTab1} index={1}>*/}
+                    {/*  <ContestRunTestCase*/}
+                    {/*    load={runTestCaseLoad}*/}
+                    {/*    show={runTestCaseShow}*/}
+                    {/*    testCaseResult={testCaseResult}/>*/}
+                    {/*</TabPanelVertical>*/}
                   </div>
                   <div>
                     <TextField
@@ -341,7 +347,7 @@ export default function SolvingContest(props){
                       autoFocus={false}
                     />
 
-                    <Console
+                    <ConsoleContest
                       showConsole={showConsole}
                       load={runCodeLoading}
                       output={output}
@@ -356,6 +362,9 @@ export default function SolvingContest(props){
                       timeLimit={timeLimit}
                       expected={expected}
                       compileError={compileError}
+                      runTestCaseLoad={runTestCaseLoad}
+                      runTestCaseShow={runTestCaseShow}
+                      submitResult={testCaseResult}
                     />
                     <Button
                       variant="contained"
@@ -425,15 +434,21 @@ export default function SolvingContest(props){
                       variant="contained"
                       color="light"
                       onClick={() =>{
+                        setScreenHeight((window.innerHeight-455) + "px");
                         setRunTestCaseLoad(true);
+                        setConsoleTabIndex(2);
+                        setShowConsole(true);
                         setValueTab1(1);
+
                         let body ={
                           source: source,
-                          language:computerLanguage
+                          language:computerLanguage,
+                          contestId: contestId,
+                          problemId: problem.problemId
                         };
                         request(
                           "post",
-                          API_URL+"/problem-details-submission/"+problem.problemId,
+                          API_URL+"/contest-submit-problem",
                           (res) =>{
                             setTestCaseResult(res.data);
                             console.log("run all test case");
@@ -453,34 +468,9 @@ export default function SolvingContest(props){
                       // style={{position}}
                       style={{marginLeft:"20px"}}
                     >
-                      Run Test Case
+                      SUBMIT
                     </Button>
 
-                    <Button
-                      variant="contained"
-                      color="light"
-                      onClick={() =>{
-                        setValue(0);
-                        submitted[index] = true;
-                      }}
-                      // style={{position}}
-                      style={{marginLeft:"20px"}}
-                    >
-                      Submit
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="light"
-                      onClick={() =>{
-                        console.log("start time", localStorage.getItem('startTime'));
-                        var n = new Date()
-                        console.log("runtime", n.getTime() - localStorage.getItem('startTime'))
-                      }}
-                      // style={{position}}
-                      style={{marginLeft:"20px"}}
-                    >
-                      test
-                    </Button>
                   </div>
                 </SplitPane>
 

@@ -542,10 +542,13 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public ModelContestSubmissionResponse submitContestProblem(ModelContestSubmission modelContestSubmission, String userName) throws Exception {
+        log.info("submitContestProblem");
+        log.info("modelContestSubmission {}", modelContestSubmission);
         ProblemEntity problemEntity = problemRepo.findByProblemId(modelContestSubmission.getProblemId());
         UserLogin userLogin = userLoginRepo.findByUserLoginId(userName);
         ContestEntity contestEntity = contestRepo.findContestByContestId(modelContestSubmission.getContestId());
-        UserRegistrationContestEntity userRegistrationContest = userRegistrationContestRepo.findUserRegistrationContestByContestAndUserLogin(contestEntity, userLogin);
+        UserRegistrationContestEntity userRegistrationContest = userRegistrationContestRepo.findUserRegistrationContestEntityByContestAndUserLoginAndStatus(contestEntity, userLogin, Constants.RegistrationType.SUCCESSFUL.getValue());
+        log.info("userRegistrationContest {}", userRegistrationContest);
         if(userRegistrationContest == null){
             throw new MiniLeetCodeException("User not register contest");
         }
@@ -580,6 +583,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                     .sourceCode(modelContestSubmission.getSource())
                     .sourceCodeLanguage(modelContestSubmission.getLanguage())
 //                .problemSubmission(p)
+                    .createdAt(new Date())
                     .build();
             c = contestSubmissionRepo.save(c);
             return ModelContestSubmissionResponse.builder()
@@ -589,6 +593,8 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                     .memoryUsage(c.getMemoryUsage())
                     .problemName(problemEntity.getProblemName())
                     .contestSubmissionID(c.getContestSubmissionId())
+                    .submittedAt(c.getCreatedAt())
+                    .score(0)
                     .build();
         }
         String []ans = response.split("testcasedone\n");
@@ -633,6 +639,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .sourceCode(modelContestSubmission.getSource())
                 .sourceCodeLanguage(modelContestSubmission.getLanguage())
 //                .problemSubmission(p)
+                .createdAt(new Date())
                 .build();
         c = contestSubmissionRepo.save(c);
         return ModelContestSubmissionResponse.builder()
@@ -642,6 +649,8 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .memoryUsage(c.getMemoryUsage())
                 .problemName(problemEntity.getProblemName())
                 .contestSubmissionID(c.getContestSubmissionId())
+                .submittedAt(c.getCreatedAt())
+                .score(score)
                 .build();
     }
 

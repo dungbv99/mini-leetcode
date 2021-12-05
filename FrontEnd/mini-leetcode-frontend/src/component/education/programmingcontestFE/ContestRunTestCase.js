@@ -9,7 +9,7 @@ import {getStatusColor} from "./lib";
 export default function ContestRunTestCase(props){
   const load = props.load;
   const show = props.show;
-  const testCaseResult = props.testCaseResult;
+  const submitResult = props.testCaseResult;
   if(load){
     return(
       <ContentLoader
@@ -37,18 +37,19 @@ export default function ContestRunTestCase(props){
             Run Test All Result
           </Typography>
           <Typography variant={"h6"}>
-            {testCaseResult.problemName}
+            {submitResult.problemName}
           </Typography>
           <Box sx={{ width: '100%', bgcolor: 'background.paper', height:"120px" , border: "1px solid black", padding: "10px", justifyItems:"center", justifySelf:"center", marginRight:10}}>
             <Grid container alignItems="center">
               <Grid item xs>
-                <Typography variant="h6" >
-                  <b>{testCaseResult.result}</b> test cases passed.
+                <Typography variant="h5" >
+                  status: <span  style={{color:getStatusColor(`${submitResult.status}`)}}>{`${submitResult.status}`}</span>
                 </Typography>
+
               </Grid>
               <Grid item xs>
-                <Typography variant="h5" align="right">
-                  status: <span  style={{color:getStatusColor(`${testCaseResult.status}`)}}>{`${testCaseResult.status}`}</span>
+                <Typography variant="h6" align="right">
+                  <b>{submitResult.testCasePass}</b> test cases passed.
                 </Typography>
               </Grid>
 
@@ -56,14 +57,16 @@ export default function ContestRunTestCase(props){
             <Grid container alignItems="center">
               <Grid item xs>
                 <Typography variant="h6" >
-                  Run Time: <i>{testCaseResult.runTime}</i><br/>
-                  Memory Usage: <i>{testCaseResult.memoryUsage} kb</i>
+                  Run Time: <i>{submitResult.runTime}</i><br/>
+                  Memory Usage: <i>{submitResult.memoryUsage} kb</i>
                 </Typography>
+
               </Grid>
               <Grid item xs>
-                <Typography variant="h6" align="right">
-                  Submitted: {testCaseResult.timeSubmitted}
+                <Typography variant="h6" align="right" >
+                  point: <b>{submitResult.score}</b>
                 </Typography>
+
               </Grid>
             </Grid>
           </Box>

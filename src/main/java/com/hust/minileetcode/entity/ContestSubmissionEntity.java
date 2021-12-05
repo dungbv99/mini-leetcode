@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 @Builder
 //@Table(name = "contest_problem")
-@Table(name = "contest_problem_new")
+@Table(name = "contest_submission_new")
 public class ContestSubmissionEntity {
     @Id
     @Column(name = "contest_submission_id")
