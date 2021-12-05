@@ -136,7 +136,7 @@ public class HelloController {
 
     @GetMapping("/test-query")
     public String testQuery(){
-        problemTestCaseService.calculateContestResult("1");
+        problemTestCaseService.calculateContestResult("contest1");
 //        List<ProblemContestSubmissionDto> list = contestSubmissionRepo.calculatorContest("1");
 //        log.info("list {}", list);
 //        for(Object[] li : list){

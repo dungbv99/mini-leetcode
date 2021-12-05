@@ -28,6 +28,12 @@ public class UserSubmissionContestResultNativeEntity {
     @Column(name = "point")
     private int point;
 
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "full_name")
+    private String fullName;
+
     @Column(name = "created_stamp")
     private Date createdAt;
 

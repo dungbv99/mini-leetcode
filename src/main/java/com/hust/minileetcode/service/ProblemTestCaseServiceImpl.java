@@ -44,6 +44,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private NotificationsService notificationsService;
     private UserSubmissionContestResultNativeRepo userSubmissionContestResultNativeRepo;
     private UserRegistrationContestPagingAndSortingRepo userRegistrationContestPagingAndSortingRepo;
+    private UserSubmissionContestResultNativePagingRepo userSubmissionContestResultNativePagingRepo;
 
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
@@ -718,10 +719,14 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     public void calculateContestResult(String contestId) {
         List<Object[]> list = contestSubmissionRepo.calculatorContest(contestId);
         log.info("size {}", list.size());
+        log.info("list {}", list);
         List<UserSubmissionContestResultNativeEntity> list1 = list.stream()
                 .map(objects -> convertObjectsToUserSubmissionContestResultNativeEntity(objects, contestId))
                 .collect(Collectors.toList());
 //        log.info("list1 {}", list1);
+
+
+
         userSubmissionContestResultNativeRepo.saveAll(list1);
     }
 
@@ -786,13 +791,22 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     private UserSubmissionContestResultNativeEntity convertObjectsToUserSubmissionContestResultNativeEntity(Object[] objects, String contestId){
-        if(objects.length < 2){
+        if(objects.length < 6){
             return null;
         }
+//        String fullName = objects[3] != null ? objects[3].toString() : "" + objects[4] != null ? objects[4].toString() : "" + objects[5] != null ? objects[5].toString() : "" ;
+        String fullName = "";
+        for(int i = 3; i < 6; i++){
+            if(objects[i] != null)
+                fullName += objects[i].toString() + " ";
+        }
+        log.info("full name {}", fullName);
         return UserSubmissionContestResultNativeEntity.builder()
                 .contestId(contestId)
-                .userId(objects[0].toString())
-                .point(Integer.parseInt(objects[1].toString()))
+                .userId(objects[0] != null ? objects[0].toString(): null)
+                .point(objects[1] != null ? Integer.parseInt(objects[1].toString()) : 0)
+                .email(objects[2] != null ? objects[2].toString(): null)
+                .fullName(fullName)
                 .build();
     }
 

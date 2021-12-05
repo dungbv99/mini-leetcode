@@ -317,6 +317,8 @@ create table user_submission_contest_result_new
     contest_id varchar (100) not null ,
     user_id varchar (100) not null,
     point int not null,
+    email varchar(20),
+    full_name varchar(50),
     last_updated_stamp         date default current_date ,
     created_stamp              date default current_date ,
     constraint pk_user_submission_result_id_user_submission_result primary key (contest_id, user_id),
@@ -337,3 +339,25 @@ create table user_registration_contest_new
 -- alter table user_login add column email varchar(20);
 
 -- drop table user_submission_contest_result, contest_contest_problem, contest_submission, contest_contest_problem, contest, problem_submission, test_case, problem_source_code, contest_problem;
+
+
+
+
+select urcn.user_id, ul.email, p.first_name, p.middle_name, p.last_name from user_registration_contest_new urcn
+    inner join user_login ul on urcn.contest_id='contest1' and urcn.status='SUCCESSFUL' and urcn.user_id = ul.user_login_id inner join person p on ul.person_id = p.person_id;
+
+
+
+
+
+select user_submission_id as userId, sum(p) as point, email, first_name, middle_name, last_name
+from ( select user_submission_id, problem_id , max(point) as p, ul.email as email, person.first_name as first_name, person.middle_name as middle_name, person.last_name as last_name
+from contest_submission_new csn inner join user_login ul on user_submission_id in
+     (select user_id from user_registration_contest_new where contest_id='contest1' and status='SUCCESSFUL')
+     and contest_id='contest1' and csn.user_submission_id = ul.user_login_id inner join person  on person.person_id = ul.person_id
+group by problem_id, user_submission_id, ul.email, problem_id, user_submission_id, person.first_name, person.middle_name, person.last_name)
+    as cur group by user_submission_id, email, first_name, middle_name, last_name
+    order by   point desc ;
+
+
+
