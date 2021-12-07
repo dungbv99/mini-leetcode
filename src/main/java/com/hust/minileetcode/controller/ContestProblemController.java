@@ -183,7 +183,7 @@ public class ContestProblemController {
 
     @GetMapping("/get-contest-detail/{contestId}")
     public ResponseEntity<?> getContestDetail(@PathVariable("contestId") String contestId){
-        log.info("getContestDetail");
+        log.info("getContestDetail constestid {}", contestId);
         ModelGetContestDetailResponse response = problemTestCaseService.getContestDetailByContestId(contestId);
         return ResponseEntity.status(200).body(response);
     }

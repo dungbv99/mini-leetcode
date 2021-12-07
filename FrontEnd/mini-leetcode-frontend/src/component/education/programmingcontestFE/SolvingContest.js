@@ -23,6 +23,8 @@ import {TabPanelHorizontal, TabPanelVertical} from "./TabPanel";
 import ContestRunTestCase from "./ContestRunTestCase";
 import {useSelector} from "react-redux";
 import {ConsoleContest} from "./ConsoleContest";
+import {Test} from "./Test";
+import {Timer} from "./Timer";
 
 
 
@@ -40,7 +42,7 @@ function a11yProps(index) {
 }
 
 
-export default function SolvingContest(props){
+export default function SolvingContest(){
   const {contestId} = useParams();
   const [value, setValue] = React.useState(0);
   const [contestName, setContestName] = useState();
@@ -66,6 +68,7 @@ export default function SolvingContest(props){
   const [runTestCaseLoad, setRunTestCaseLoad] = useState(false);
   const [runTestCaseShow, setRunTestCaseShow] = useState(false);
   const [timer, setTimer] = useState('00:00:00');
+  // const [test, setTest] = useState('00:00:00');
   const Ref = useRef(null);
 
   const handleValueTab1Change = (event, newValue) => {
@@ -121,31 +124,26 @@ export default function SolvingContest(props){
 
   }
 
-  const getDeadTime = () => {
-    let deadline = new Date();
-
-    // This is where you need to adjust if
-    // you entend to add more time
-    deadline.setSeconds(deadline.getSeconds() + 10);
-    deadline.setHours(deadline.getHours()+2);
-    deadline.setMinutes(deadline.getMinutes()+1);
-    return deadline;
-  }
-
   const startTimer = (e) => {
     // console.log("start timer ", e);
-    let { total, hours, minutes, seconds }
-      = getTimeRemaining(e);
+    let { total, hours, minutes, seconds } = getTimeRemaining(e);
     if (total >= 0) {
 
       // update the timer
       // check if less than 10 then we need to
       // add '0' at the begining of the variable
-      setTimer(
-        (hours > 9 ? hours : '0' + hours) + ':' +
-        (minutes > 9 ? minutes : '0' + minutes) + ':'
-        + (seconds > 9 ? seconds : '0' + seconds)
-      )
+      let a = (hours > 9 ? hours : '0' + hours) + ':' +
+        (minutes > 9 ? minutes : '0' + minutes) + ':' +
+        (seconds > 9 ? seconds : '0' + seconds);
+      // setTimer(a);
+
+
+      // setTest(a);
+      // setTimer(
+      //   (hours > 9 ? hours : '0' + hours) + ':' +
+      //   (minutes > 9 ? minutes : '0' + minutes) + ':'
+      //   + (seconds > 9 ? seconds : '0' + seconds)
+      // );
     }else{
     //  submit
     }
@@ -157,7 +155,7 @@ export default function SolvingContest(props){
 
 
   useEffect(() =>{
-    console.log("props" , props)
+
     request(
       "get",
       "/get-contest-detail/"+contestId,
@@ -200,7 +198,12 @@ export default function SolvingContest(props){
             sx={{flexGrow: 1, bgcolor: '#000000', display: 'flex', height:80}}
           >
             <Grid container alignItems="center" style={{padding:"10px"}}>
-              <b><span style={{color:"#FFFFFF"}}>{`${timer}`}</span></b>
+              {/*<b><span style={{color:"#FFFFFF"}}>{`${timer}`}</span></b>*/}
+              {contestTime !== undefined ? <Timer contestId={contestId} contestTime={contestTime}/> : <b><span style={{color:"#FFFFFF"}}>{`00:00:00`}</span></b>}
+              {/*<Timer*/}
+              {/*  contestId={contestId}*/}
+              {/*  contestTime={contestTime}*/}
+              {/*/>*/}
 
             </Grid>
 
@@ -225,6 +228,7 @@ export default function SolvingContest(props){
             }
           </Tabs>
         </Box>
+
         <Box sx={{width:window.innerWidth, marginLeft:1, bgcolor: 'background.paper'}}>
           <TabPanelHorizontal value={value} index={0}>
             <TableContainer component={Paper}>
@@ -264,60 +268,24 @@ export default function SolvingContest(props){
                     </StyledTableRow>
                   ))}
                 </TableBody>
-
               </Table>
             </TableContainer>
-
-
-
-
           </TabPanelHorizontal>
 
 
-          {problems.map((problem, index)=>{
+          {
+            problems.map((problem, index)=>{
             return(
               <TabPanelHorizontal value={value} index={index+1}>
-                <SplitPane split="vertical" >
-                  <div>
+                <SplitPane split="vertical"  primary={"second"} maxSize={"200px"}  >
+                  <div >
                     <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-150) + "px"}}>
                       <Typography variant={"h5"}><b>{index+1}. {problem.problemName}</b></Typography>
                       <Divider />
                       <Markup content={problem.problemDescription} />
                     </ScrollBox>
-                    {/*<Tabs*/}
-                    {/*  value={valueTab1}*/}
-                    {/*  onChange={handleValueTab1Change}*/}
-                    {/*  indicatorColor={"primary"}*/}
-                    {/*  autoFocus*/}
-                    {/*  style={{*/}
-                    {/*    width:"100%",*/}
-                    {/*    display:"inline-table",*/}
-                    {/*    border: "1px solid transparent ",*/}
-                    {/*    position: "relative",*/}
-                    {/*    borderBottom:"none",*/}
-                    {/*    marginLeft:1*/}
-                    {/*  }}*/}
-                    {/*  variant={"fullWidth"}*/}
-                    {/*  aria-label="basic tabs example"*/}
-                    {/*>*/}
-                    {/*  <Tab label="Description" {...a11yProps(0)} style={{width:"50%"}}/>*/}
-                    {/*  <Tab label="Run Test Case Result" {...a11yProps(1)} style={{width:"50%"}}/>*/}
-                    {/*</Tabs>*/}
-                    {/*<TabPanelVertical value={valueTab1} index={0}>*/}
-                    {/*  <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-150) + "px"}}>*/}
-                    {/*    <Typography variant={"h5"}><b>{index+1}. {problem.problemName}</b></Typography>*/}
-                    {/*    <Divider />*/}
-                    {/*    <Markup content={problem.problemDescription} />*/}
-                    {/*  </ScrollBox>*/}
-                    {/*</TabPanelVertical>*/}
-
-                    {/*<TabPanelVertical value={valueTab1} index={1}>*/}
-                    {/*  <ContestRunTestCase*/}
-                    {/*    load={runTestCaseLoad}*/}
-                    {/*    show={runTestCaseShow}*/}
-                    {/*    testCaseResult={testCaseResult}/>*/}
-                    {/*</TabPanelVertical>*/}
                   </div>
+
                   <div>
                     <TextField
                       style={{width:0.075*window.innerWidth, marginLeft:20}}
@@ -473,10 +441,11 @@ export default function SolvingContest(props){
 
                   </div>
                 </SplitPane>
-
+                {/*<Test></Test>*/}
               </TabPanelHorizontal>
-            )
-          })}
+            );
+          })
+          }
 
         </Box>
 
