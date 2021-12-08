@@ -5,12 +5,19 @@ import PropTypes from "prop-types";
 
 Timer.propTypes = {
   contestId: PropTypes.string.isRequired,
-  contestTime: PropTypes.number.isRequired
+  contestTime: PropTypes.number.isRequired,
+  timoutSubmit: PropTypes.func.isRequired
 }
 
 export function Timer(props){
   const contestId = props.contestId;
   const contestTime = props.contestTime;
+  const timoutSubmit = props.timoutSubmit;
+
+  const timeoutSubmisFunction = () =>{
+    timoutSubmit();
+  }
+
   const [timer, setTimer] = useState('00:00:00');
   const Ref = useRef(null);
 
@@ -81,6 +88,9 @@ export function Timer(props){
       // );
     }else{
       //  submit
+      timeoutSubmisFunction();
+      clearInterval(Ref.current);
+      // this.props.timoutSubmit();
     }
   }
 
