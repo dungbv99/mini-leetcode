@@ -38,33 +38,6 @@ export function Timer(props){
     }
   }, []);
 
-  // request(
-    //   "get",
-    //   "/get-contest-detail/"+contestId,
-    //   (res) =>{
-    //     setContestTime(res.data.contestTime);
-    //
-    //     console.log("res ", res.data);
-    //
-    //     let a = "startTime-"+res.data.contestTime+"-"+contestId;
-    //
-    //     if(localStorage.getItem(a) == null){
-    //       console.log("set start time");
-    //       let now = new Date();
-    //       now.setMinutes(now.getMinutes()+res.data.contestTime%60);
-    //       now.setHours(now.getHours()+res.data.contestTime/60);
-    //       localStorage.setItem(a, now);
-    //       clearTimer(now);
-    //     }else{
-    //       let now = new Date();
-    //       if(localStorage.getItem(a) + res.data.contestTime < now.getHours()*60 + now.getMinutes()){
-    //         // localStorage.removeItem(a);
-    //       }else{
-    //         clearTimer(new Date(localStorage.getItem(a)));
-    //       }
-    //     }
-    //   }
-    // ).then();
 
 
 

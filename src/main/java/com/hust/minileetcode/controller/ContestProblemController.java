@@ -267,6 +267,19 @@ public class ContestProblemController {
         return ResponseEntity.status(200).body(resp);
     }
 
+    @PostMapping("/contest-submit-all")
+    public ResponseEntity<?> contestSubmitAll (@RequestBody ModelContestSubmissionAll request, Principal principal){
+        log.info("contestSubmitAll request {}", request);
+        request.getContents().parallelStream().forEach(modelContestSubmission -> {
+            try {
+                problemTestCaseService.submitContestProblem(modelContestSubmission, principal.getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return ResponseEntity.status(200).body(null);
+    }
+
     @GetMapping("/get-ranking-contest/{contestId}")
     public ResponseEntity<?> getRankingContest(@PathVariable("contestId") String contestId, Pageable pageable){
         log.info("getRankingContest page {}", pageable);

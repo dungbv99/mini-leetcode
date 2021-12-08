@@ -25,6 +25,7 @@ import {useSelector} from "react-redux";
 import {ConsoleContest} from "./ConsoleContest";
 import {Test} from "./Test";
 import {Timer} from "./Timer";
+import {ContestProblemComponent} from "./ContestProblemComponent";
 
 
 
@@ -49,10 +50,10 @@ export default function SolvingContest(){
   const [contestTime, setContestTime] = useState();
   const [problems, setProblems] = useState([]);
   const [submitted, setSubmitted] = useState([]);
-  const [source, setSource] = useState();
   const [screenHeight, setScreenHeight] = useState((window.innerHeight-180) + "px");
-  const [computerLanguage, setComputerLanguage] = useState("CPP");
-  const computerLanguageList = ["CPP", "GOLANG", "JAVA", "PYTHON3"];
+  const [language, setLanguage] = useState("CPP");
+  const [languageList, setLanguageList] = useState([]);
+  const computerLanguageListDefault = ["CPP", "GOLANG", "JAVA", "PYTHON3"];
   const [runCodeLoading, setRunCodeLoading] = useState(false);
   const [consoleTabIndex, setConsoleTabIndex] = useState(0);
   const [showConsole, setShowConsole] = useState(false);
@@ -68,6 +69,8 @@ export default function SolvingContest(){
   const [runTestCaseLoad, setRunTestCaseLoad] = useState(false);
   const [runTestCaseShow, setRunTestCaseShow] = useState(false);
   const [timer, setTimer] = useState('00:00:00');
+  const [listSource, setListSource] = useState([]);
+  const [loadStupid, setLoadStupid] = useState(false);
   // const [test, setTest] = useState('00:00:00');
   const Ref = useRef(null);
 
@@ -96,61 +99,9 @@ export default function SolvingContest(){
 
   }
 
-  const getTimeRemaining = (e) => {
-    const total = Date.parse(e) - Date.parse(new Date());
-    const seconds = Math.floor((total / 1000) % 60);
-    const minutes = Math.floor((total / (1000 * 60)) % 60);
-    const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-    return {
-      total, hours, minutes, seconds
-    };
-  }
-
-  const clearTimer = (e) => {
-
-    // If you adjust it you should also need to
-    // adjust the Endtime formula we are about
-    // to code next
-    // If you try to remove this line the
-    // updating of timer Variable will be
-    // after 1000ms or 1sec
-    if (Ref.current) clearInterval(Ref.current);
-    const id = setInterval(() => {
-      startTimer(e);
-    }, 1000)
-    console.log("done");
-
-    Ref.current = id;
+  function submitContest(){
 
   }
-
-  const startTimer = (e) => {
-    // console.log("start timer ", e);
-    let { total, hours, minutes, seconds } = getTimeRemaining(e);
-    if (total >= 0) {
-
-      // update the timer
-      // check if less than 10 then we need to
-      // add '0' at the begining of the variable
-      let a = (hours > 9 ? hours : '0' + hours) + ':' +
-        (minutes > 9 ? minutes : '0' + minutes) + ':' +
-        (seconds > 9 ? seconds : '0' + seconds);
-      // setTimer(a);
-
-
-      // setTest(a);
-      // setTimer(
-      //   (hours > 9 ? hours : '0' + hours) + ':' +
-      //   (minutes > 9 ? minutes : '0' + minutes) + ':'
-      //   + (seconds > 9 ? seconds : '0' + seconds)
-      // );
-    }else{
-    //  submit
-    }
-  }
-
-
-
 
 
 
@@ -166,26 +117,29 @@ export default function SolvingContest(){
         console.log("res ", res.data);
         let arr = problems.map(()=>false);
         setSubmitted(arr);
-
-        let a = "startTime-"+res.data.contestTime+"-"+contestId;
-
-        if(localStorage.getItem(a) == null){
-          console.log("set start time");
-          let now = new Date();
-          now.setMinutes(now.getMinutes()+res.data.contestTime%60);
-          now.setHours(now.getHours()+res.data.contestTime/60);
-          localStorage.setItem(a, now);
-          clearTimer(now);
-        }else{
-          let now = new Date();
-          if(localStorage.getItem(a) + res.data.contestTime < now.getHours()*60 + now.getMinutes()){
-            // localStorage.removeItem(a);
+        for (let i = 0; i < res.data.list.length; i++){
+          listSource.push("");
+          languageList.push("CPP");
+          let idSource = contestId+"-"+res.data.list[i].problemId+"-source";
+          let source = localStorage.getItem(idSource);
+          let idLanguage = contestId+"-"+res.data.list[i].problemId+"-language";
+          let tmpLanguage = localStorage.getItem(idLanguage);
+          if(source != null ){
+            listSource[i] = source;
           }else{
-            clearTimer(new Date(localStorage.getItem(a)));
+            localStorage.setItem(idSource, "");
           }
+          if(tmpLanguage != null){
+            languageList[i] = tmpLanguage;
+          }else{
+            localStorage.setItem(idLanguage, "CPP");
+          }
+
         }
+        console.log("listSource ", listSource);
       }
     ).then();
+
   }, [])
 
   return (
@@ -277,171 +231,198 @@ export default function SolvingContest(){
             problems.map((problem, index)=>{
             return(
               <TabPanelHorizontal value={value} index={index+1}>
-                <SplitPane split="vertical"  primary={"second"} maxSize={"200px"}  >
-                  <div >
-                    <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-150) + "px"}}>
-                      <Typography variant={"h5"}><b>{index+1}. {problem.problemName}</b></Typography>
-                      <Divider />
-                      <Markup content={problem.problemDescription} />
-                    </ScrollBox>
-                  </div>
+                {/*{contestId !== undefined ?*/}
+                {/*  <ContestProblemComponent*/}
+                {/*  contestId={contestId}*/}
+                {/*  index={index}*/}
+                {/*  problemDescription={problem.problemDescription}*/}
+                {/*  problemId={problem.problemId}*/}
+                {/*  problemName={problem.problemName}*/}
+                {/*  submitted={submitted}*/}
+                {/*/> : <div></div>}*/}
 
-                  <div>
-                    <TextField
-                      style={{width:0.075*window.innerWidth, marginLeft:20}}
-                      variant={"outlined"}
-                      size={"small"}
-                      autoFocus
-                      value={computerLanguage}
-                      select
-                      id="computerLanguage"
-                      onChange={(event) => {
-                        setComputerLanguage(event.target.value);
-                      }}
-                    >
-                      {computerLanguageList.map((item) => (
-                        <MenuItem key={item} value={item}>
-                          {item}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                    <CodeMirror
-                      height={screenHeight}
-                      width="100%"
-                      extensions={getExtension(computerLanguage)}
-                      onChange={(value, viewUpdate) => {
-                        setSource(value);
-                      }}
-                      autoFocus={false}
-                    />
+                <ContestProblemComponent
+                  contestId={contestId}
+                  index={index}
+                  problemDescription={problem.problemDescription}
+                  problemId={problem.problemId}
+                  problemName={problem.problemName}
+                  submitted={submitted}
+                />
 
-                    <ConsoleContest
-                      showConsole={showConsole}
-                      load={runCodeLoading}
-                      output={output}
-                      color={"light"}
-                      extension={getExtension()}
-                      input={input}
-                      onInputChange={onInputChange}
-                      consoleTabIndex={consoleTabIndex}
-                      onChangeConsoleTabIndex={onChangeConsoleTabIndex}
-                      accept={accept}
-                      run={run}
-                      timeLimit={timeLimit}
-                      expected={expected}
-                      compileError={compileError}
-                      runTestCaseLoad={runTestCaseLoad}
-                      runTestCaseShow={runTestCaseShow}
-                      submitResult={testCaseResult}
-                    />
-                    <Button
-                      variant="contained"
-                      color="light"
-                      // style={{marginLeft:"90px"}}
-                      onClick={handleScroll}
-                      // style={{position}}
-                      // style={{left:"50%"}}
-                      extension={getExtension()}
-                    >
-                      Console
-                    </Button>
 
-                    <Button
-                      variant="contained"
-                      color="light"
-                      // style={{marginLeft:"90px"}}
-                      // onClick={handleRunCode(problem.problemId)}
-                      onClick={() =>{
-                        console.log("problemId", problem.problemId);
-                        setRunCodeLoading(true);
-                        setConsoleTabIndex(1);
-                        setShowConsole(true);
-                        setScreenHeight((window.innerHeight-455) + "px");
-                        let body =  {
-                          sourceCode: source,
-                          computerLanguage: computerLanguage,
-                          input: input
-                        }
-                        request(
-                          "post",
-                          API_URL + "/problem-detail-run-code/" + problem.problemId,
-                          (res) => {
-                            setRun(true);
-                            setRunCodeLoading(false);
-                            if (res.data.status == "Time Limit Exceeded") {
-                              setTimeLimit(true);
-                              setCompileError(false);
-                              setAccept(false);
-                            } else if (res.data.status == "Compile Error") {
-                              setTimeLimit(false);
-                              setCompileError(true);
-                              console.log("111");
-                            } else if (res.data.status == "Accept") {
-                              setAccept(true);
-                              setTimeLimit(false);
-                              setCompileError(false);
-                            } else {
-                              setAccept(false);
-                              setTimeLimit(false);
-                              setCompileError(false);
-                            }
-                            setOutput(res.data.output);
-                            setExpected(res.data.expected);
-                          },
-                          {},
-                          body
-                        ).then();
-                      }}
-                      // style={{position}}
-                      style={{marginLeft:"20px"}}
-                    >
-                      Run Code
-                    </Button>
 
-                    <Button
-                      variant="contained"
-                      color="light"
-                      onClick={() =>{
-                        setScreenHeight((window.innerHeight-455) + "px");
-                        setRunTestCaseLoad(true);
-                        setConsoleTabIndex(2);
-                        setShowConsole(true);
-                        setValueTab1(1);
+                {/*<SplitPane split="vertical"  primary={"second"} maxSize={"200px"}  >*/}
+                {/*  <div >*/}
+                {/*    <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-150) + "px"}}>*/}
+                {/*      <Typography variant={"h5"}><b>{index+1}. {problem.problemName}</b></Typography>*/}
+                {/*      <Divider />*/}
+                {/*      <Markup content={problem.problemDescription} />*/}
+                {/*    </ScrollBox>*/}
+                {/*  </div>*/}
 
-                        let body ={
-                          source: source,
-                          language:computerLanguage,
-                          contestId: contestId,
-                          problemId: problem.problemId
-                        };
-                        request(
-                          "post",
-                          API_URL+"/contest-submit-problem",
-                          (res) =>{
-                            setTestCaseResult(res.data);
-                            console.log("run all test case");
-                            console.log("res ", res.data);
+                {/*  <div>*/}
+                {/*    <TextField*/}
+                {/*      style={{width:0.075*window.innerWidth, marginLeft:20}}*/}
+                {/*      variant={"outlined"}*/}
+                {/*      size={"small"}*/}
+                {/*      autoFocus*/}
+                {/*      value={languageList[index]}*/}
+                {/*      select*/}
+                {/*      id="computerLanguage"*/}
+                {/*      onChange={(event) => {*/}
+                {/*        languageList[index] = event.target.value;*/}
+                {/*        setLanguageList(languageList);*/}
+                {/*        localStorage.setItem(contestId+"-"+problem.problemId+"-language", event.target.value);*/}
+                {/*      }}*/}
+                {/*    >*/}
+                {/*      {computerLanguageListDefault.map((item) => (*/}
+                {/*        <MenuItem key={item} value={item}>*/}
+                {/*          {item}*/}
+                {/*        </MenuItem>*/}
+                {/*      ))}*/}
+                {/*    </TextField>*/}
+                {/*    <CodeMirror*/}
+                {/*      value={listSource[index]}*/}
+                {/*      height={screenHeight}*/}
+                {/*      width="100%"*/}
+                {/*      extensions={getExtension(language)}*/}
+                {/*      onChange={(value, viewUpdate) => {*/}
+                {/*        listSource[index] = value;*/}
+                {/*        let a = contestId+"-"+problem.problemId+"-source";*/}
+                {/*        localStorage.setItem(a, value);*/}
+                {/*      }}*/}
+                {/*      autoFocus={false}*/}
+                {/*    />*/}
 
-                          },
-                          {},
-                          body
-                        ).then(
-                          ()=>{
-                            setRunTestCaseLoad(false);
-                            setRunTestCaseShow(true);
-                          }
-                        );
+                {/*    <ConsoleContest*/}
+                {/*      showConsole={showConsole}*/}
+                {/*      load={runCodeLoading}*/}
+                {/*      output={output}*/}
+                {/*      color={"light"}*/}
+                {/*      extension={getExtension()}*/}
+                {/*      input={input}*/}
+                {/*      onInputChange={onInputChange}*/}
+                {/*      consoleTabIndex={consoleTabIndex}*/}
+                {/*      onChangeConsoleTabIndex={onChangeConsoleTabIndex}*/}
+                {/*      accept={accept}*/}
+                {/*      run={run}*/}
+                {/*      timeLimit={timeLimit}*/}
+                {/*      expected={expected}*/}
+                {/*      compileError={compileError}*/}
+                {/*      runTestCaseLoad={runTestCaseLoad}*/}
+                {/*      runTestCaseShow={runTestCaseShow}*/}
+                {/*      submitResult={testCaseResult}*/}
+                {/*    />*/}
+                {/*    <Button*/}
+                {/*      variant="contained"*/}
+                {/*      color="light"*/}
+                {/*      // style={{marginLeft:"90px"}}*/}
+                {/*      onClick={handleScroll}*/}
+                {/*      // style={{position}}*/}
+                {/*      // style={{left:"50%"}}*/}
+                {/*      extension={getExtension()}*/}
+                {/*    >*/}
+                {/*      Console*/}
+                {/*    </Button>*/}
 
-                      }}
-                      // style={{position}}
-                      style={{marginLeft:"20px"}}
-                    >
-                      SUBMIT
-                    </Button>
+                {/*    <Button*/}
+                {/*      variant="contained"*/}
+                {/*      color="light"*/}
+                {/*      // style={{marginLeft:"90px"}}*/}
+                {/*      // onClick={handleRunCode(problem.problemId)}*/}
+                {/*      onClick={() =>{*/}
+                {/*        console.log("problemId", problem.problemId);*/}
+                {/*        setRunCodeLoading(true);*/}
+                {/*        setConsoleTabIndex(1);*/}
+                {/*        setShowConsole(true);*/}
+                {/*        setScreenHeight((window.innerHeight-455) + "px");*/}
+                {/*        console.log(listSource[index]);*/}
+                {/*        let body =  {*/}
+                {/*          sourceCode: listSource[index],*/}
+                {/*          computerLanguage: language,*/}
+                {/*          input: input*/}
+                {/*        }*/}
+                {/*        request(*/}
+                {/*          "post",*/}
+                {/*          API_URL + "/problem-detail-run-code/" + problem.problemId,*/}
+                {/*          (res) => {*/}
+                {/*            setRun(true);*/}
+                {/*            setRunCodeLoading(false);*/}
+                {/*            if (res.data.status == "Time Limit Exceeded") {*/}
+                {/*              setTimeLimit(true);*/}
+                {/*              setCompileError(false);*/}
+                {/*              setAccept(false);*/}
+                {/*            } else if (res.data.status == "Compile Error") {*/}
+                {/*              setTimeLimit(false);*/}
+                {/*              setCompileError(true);*/}
+                {/*              console.log("111");*/}
+                {/*            } else if (res.data.status == "Accept") {*/}
+                {/*              setAccept(true);*/}
+                {/*              setTimeLimit(false);*/}
+                {/*              setCompileError(false);*/}
+                {/*            } else {*/}
+                {/*              setAccept(false);*/}
+                {/*              setTimeLimit(false);*/}
+                {/*              setCompileError(false);*/}
+                {/*            }*/}
+                {/*            setOutput(res.data.output);*/}
+                {/*            setExpected(res.data.expected);*/}
+                {/*          },*/}
+                {/*          {},*/}
+                {/*          body*/}
+                {/*        ).then();*/}
+                {/*      }}*/}
+                {/*      // style={{position}}*/}
+                {/*      style={{marginLeft:"20px"}}*/}
+                {/*    >*/}
+                {/*      Run Code*/}
+                {/*    </Button>*/}
 
-                  </div>
-                </SplitPane>
-                {/*<Test></Test>*/}
+                {/*    <Button*/}
+                {/*      variant="contained"*/}
+                {/*      color="light"*/}
+                {/*      onClick={() =>{*/}
+                {/*        setScreenHeight((window.innerHeight-455) + "px");*/}
+                {/*        setRunTestCaseLoad(true);*/}
+                {/*        setConsoleTabIndex(2);*/}
+                {/*        setShowConsole(true);*/}
+                {/*        setValueTab1(1);*/}
+
+                {/*        let body ={*/}
+                {/*          source: listSource[index],*/}
+                {/*          language:language,*/}
+                {/*          contestId: contestId,*/}
+                {/*          problemId: problem.problemId*/}
+                {/*        };*/}
+                {/*        request(*/}
+                {/*          "post",*/}
+                {/*          API_URL+"/contest-submit-problem",*/}
+                {/*          (res) =>{*/}
+                {/*            setTestCaseResult(res.data);*/}
+                {/*            console.log("run all test case");*/}
+                {/*            console.log("res ", res.data);*/}
+
+                {/*          },*/}
+                {/*          {},*/}
+                {/*          body*/}
+                {/*        ).then(*/}
+                {/*          ()=>{*/}
+                {/*            setRunTestCaseLoad(false);*/}
+                {/*            setRunTestCaseShow(true);*/}
+                {/*            submitted[index] = true;*/}
+                {/*          }*/}
+                {/*        );*/}
+
+                {/*      }}*/}
+                {/*      // style={{position}}*/}
+                {/*      style={{marginLeft:"20px"}}*/}
+                {/*    >*/}
+                {/*      SUBMIT*/}
+                {/*    </Button>*/}
+
+                {/*  </div>*/}
+                {/*</SplitPane>*/}
               </TabPanelHorizontal>
             );
           })
@@ -458,3 +439,7 @@ export default function SolvingContest(){
 
   );
 }
+
+
+
+

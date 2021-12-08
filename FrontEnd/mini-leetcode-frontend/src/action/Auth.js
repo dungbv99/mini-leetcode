@@ -12,6 +12,7 @@ export const ERROR = "ERROR";
 export const logout = () => {
   menuState.permittedFunctions.set(new Set());
 
+
   return (dispatch, getState) => {
     dispatch(logoutsuccess());
     dispatch(requesting()); // create a action
@@ -22,6 +23,7 @@ export const logout = () => {
       401: () => {},
     });
   };
+  localStorage.clear();
 };
 
 export const login = (username, password) => {
