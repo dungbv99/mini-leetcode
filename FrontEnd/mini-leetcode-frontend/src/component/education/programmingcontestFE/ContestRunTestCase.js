@@ -57,7 +57,7 @@ export default function ContestRunTestCase(props){
             <Grid container alignItems="center">
               <Grid item xs>
                 <Typography variant="h6" >
-                  Run Time: <i>{submitResult.runTime}</i><br/>
+                  Run Time: <i>{submitResult.runtime} ms</i><br/>
                   Memory Usage: <i>{submitResult.memoryUsage} kb</i>
                 </Typography>
 

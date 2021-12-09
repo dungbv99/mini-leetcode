@@ -47,7 +47,7 @@ public class ContestSubmissionEntity {
     private String sourceCodeLanguage;
 
     @Column(name = "runtime")
-    private Float runtime;
+    private Long runtime;
 
     @Column(name = "memory_usage")
     private float memoryUsage;

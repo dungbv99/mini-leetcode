@@ -578,6 +578,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                     .contest(contestEntity)
                     .status(status)
                     .point(0)
+                    .runtime(0L)
                     .contest(contestEntity)
                     .problem(problemEntity)
                     .userLogin(userLogin)
@@ -599,7 +600,18 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                     .score(0)
                     .build();
         }
+        response = response.substring(0, lastIndex);
+        log.info("response 2222 {}", response.length());
+        int runTimeIndex = response.lastIndexOf("\n");
+        log.info("runTimeIndex {}", runTimeIndex);
+        String runtimeString = response.substring(runTimeIndex+1);
+        log.info("runtime {}", runtimeString);
+        Long runtime = Long.parseLong(runtimeString);
+        response = response.substring(0, runTimeIndex);
         String []ans = response.split("testcasedone\n");
+        for(int i = 0; i < ans.length; i++){
+            log.info("ans i {}", ans[i]);
+        }
         status = null;
         int cnt = 0;
         int score = 0;
@@ -615,6 +627,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 cnt++;
             }
         }
+
         if(status == null){
             status = "Accept";
         }
@@ -633,21 +646,22 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         ContestSubmissionEntity c = ContestSubmissionEntity.builder()
                 .contest(contestEntity)
                 .status(status)
-                .point(0)
+                .point(score)
                 .contest(contestEntity)
                 .problem(problemEntity)
                 .userLogin(userLogin)
                 .testCasePass(cnt+"/"+ testCaseEntityList.size())
                 .sourceCode(modelContestSubmission.getSource())
                 .sourceCodeLanguage(modelContestSubmission.getLanguage())
-//                .problemSubmission(p)
+                .runtime(runtime)
                 .createdAt(new Date())
                 .build();
         c = contestSubmissionRepo.save(c);
+        log.info("c {}", c.getRuntime());
         return ModelContestSubmissionResponse.builder()
                 .status(status)
                 .testCasePass(c.getTestCasePass())
-                .runtime(c.getRuntime())
+                .runtime(runtime)
                 .memoryUsage(c.getMemoryUsage())
                 .problemName(problemEntity.getProblemName())
                 .contestSubmissionID(c.getContestSubmissionId())

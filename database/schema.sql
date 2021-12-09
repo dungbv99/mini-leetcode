@@ -300,7 +300,7 @@ create table contest_submission_new
     test_case_pass varchar (20),
     source_code text,
     source_code_language varchar (10),
-    runtime float ,
+    runtime bigint ,
     memory_usage float ,
     last_updated_stamp         date default current_date ,
     created_stamp              date default current_date ,
