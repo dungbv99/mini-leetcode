@@ -1,25 +1,29 @@
 package com.hust.minileetcode.docker;
 
+import com.hust.minileetcode.MiniLeetcodeApplication;
+import com.hust.minileetcode.constants.Constants;
 import com.hust.minileetcode.utils.ComputerLanguage.Languages;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.exceptions.DockerException;
-import com.spotify.docker.client.messages.Container;
-import com.spotify.docker.client.messages.ContainerConfig;
-import com.spotify.docker.client.messages.ContainerCreation;
-import com.spotify.docker.client.messages.ExecCreation;
+import com.spotify.docker.client.messages.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.spotify.docker.client.DockerClient.*;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 @Configuration
+@Slf4j
 public class DockerClientBase {
     @Value("${DOCKER_SERVER_HOST}")
     private String DOCKER_SERVER_HOST;
@@ -33,19 +37,19 @@ public class DockerClientBase {
     }
 
     @Bean
-    public void initDockerClientBase(){
+    public void initDockerClientBase() throws Exception {
         dockerClient = DefaultDockerClient.builder()
                 .uri(URI.create(DOCKER_SERVER_HOST))
                 .connectionPoolSize(100)
                 .build();
         try {
-            System.out.println("ping " + dockerClient.ping());
-//            createGccContainer();
+            log.info("ping {}" , dockerClient.ping());
+            loadNotExistedImage();
             containerExist();
-        } catch (DockerException e) {
+        } catch (Exception e){
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+//            System.exit(0);
+//            throw new Exception(e.getMessage());
         }
     }
 
@@ -71,7 +75,7 @@ public class DockerClientBase {
             m.put(container.names().get(0), container.id());
             dockerClient.startContainer(container.id());
         }
-        System.out.println(m.toString());
+        log.info("{}",m.toString());
 //        String containerId = m.get("/gcc");
 //        String[] runCommand = {"sh", "-c", "while :; do sleep 1; done"};
 //        ExecCreation runExecCreation = dockerClient.execCreate(
@@ -83,6 +87,64 @@ public class DockerClientBase {
 
     }
 
+
+    public void loadNotExistedImage() throws DockerException, InterruptedException {
+
+        List<Image> list = dockerClient.listImages(ListImagesParam.allImages());
+        Set<String> imagesSet = new HashSet<>();
+        for(Image image : list){
+            imagesSet.add(Objects.requireNonNull(image.repoTags()).get(0));
+        }
+        for (Constants.DockerImage i :Constants.DockerImage.values()){
+            if(!imagesSet.contains(i.getValue())){
+                dockerClient.pull(i.getValue());
+            }
+        }
+
+        List<Container> listContainer = dockerClient.listContainers(
+                ListContainersParam.filter("label", "names=leetcode")
+        );
+
+
+        Set<String> containerSet = new HashSet<>();
+        for (Container container : listContainer){
+            containerSet.add(container.names().get(0));
+        }
+        for (Constants.DockerContainer dockerContainer : Constants.DockerContainer.values()){
+            if(!containerSet.contains(dockerContainer.getValue())){
+                ContainerConfig containerConfig = ContainerConfig.builder().build();
+                switch (dockerContainer){
+                    case GCC:
+                        containerConfig = ContainerConfig.builder()
+                                .image(Constants.DockerImage.GCC.getValue())
+                                .cmd("sh", "-c", "while :; do sleep 1; done")
+                                .build();
+                        break;
+                    case JAVA:
+                        containerConfig = ContainerConfig.builder()
+                                .image(Constants.DockerImage.JAVA.getValue())
+                                .cmd("sh", "-c", "while :; do sleep 1; done")
+                                .build();
+                        dockerClient.createContainer(containerConfig);
+                        break;
+                    case PYTHON3:
+                        containerConfig = ContainerConfig.builder()
+                                .image(Constants.DockerImage.PYTHON3.getValue())
+                                .cmd("sh", "-c", "while :; do sleep 1; done")
+                                .build();
+                        break;
+                    case GOLANG:
+                        containerConfig = ContainerConfig.builder()
+                                .image(Constants.DockerImage.GOLANG.getValue())
+                                .cmd("sh", "-c", "while :; do sleep 1; done")
+                                .build();
+                        break;
+                }
+                dockerClient.createContainer(containerConfig);
+            }
+        }
+
+    }
 
     public String createGccContainer() throws DockerException, InterruptedException {
         Map<String,String> m = new HashMap<String,String>();
@@ -122,7 +184,7 @@ public class DockerClientBase {
                 containerId = m.get("/golang");
                 break;
             default:
-                System.out.println("language err");
+                log.info("language err");
                 return "err";
         }
         dockerClient.copyToContainer(new java.io.File("./temp_dir/"+dirName).toPath(), containerId, "/workdir/");

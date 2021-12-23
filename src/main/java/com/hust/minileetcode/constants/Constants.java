@@ -27,7 +27,7 @@ public class Constants {
         SUCCESSFUL("SUCCESSFUL"),
         FAILED("FAILED");
 
-        private final String value;
+        private String value;
 
         RegistrationType(String value){
             this.value = value;
@@ -42,7 +42,7 @@ public class Constants {
     public enum RegisterCourseStatus{
         SUCCESSES("SUCCESSES"), FAILED("FAILED");
 
-        private final String value;
+        private String value;
 
         RegisterCourseStatus(String value){
             this.value = value;
@@ -59,7 +59,7 @@ public class Constants {
         JAVA("JAVA"),
         GOLANG("GOLANG");
 
-        private final String value;
+        private String value;
 
         Languages(String value){
             this.value = value;
@@ -70,5 +70,33 @@ public class Constants {
 
     }
 
+    public enum DockerImage{
+        GCC("gcc:8.5-buster"), JAVA("openjdk:13-buster"), PYTHON3("python:3.6-buster"), GOLANG("golang:1.16-buster");
+
+        private String value;
+
+        DockerImage(String value){
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+
+    public enum DockerContainer{
+        GCC("/gcc"), JAVA("/java"), PYTHON3("/python3"), GOLANG("/golang");
+
+        private String value;
+
+        DockerContainer(String value){
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 
 }

@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  leetcode:
+    container_name: leetcode
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      - docker-service
+      - redis
+      - postgres
+    environment:
+      - DOCKER_SERVER_HOST=http://leetcode-docker-service:2375
+      - SQL_DB_HOST=leetcode-postgres
+      - REDIS_HOST=leetcode-redis
+
+  postgres:
+    container_name: leetcode-postgres
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=leetcode
+    volumes:
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+
+  redis:
+    container_name: leetcode-redis
+    image: redis:latest
+
+  docker-service:
+    hostname: docker-service
+    container_name: leetcode-docker-service
+    image: docker:dind
+    privileged: true
+    restart: always
+    environment:
+      - DOCKER_TLS_CERTDIR=
+
+
+
+
