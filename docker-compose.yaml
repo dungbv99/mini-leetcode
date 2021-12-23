@@ -1,7 +1,7 @@
 version: '3.8'
 services:
-  leetcode:
-    container_name: leetcode
+  leetcode-be:
+    container_name: leetcode-be
     build:
       context: .
     ports:
@@ -39,6 +39,14 @@ services:
     environment:
       - DOCKER_TLS_CERTDIR=
 
-
+  leetcode-fe:
+    container_name: leetcode-fe
+    build:
+      context: ./FrontEnd/mini-leetcode-frontend
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      - REACT_APP_BACKEND_URL=http://172.17.0.1:8080/api
 
 
