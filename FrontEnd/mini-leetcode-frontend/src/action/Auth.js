@@ -23,7 +23,6 @@ export const logout = () => {
       401: () => {},
     });
   };
-  localStorage.clear();
 };
 
 export const login = (username, password) => {

@@ -1,0 +1,1192 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 14.1 (Debian 14.1-1.pgdg110+1)
+-- Dumped by pg_dump version 14.1 (Debian 14.1-1.pgdg110+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: uuid_generate_v1(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.uuid_generate_v1() RETURNS uuid
+    LANGUAGE c STRICT PARALLEL SAFE
+    AS '$libdir/uuid-ossp', 'uuid_generate_v1';
+
+
+ALTER FUNCTION public.uuid_generate_v1() OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: application; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.application (
+    application_id character varying(255) NOT NULL,
+    application_type_id character varying(255) NOT NULL,
+    module_id character varying(255),
+    permission_id character varying(255),
+    description text,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_DATE
+);
+
+
+ALTER TABLE public.application OWNER TO postgres;
+
+--
+-- Name: application_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.application_type (
+    application_type_id character varying(60) NOT NULL,
+    description text,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_DATE
+);
+
+
+ALTER TABLE public.application_type OWNER TO postgres;
+
+--
+-- Name: contest_contest_problem_new; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.contest_contest_problem_new (
+    contest_id character varying(100) NOT NULL,
+    problem_id character varying(100) NOT NULL,
+    last_updated_stamp timestamp without time zone DEFAULT CURRENT_DATE,
+    created_stamp timestamp without time zone DEFAULT CURRENT_DATE
+);
+
+
+ALTER TABLE public.contest_contest_problem_new OWNER TO postgres;
+
+--
+-- Name: contest_new; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.contest_new (
+    contest_id character varying(100) NOT NULL,
+    contest_name character varying(100),
+    contest_solving_time integer,
+    user_create_id character varying(60),
+    try_again boolean,
+    public boolean,
+    last_updated_stamp timestamp without time zone DEFAULT CURRENT_DATE,
+    created_stamp timestamp without time zone DEFAULT CURRENT_DATE
+);
+
+
+ALTER TABLE public.contest_new OWNER TO postgres;
+
+--
+-- Name: contest_problem_new; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.contest_problem_new (
+    problem_id character varying(100) NOT NULL,
+    problem_name character varying(100),
+    problem_description text,
+    created_by_user_login_id character varying(60),
+    time_limit integer,
+    memory_limit integer,
+    level_id character varying(60),
+    category_id character varying(60),
+    last_updated_stamp timestamp without time zone DEFAULT CURRENT_DATE,
+    created_stamp timestamp without time zone DEFAULT CURRENT_DATE,
+    solution text,
+    level_order integer,
+    correct_solution_source_code text,
+    correct_solution_language character varying(10)
+);
+
+
+ALTER TABLE public.contest_problem_new OWNER TO postgres;
+
+--
+-- Name: contest_submission_new; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.contest_submission_new (
+    contest_submission_id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
+    contest_id character varying(100) NOT NULL,
+    problem_id character varying(100) NOT NULL,
+    user_submission_id character varying(100) NOT NULL,
+    status character varying(20),
+    point integer,
+    test_case_pass character varying(20),
+    source_code text,
+    source_code_language character varying(10),
+    runtime double precision,
+    memory_usage double precision,
+    last_updated_stamp date DEFAULT CURRENT_DATE,
+    created_stamp date DEFAULT CURRENT_DATE
+);
+
+
+ALTER TABLE public.contest_submission_new OWNER TO postgres;
+
+--
+-- Name: notifications; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.notifications (
+    id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
+    content character varying(500),
+    from_user character varying(60),
+    to_user character varying(60),
+    url character varying(200),
+    status_id character varying(60),
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public.notifications OWNER TO postgres;
+
+--
+-- Name: person; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.person (
+    person_id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
+    first_name character varying(100),
+    middle_name character varying(100),
+    last_name character varying(100),
+    gender character(1),
+    birth_date date,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_DATE,
+    status_id character varying(20)
+);
+
+
+ALTER TABLE public.person OWNER TO postgres;
+
+--
+-- Name: problem_source_code_new; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.problem_source_code_new (
+    problem_source_code_id character varying(70) NOT NULL,
+    base_source text,
+    main_source text,
+    problem_function_default_source text,
+    problem_function_solution text,
+    language character varying(10),
+    contest_problem_id character varying(60),
+    last_updated_stamp timestamp without time zone DEFAULT CURRENT_DATE,
+    created_stamp timestamp without time zone DEFAULT CURRENT_DATE
+);
+
+
+ALTER TABLE public.problem_source_code_new OWNER TO postgres;
+
+--
+-- Name: problem_submission_new; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.problem_submission_new (
+    problem_submission_id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
+    problem_id character varying(100) NOT NULL,
+    submitted_by_user_login_id character varying(60),
+    source_code text,
+    source_code_language character varying(10),
+    status character varying(20),
+    score integer,
+    runtime character varying(10),
+    memory_usage double precision,
+    test_case_pass character varying(10),
+    created_stamp character varying(25)
+);
+
+
+ALTER TABLE public.problem_submission_new OWNER TO postgres;
+
+--
+-- Name: security_group; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.security_group (
+    group_id character varying(60) NOT NULL,
+    description text,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    group_name character varying(100)
+);
+
+
+ALTER TABLE public.security_group OWNER TO postgres;
+
+--
+-- Name: security_group_permission; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.security_group_permission (
+    group_id character varying(60) NOT NULL,
+    permission_id character varying(100) NOT NULL,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.security_group_permission OWNER TO postgres;
+
+--
+-- Name: security_permission; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.security_permission (
+    permission_id character varying(100) NOT NULL,
+    description text,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.security_permission OWNER TO postgres;
+
+--
+-- Name: status; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.status (
+    status_id character varying(60) NOT NULL,
+    status_type_id character varying(60),
+    status_code character varying(60),
+    sequence_id character varying(60),
+    description text,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.status OWNER TO postgres;
+
+--
+-- Name: status_item; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.status_item (
+    status_id character varying(60) NOT NULL,
+    status_code character varying(60),
+    description text,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.status_item OWNER TO postgres;
+
+--
+-- Name: status_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.status_type (
+    status_type_id character varying(60) NOT NULL,
+    parent_type_id character varying(60),
+    description text,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.status_type OWNER TO postgres;
+
+--
+-- Name: test; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.test (
+    id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
+    user_name character varying(20),
+    problem_name character varying(20),
+    point integer
+);
+
+
+ALTER TABLE public.test OWNER TO postgres;
+
+--
+-- Name: test_case_new; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.test_case_new (
+    test_case_id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
+    test_case_point integer,
+    test_case text,
+    correct_answer text,
+    contest_problem_id character varying(60),
+    last_updated_stamp timestamp without time zone DEFAULT CURRENT_DATE,
+    created_stamp timestamp without time zone DEFAULT CURRENT_DATE
+);
+
+
+ALTER TABLE public.test_case_new OWNER TO postgres;
+
+--
+-- Name: user_login; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_login (
+    user_login_id character varying(255) NOT NULL,
+    person_id uuid,
+    current_password character varying(60),
+    otp_secret character varying(60),
+    client_token character varying(512),
+    password_hint text,
+    is_system boolean,
+    enabled boolean,
+    has_logged_out boolean,
+    require_password_change boolean,
+    disabled_date_time timestamp without time zone,
+    successive_failed_logins integer,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    otp_resend_number integer DEFAULT 0,
+    email character varying(20)
+);
+
+
+ALTER TABLE public.user_login OWNER TO postgres;
+
+--
+-- Name: user_login_security_group; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_login_security_group (
+    user_login_id character varying(255) NOT NULL,
+    group_id character varying(60) NOT NULL,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.user_login_security_group OWNER TO postgres;
+
+--
+-- Name: user_register; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_register (
+    user_login_id character varying(60) NOT NULL,
+    password character varying(100) NOT NULL,
+    email character varying(100) NOT NULL,
+    first_name character varying(100) NOT NULL,
+    middle_name character varying(100) NOT NULL,
+    last_name character varying(100) NOT NULL,
+    status_id character varying(60),
+    registered_roles text NOT NULL,
+    affiliations text,
+    last_updated_stamp timestamp without time zone,
+    created_stamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.user_register OWNER TO postgres;
+
+--
+-- Name: user_registration_contest_new; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_registration_contest_new (
+    user_registration_contest_id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
+    user_id character varying(100) NOT NULL,
+    contest_id character varying(100) NOT NULL,
+    status character varying(20) NOT NULL
+);
+
+
+ALTER TABLE public.user_registration_contest_new OWNER TO postgres;
+
+--
+-- Name: user_submission_contest_result_new; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_submission_contest_result_new (
+    contest_id character varying(100) NOT NULL,
+    user_id character varying(100) NOT NULL,
+    point integer NOT NULL,
+    email character varying(20),
+    full_name character varying(50),
+    last_updated_stamp date DEFAULT CURRENT_DATE,
+    created_stamp date DEFAULT CURRENT_DATE
+);
+
+
+ALTER TABLE public.user_submission_contest_result_new OWNER TO postgres;
+
+--
+-- Data for Name: application; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.application (application_id, application_type_id, module_id, permission_id, description, last_updated_stamp, created_stamp) FROM stdin;
+MENU_ADMIN	MENU	\N	\N	MENU ADMIN PRIMARY	\N	2021-11-24 00:00:00
+MENU_ADMIN_CHILDREN	MENU	MENU_ADMIN	ADMIN	MENU ADMIN CHILDREN	\N	2021-11-24 00:00:00
+MENU_TEACHER	MENU	\N	\N	MENU TEACHER PRIMARY	\N	2021-11-24 00:00:00
+MENU_TEACHER_CHILDREN	MENU	MENU_TEACHER	TEACHER	MENU TEACHER CHILDREN	\N	2021-11-24 00:00:00
+MENU_STUDENT	MENU	\N	\N	MENU STUDENT PRIMARY	\N	2021-11-24 00:00:00
+MENU_STUDENT_CHILDREN	MENU	MENU_STUDENT	STUDENT	MENU STUDENT CHILDREN	\N	2021-11-24 00:00:00
+\.
+
+
+--
+-- Data for Name: application_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.application_type (application_type_id, description, last_updated_stamp, created_stamp) FROM stdin;
+MENU	Menu application type	2021-11-24 16:56:52.165869	2021-11-24 16:56:52.165869
+SCREEN	Screen application type	2021-11-24 16:56:52.17212	2021-11-24 16:56:52.17212
+MODULE	Module application type	2021-11-24 16:56:52.173926	2021-11-24 16:56:52.173926
+SERVICE	Service application type	2021-11-24 16:56:52.175624	2021-11-24 16:56:52.175624
+ENTITY	Entity application type	2021-11-24 16:56:52.177323	2021-11-24 16:56:52.177323
+\.
+
+
+--
+-- Data for Name: contest_contest_problem_new; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.contest_contest_problem_new (contest_id, problem_id, last_updated_stamp, created_stamp) FROM stdin;
+test1	ADD 2 NUMBER	2021-12-01 00:00:00	2021-12-01 00:00:00
+test2	ADD 2 NUMBER	2021-12-01 00:00:00	2021-12-01 00:00:00
+test3	ADD 2 NUMBER	2021-12-04 00:00:00	2021-12-04 00:00:00
+test4	ADD 2 NUMBER	2021-12-04 00:00:00	2021-12-04 00:00:00
+test6	ADD 2 NUMBER	2021-12-04 00:00:00	2021-12-04 00:00:00
+test7	ADD 2 NUMBER	2021-12-04 00:00:00	2021-12-04 00:00:00
+contest1	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+contest2	ADD 2 NUMBER	2021-12-05 00:00:00	2021-12-05 00:00:00
+contest2	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+contest2	tru 2 so	2021-12-05 00:00:00	2021-12-05 00:00:00
+\.
+
+
+--
+-- Data for Name: contest_new; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.contest_new (contest_id, contest_name, contest_solving_time, user_create_id, try_again, public, last_updated_stamp, created_stamp) FROM stdin;
+test1	test1	90	admin	f	f	2021-12-01 00:00:00	\N
+test2	test2	1	admin	f	f	2021-12-01 00:00:00	\N
+test3	test3	50	admin	f	f	2021-12-04 00:00:00	\N
+test4	test4	120	admin	f	f	2021-12-04 00:00:00	\N
+test5	test5	90	admin	f	f	2021-12-04 00:00:00	\N
+test6	test6	90	admin	f	f	2021-12-04 00:00:00	\N
+test7	test7	75	admin	f	f	2021-12-04 00:00:00	\N
+contest1	contest1	20	admin	f	f	2021-12-05 00:00:00	\N
+contest2	contest2	1	admin	f	f	2021-12-05 00:00:00	\N
+\.
+
+
+--
+-- Data for Name: contest_problem_new; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.contest_problem_new (problem_id, problem_name, problem_description, created_by_user_login_id, time_limit, memory_limit, level_id, category_id, last_updated_stamp, created_stamp, solution, level_order, correct_solution_source_code, correct_solution_language) FROM stdin;
+ADD 2 NUMBER	ADD 2 NUMBER	<p>ADD 2 NUMBER</p>\n	\N	1	1	easy	\N	2021-12-01 00:00:00	2021-12-01 11:48:35.681	<p></p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << "1";\n}	CPP
+multiple 2 number	multiple 2 number	<p>give 2 number a and b</p>\n<p>return a*b</p>\n	\N	1	1	easy	\N	2021-12-05 00:00:00	2021-12-05 09:09:19.303	<p></p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a;\n  int b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP
+tru 2 so	\N	<p>1</p>\n	\N	1	1	easy	\N	2021-12-05 00:00:00	2021-12-05 20:51:32.392	<p>1</p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a-b;\n}	CPP
+\.
+
+
+--
+-- Data for Name: contest_submission_new; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.contest_submission_new (contest_submission_id, contest_id, problem_id, user_submission_id, status, point, test_case_pass, source_code, source_code_language, runtime, memory_usage, last_updated_stamp, created_stamp) FROM stdin;
+2417f59a-0e0a-4ab4-aed6-4a520fcffcd9	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+b1fad0f7-020b-413a-a196-cfc32b879d91	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+4e30945b-efca-4cfa-bb10-bbc9e572fc73	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+97fc0034-d4cc-4fcb-8114-5a2de78c6c70	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+352f7432-b2c4-4272-89fb-3070bfdad487	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+f3366e6b-ee9b-4e3f-9ee3-be0d5aba9281	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+673a0ea8-84b6-40a1-ae5c-98b859024f13	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+cd0bb3e9-3aa9-449c-bcc9-d28ca1b1a4da	contest1	multiple 2 number	admin	Accept	10	3/3	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	\N	0	\N	\N
+2f888c38-e46a-4044-b537-9f2067dd1657	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	\N
+322357c7-240d-4b92-835a-5634a9810198	contest1	multiple 2 number	admin	\nCompile Error	10	0/3	\N	CPP	\N	0	\N	2021-12-05
+703c3482-5690-448f-a387-c69a7d2fd7ab	contest1	multiple 2 number	admin	Wrong Answer	0	1/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  cout << 2;\n}	CPP	\N	0	\N	2021-12-05
+c98bd571-7c31-4138-bab3-d1e84c79b873	contest1	multiple 2 number	admin	Accept	0	4/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a , b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	\N	0	\N	2021-12-05
+c0b2a85c-dd8b-4023-9439-d5fa167ec3d5	contest1	multiple 2 number	test5	\nCompile Error	0	0/4	#include<bit/stdc++.h>\nusing namespace  std;\n\nint main(){\n  int a , b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	\N	0	\N	2021-12-05
+e561dca7-dfc8-4293-80fe-1d95bc808dc1	contest1	multiple 2 number	test5	Accept	0	4/4	#include<bits/stdc++.h>\nusing namespace  std;\n\nint main(){\n  int a , b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	\N	0	\N	2021-12-05
+\.
+
+
+--
+-- Data for Name: notifications; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.notifications (id, content, from_user, to_user, url, status_id, last_updated_stamp, created_stamp) FROM stdin;
+7eabcf1c-5669-4664-878f-3e340181402c	Dũng Viet Bui đã đăng kí tài khoản. Phê duyệt ngay.	test1	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-11-25 00:26:46.131	2021-11-25 00:26:07.179
+7190771e-1332-4db8-9aee-614115632c27	Dũng Viet Bui đã đăng kí tài khoản. Phê duyệt ngay.	test2	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-11-25 08:49:35.86	2021-11-25 00:27:54.428
+1a92d5b2-7016-4a12-990a-c82e6709a24c	2 2 4 đã đăng kí tài khoản. Phê duyệt ngay.	test6	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-11-25 08:59:51.785	2021-11-25 08:59:40.664
+1a619e90-f6b1-4b68-94c4-f8f0e9b50534	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-01 14:09:25.033	2021-12-01 14:09:19.171
+eae51f8c-ac9c-4d92-9618-e8ea06829ee3	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-02 10:10:03.836	2021-12-01 14:09:36.583
+e4e81fc8-a47a-4800-8674-d00d11ac4e5d	Your register contest test1 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-04 12:22:22.87	2021-12-04 12:22:22.87
+e52a1033-135f-48a3-9211-d26fc32123b9	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-04 12:33:34.348	2021-12-04 12:28:15.215
+c9b8333c-579e-4f9a-9b6a-f0f7e7e6829c	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-04 12:33:35.506	2021-12-04 12:28:01.623
+9a5e21ff-cc41-4788-9144-ad5d45f3af2b	Your register contest test1 is rejected 	admin	admin	\N	NOTIFICATION_READ	2021-12-04 12:33:37.081	2021-12-04 12:23:11.745
+7576d2c9-96d7-4cd5-8b9e-479d09788685	1 2 3 đã đăng kí tài khoản. Phê duyệt ngay.	test4	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-12-04 12:33:47.034	2021-11-25 08:49:23.299
+f7ef50d9-77b4-45c3-b30d-aafdcfede762	1 2 3 đã đăng kí tài khoản. Phê duyệt ngay.	test5	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-12-04 12:33:47.035	2021-11-25 08:56:31.48
+51f1a8b0-30e5-443f-b021-fa46b8160119	Dũng Viet Bui đã đăng kí tài khoản. Phê duyệt ngay.	test111	admin	/user-group/user/approve-register	NOTIFICATION_READ	2021-12-04 12:33:47.035	2021-11-25 10:14:43.28
+2c8b951f-3201-4b9f-8803-75281a4b6f9e	test5 register contest test1	test5	admin	\N	NOTIFICATION_READ	2021-12-04 12:33:47.036	2021-12-02 10:09:54.416
+a70fe8ff-5154-4e09-bb60-e38193c575df	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-04 12:33:47.036	2021-12-04 12:29:03.99
+daa6df8c-15ab-4c74-ac7a-aff9696679f9	Your register contest test1 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-04 14:58:17.963	2021-12-04 14:58:17.963
+88f892c2-3405-4a06-af9c-8cb87d0bd876	Your register contest test1 is rejected 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-04 14:59:09.204	2021-12-04 14:59:09.204
+ec489f1d-336e-4504-9097-acd72b0397d8	admin register contest test1	admin	admin	/programming-contest/contest-manager/test1#pending	NOTIFICATION_READ	2021-12-04 15:05:49.53	2021-12-04 15:05:46.052
+df814a9d-cf14-4da1-8038-d16adc59c529	Your register contest test1 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-04 15:42:00.682	2021-12-04 15:42:00.682
+c780dacc-8310-43f5-b991-18f3793cbd35	admin register contest contest1	admin	admin	/programming-contest/contest-manager/contest1#pending	NOTIFICATION_READ	2021-12-05 09:18:37.309	2021-12-05 09:18:32.352
+f0e9c679-163c-41de-b664-9ee33d6806f7	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.065	2021-12-04 12:35:32.034
+d56e6a92-8bc6-450e-9ead-0a684091f213	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.075	2021-12-04 12:37:25.663
+c716ec84-b6e5-4a5f-9c60-2064410c0761	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.077	2021-12-04 12:37:31.879
+84721a3d-e0f8-46b6-b9bc-42b6abe1e453	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.079	2021-12-04 14:44:16.137
+070429ac-8c11-4dc6-902c-11248d633b7a	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.081	2021-12-04 14:44:22.677
+069eb446-28ff-4b0b-8360-efc0c483d621	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.082	2021-12-04 14:45:16.203
+c56d19f4-eed5-4834-95d8-701fd3945fdd	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.084	2021-12-04 14:45:23.899
+b53882a1-fc8e-4f93-9476-bcef734dd887	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.086	2021-12-04 14:51:58.022
+8cde7a07-ef7b-4c3b-998b-67b3568d7c24	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.087	2021-12-04 14:52:07.665
+035bc249-a5b5-4aa9-95ae-f7a758f92f72	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.09	2021-12-04 14:52:46.7
+3eaac94b-fc70-4b05-8a17-6df4e7fed0e6	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.091	2021-12-04 14:52:51.386
+aabd43aa-7307-4e7a-b5bf-970fce1c216a	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.094	2021-12-04 14:56:41.206
+98be26dd-9572-496b-95a5-e84a2da49e67	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.095	2021-12-04 14:56:45.955
+93fc6441-8e49-4382-aa9d-c6d25f0067c4	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.097	2021-12-04 14:57:13.536
+d0fbbbde-dbfb-4d16-9b39-fd2084b67049	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.098	2021-12-04 14:57:18
+40295304-9be7-4f56-a7d5-158beb1ded8e	test5 register contest test1	test5	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.102	2021-12-04 14:58:05.293
+3a378783-672d-434e-be0d-7f5b5cbf7885	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.104	2021-12-04 14:58:09.962
+db110150-cd8b-4d22-9d04-b92c3d730389	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.105	2021-12-04 14:58:19.16
+99e2bf7f-ff39-4a12-8de1-247d2fa4fab1	admin register contest test1	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.106	2021-12-04 14:58:32.377
+45bc0486-c871-422c-ab85-597dc8d36e35	test5 register contest test1	test5	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.107	2021-12-04 14:58:34.556
+1de59ec1-5471-4d94-856f-bc886e1b4cb5	Your register contest test1 is rejected 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.109	2021-12-04 14:58:40.634
+a4bb1253-4921-411a-aef1-85dc587350a9	admin register contest test1	admin	admin	/programming-contest/contest-manager/test1#pending	NOTIFICATION_READ	2021-12-05 20:44:16.11	2021-12-04 15:12:28.437
+3d9f442c-af96-43c9-9982-2fde99c372db	Your register contest test1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.111	2021-12-04 15:12:38.734
+c668808e-81f1-487f-84f3-72b5fcc7118e	test5 register contest test1	test5	admin	/programming-contest/contest-manager/test1#pending	NOTIFICATION_READ	2021-12-05 20:44:16.111	2021-12-04 15:41:54.594
+b4d8b61b-39fe-4d0b-9a05-bad0b9c0a71e	Your register contest contest1 is approved 	admin	admin	\N	NOTIFICATION_READ	2021-12-05 20:44:16.113	2021-12-05 09:18:39.289
+a4faf15e-5a6f-48dd-bc9c-8c2539e120a6	admin register contest test2	admin	admin	/programming-contest/contest-manager/test2#pending	NOTIFICATION_CREATED	2021-12-05 20:44:18.028	2021-12-05 20:44:18.028
+26cdf812-336c-4329-877b-138ccae94b11	admin register contest test2	admin	admin	/programming-contest/contest-manager/test2#pending	NOTIFICATION_CREATED	2021-12-05 20:44:25.106	2021-12-05 20:44:25.106
+2e24359b-86af-4daa-9b63-9702079c818a	admin register contest test2	admin	admin	/programming-contest/contest-manager/test2#pending	NOTIFICATION_CREATED	2021-12-05 20:44:25.771	2021-12-05 20:44:25.771
+f00c3779-776a-4020-90cc-9bc236b6ccb7	admin register contest test2	admin	admin	/programming-contest/contest-manager/test2#pending	NOTIFICATION_READ	2021-12-05 20:44:33.427	2021-12-05 20:44:25.977
+bf1e03e3-c226-469d-9981-3498be4bb05f	Your register contest test2 is approved 	admin	admin	\N	NOTIFICATION_CREATED	2021-12-05 20:45:04.784	2021-12-05 20:45:04.784
+c48c5247-4407-4a8a-9748-271f3e816c73	test5 register contest contest1	test5	admin	/programming-contest/contest-manager/contest1#pending	NOTIFICATION_READ	2021-12-05 20:48:37.079	2021-12-05 20:48:34.218
+7ee7242d-0955-4648-9de9-d938d399704b	Your register contest contest1 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-05 20:48:39.786	2021-12-05 20:48:39.786
+08b1dce3-62de-48b0-b16d-58a04b912242	test5 register contest contest2	test5	admin	/programming-contest/contest-manager/contest2#pending	NOTIFICATION_READ	2021-12-05 20:52:10.367	2021-12-05 20:52:06.499
+1a772384-3b81-48b0-a9e3-969300e86fde	Your register contest contest2 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-05 20:52:14.769	2021-12-05 20:52:14.769
+\.
+
+
+--
+-- Data for Name: person; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.person (person_id, first_name, middle_name, last_name, gender, birth_date, last_updated_stamp, created_stamp, status_id) FROM stdin;
+f265ff04-4d90-11ec-9f6c-0242ac110002	Bui	Viet	Dung	\N	\N	\N	2021-11-25 00:00:00	PERSON_ENABLED
+08fd0809-95bb-469f-966f-64362d1c354e	Dũng	Viet	Bui	\N	\N	\N	2021-11-25 00:00:00	PERSON_ENABLED
+6971d571-2b54-40aa-b10d-9132081b0802	1	2	3	\N	\N	\N	2021-11-25 00:00:00	PERSON_ENABLED
+\.
+
+
+--
+-- Data for Name: problem_source_code_new; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.problem_source_code_new (problem_source_code_id, base_source, main_source, problem_function_default_source, problem_function_solution, language, contest_problem_id, last_updated_stamp, created_stamp) FROM stdin;
+\.
+
+
+--
+-- Data for Name: problem_submission_new; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.problem_submission_new (problem_submission_id, problem_id, submitted_by_user_login_id, source_code, source_code_language, status, score, runtime, memory_usage, test_case_pass, created_stamp) FROM stdin;
+e8d88feb-2112-4dd5-a352-e6cd7b1627c9	ADD 2 NUMBER	admin	\N	CPP	\nCompile Error	0	\N	0	0/0	05/12/2021 08:59:50
+\.
+
+
+--
+-- Data for Name: security_group; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.security_group (group_id, description, last_updated_stamp, created_stamp, group_name) FROM stdin;
+ROLE_ADMIN	ADMIN	\N	2021-11-24 16:56:10.295182	ADMIN
+ROLE_TEACHER	TEACHER	\N	2021-11-24 16:56:10.299933	TEACHER
+ROLE_STUDENT	STUDENT	\N	2021-11-24 16:56:10.301815	STUDENT
+\.
+
+
+--
+-- Data for Name: security_group_permission; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.security_group_permission (group_id, permission_id, last_updated_stamp, created_stamp) FROM stdin;
+ROLE_ADMIN	ADMIN	\N	2021-11-24 16:56:29.539668
+ROLE_TEACHER	TEACHER	\N	2021-11-24 16:56:29.539668
+ROLE_STUDENT	STUDENT	\N	2021-11-24 16:56:29.539668
+\.
+
+
+--
+-- Data for Name: security_permission; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.security_permission (permission_id, description, last_updated_stamp, created_stamp) FROM stdin;
+ADMIN	ADMIN	\N	2021-11-24 16:56:25.783578
+TEACHER	TEACHER	\N	2021-11-24 16:56:25.783578
+STUDENT	STUDENT	\N	2021-11-24 16:56:25.783578
+\.
+
+
+--
+-- Data for Name: status; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.status (status_id, status_type_id, status_code, sequence_id, description, last_updated_stamp, created_stamp) FROM stdin;
+PERSON_ENABLED	PERSON_STATUS	ENABLED	0	Đã kích hoạt	2021-11-24 17:13:44.952269	2021-11-24 17:13:44.952269
+PERSON_DISABLED	PERSON_STATUS	DISABLED	0	Chua kích hoạt	2021-11-24 17:13:44.954398	2021-11-24 17:13:44.954398
+\.
+
+
+--
+-- Data for Name: status_item; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.status_item (status_id, status_code, description, last_updated_stamp, created_stamp) FROM stdin;
+USER_REGISTERED	REGISTERED	\N	\N	2021-11-24 16:57:04.924107
+USER_APPROVED	APPROVED	\N	\N	2021-11-24 16:57:04.924107
+USER_DISABLED	DISABLED	\N	\N	2021-11-24 16:57:04.924107
+\.
+
+
+--
+-- Data for Name: status_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.status_type (status_type_id, parent_type_id, description, last_updated_stamp, created_stamp) FROM stdin;
+PERSON_STATUS	\N	Person status	2021-11-24 17:13:44.947434	2021-11-24 17:13:44.947434
+\.
+
+
+--
+-- Data for Name: test; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.test (id, user_name, problem_name, point) FROM stdin;
+f361c310-5188-11ec-9621-0242ac110002	1	1	10
+f361dbf2-5188-11ec-9621-0242ac110002	1	1	5
+f361ddc8-5188-11ec-9621-0242ac110002	1	1	7
+f361df1c-5188-11ec-9621-0242ac110002	1	2	5
+f361e052-5188-11ec-9621-0242ac110002	1	2	10
+f361e16a-5188-11ec-9621-0242ac110002	1	2	3
+f361e282-5188-11ec-9621-0242ac110002	1	3	3
+f361e3ae-5188-11ec-9621-0242ac110002	1	3	5
+f361e4e4-5188-11ec-9621-0242ac110002	1	3	7
+f361e606-5188-11ec-9621-0242ac110002	2	1	0
+f361e714-5188-11ec-9621-0242ac110002	2	1	10
+f361e840-5188-11ec-9621-0242ac110002	2	2	7
+f361e96c-5188-11ec-9621-0242ac110002	2	2	8
+f361ea8e-5188-11ec-9621-0242ac110002	2	3	10
+f361ebb0-5188-11ec-9621-0242ac110002	3	1	3
+f361ecc8-5188-11ec-9621-0242ac110002	3	2	7
+f361edea-5188-11ec-9621-0242ac110002	3	3	5
+f361ef02-5188-11ec-9621-0242ac110002	3	3	7
+\.
+
+
+--
+-- Data for Name: test_case_new; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.test_case_new (test_case_id, test_case_point, test_case, correct_answer, contest_problem_id, last_updated_stamp, created_stamp) FROM stdin;
+0f6a020c-c377-46ab-8d7f-e1489ed864a3	0	1 2	2	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+416942bd-5382-48ff-ae4e-665a8679073c	0	2 3	6	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+4e176d08-7419-475e-831d-3c8dc3d90abf	0	3 4	12	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+089ee5c4-dc2c-4694-87f2-77b11006a99a	10	6 7	42	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+\.
+
+
+--
+-- Data for Name: user_login; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_login (user_login_id, person_id, current_password, otp_secret, client_token, password_hint, is_system, enabled, has_logged_out, require_password_change, disabled_date_time, successive_failed_logins, last_updated_stamp, created_stamp, otp_resend_number, email) FROM stdin;
+admin	f265ff04-4d90-11ec-9f6c-0242ac110002	$2a$10$0IOYLdfBGy5whZGnBaqmK.KYvFGcLZPIgtexl8YR9f7FZ79loFk36	\N	\N	\N	f	t	f	f	\N	\N	2021-11-24 16:55:07.652745	2021-11-24 16:55:07.652745	0	\N
+test2	08fd0809-95bb-469f-966f-64362d1c354e	$2a$10$2B4dRti7pazWOf33ZU6.n.o7Ni3Apepjtg3w6OBG6Dw4ENlZ1uSpS	\N	\N	\N	f	t	f	f	\N	\N	\N	2021-11-25 08:48:47.755545	0	\N
+test5	6971d571-2b54-40aa-b10d-9132081b0802	$2a$10$3jY47zS63q2Pl67TJM7sEOwklaCEtUqau3Frxf0gsMeYbNVdvRR5W	\N	\N	\N	f	t	f	f	\N	\N	\N	2021-11-25 08:57:00.737041	0	\N
+\.
+
+
+--
+-- Data for Name: user_login_security_group; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_login_security_group (user_login_id, group_id, last_updated_stamp, created_stamp) FROM stdin;
+admin	ROLE_ADMIN	\N	2021-11-24 16:56:19.207718
+admin	ROLE_TEACHER	\N	2021-11-24 16:56:19.207718
+admin	ROLE_STUDENT	\N	2021-11-24 16:56:19.207718
+test2	ROLE_TEACHER	\N	2021-11-25 08:48:47.755545
+test5	ROLE_STUDENT	\N	2021-11-25 08:57:00.737041
+\.
+
+
+--
+-- Data for Name: user_register; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_register (user_login_id, password, email, first_name, middle_name, last_name, status_id, registered_roles, affiliations, last_updated_stamp, created_stamp) FROM stdin;
+test1	sscm@123456	dung.bv173045@sis.hust.edu.vn	Dũng	Viet	Bui	USER_DISABLED	ROLE_STUDENT	\N	\N	2021-11-25 00:26:07.140607
+test2	sscm@123456	dung.bv173045@sis.hust.edu.vn	Dũng	Viet	Bui	USER_APPROVED	ROLE_TEACHER	\N	\N	2021-11-25 00:27:54.423904
+test4	sscm@123456	matdieuhau999@gmail.com	1	2	3	USER_DISABLED	ROLE_STUDENT	\N	\N	2021-11-25 08:49:23.254192
+test5	sscm@123456	dung.bv173045@sis.hust.edu.vn	1	2	3	USER_APPROVED	ROLE_STUDENT	\N	\N	2021-11-25 08:56:31.474416
+test6	sscm@123456	matdieuhau999@gmail.com	2	2	4	USER_REGISTERED	ROLE_TEACHER	\N	\N	2021-11-25 08:59:40.572411
+test111	sscm@123456	dung.bv173045@sis.hust.edu.vn	Dũng	Viet	Bui	USER_REGISTERED	ROLE_STUDENT	\N	\N	2021-11-25 10:14:43.151863
+\.
+
+
+--
+-- Data for Name: user_registration_contest_new; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_registration_contest_new (user_registration_contest_id, user_id, contest_id, status) FROM stdin;
+bd592b0a-c4f7-4b9c-929e-a08b1921a823	admin	test1	SUCCESSFUL
+0010b989-345e-41a3-99ed-375e91253bc2	test5	test1	SUCCESSFUL
+f0b1f09f-2afd-40cb-81cb-aec56e76e08f	admin	contest1	SUCCESSFUL
+02b72142-31a2-48c2-bb43-689786f8c3cd	admin	test2	SUCCESSFUL
+dabf8177-4795-437e-8763-b42786b0a738	test5	contest1	SUCCESSFUL
+a55a09c8-a1e1-4d58-bf91-118c9fed4bb2	test5	contest2	SUCCESSFUL
+\.
+
+
+--
+-- Data for Name: user_submission_contest_result_new; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_submission_contest_result_new (contest_id, user_id, point, email, full_name, last_updated_stamp, created_stamp) FROM stdin;
+contest1	admin	10	\N	Bui Viet Dung 	\N	\N
+contest1	test5	0	\N	1 2 3 	\N	\N
+\.
+
+
+--
+-- Name: contest_problem_new contest_problem_new_problem_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_problem_new
+    ADD CONSTRAINT contest_problem_new_problem_name_key UNIQUE (problem_name);
+
+
+--
+-- Name: problem_submission_new fk_problem_submission_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.problem_submission_new
+    ADD CONSTRAINT fk_problem_submission_id PRIMARY KEY (problem_submission_id);
+
+
+--
+-- Name: application pk_application; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.application
+    ADD CONSTRAINT pk_application PRIMARY KEY (application_id);
+
+
+--
+-- Name: application_type pk_application_type; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.application_type
+    ADD CONSTRAINT pk_application_type PRIMARY KEY (application_type_id);
+
+
+--
+-- Name: contest_new pk_contest_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_new
+    ADD CONSTRAINT pk_contest_id PRIMARY KEY (contest_id);
+
+
+--
+-- Name: contest_problem_new pk_contest_problem; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_problem_new
+    ADD CONSTRAINT pk_contest_problem PRIMARY KEY (problem_id);
+
+
+--
+-- Name: test_case_new pk_contest_problem_test_case; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.test_case_new
+    ADD CONSTRAINT pk_contest_problem_test_case PRIMARY KEY (test_case_id);
+
+
+--
+-- Name: contest_submission_new pk_contest_submission_id_contest_submission; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_submission_new
+    ADD CONSTRAINT pk_contest_submission_id_contest_submission PRIMARY KEY (contest_submission_id);
+
+
+--
+-- Name: notifications pk_notification_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notifications
+    ADD CONSTRAINT pk_notification_id PRIMARY KEY (id);
+
+
+--
+-- Name: person pk_person_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.person
+    ADD CONSTRAINT pk_person_id PRIMARY KEY (person_id);
+
+
+--
+-- Name: user_register pk_register__login; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_register
+    ADD CONSTRAINT pk_register__login PRIMARY KEY (user_login_id);
+
+
+--
+-- Name: security_group pk_security_group; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.security_group
+    ADD CONSTRAINT pk_security_group PRIMARY KEY (group_id);
+
+
+--
+-- Name: security_group_permission pk_security_group_permission; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.security_group_permission
+    ADD CONSTRAINT pk_security_group_permission PRIMARY KEY (group_id, permission_id);
+
+
+--
+-- Name: security_permission pk_security_permission; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.security_permission
+    ADD CONSTRAINT pk_security_permission PRIMARY KEY (permission_id);
+
+
+--
+-- Name: problem_source_code_new pk_source_code; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.problem_source_code_new
+    ADD CONSTRAINT pk_source_code PRIMARY KEY (problem_source_code_id);
+
+
+--
+-- Name: status pk_status; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.status
+    ADD CONSTRAINT pk_status PRIMARY KEY (status_id);
+
+
+--
+-- Name: status_item pk_status_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.status_item
+    ADD CONSTRAINT pk_status_id PRIMARY KEY (status_id);
+
+
+--
+-- Name: status_type pk_status_type; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.status_type
+    ADD CONSTRAINT pk_status_type PRIMARY KEY (status_type_id);
+
+
+--
+-- Name: test pk_test_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.test
+    ADD CONSTRAINT pk_test_id PRIMARY KEY (id);
+
+
+--
+-- Name: user_login pk_user_login; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_login
+    ADD CONSTRAINT pk_user_login PRIMARY KEY (user_login_id);
+
+
+--
+-- Name: user_login_security_group pk_user_login_security_group; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_login_security_group
+    ADD CONSTRAINT pk_user_login_security_group PRIMARY KEY (user_login_id, group_id);
+
+
+--
+-- Name: user_submission_contest_result_new pk_user_submission_result_id_user_submission_result; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_submission_contest_result_new
+    ADD CONSTRAINT pk_user_submission_result_id_user_submission_result PRIMARY KEY (contest_id, user_id);
+
+
+--
+-- Name: user_login user_login_person_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_login
+    ADD CONSTRAINT user_login_person_id_key UNIQUE (person_id);
+
+
+--
+-- Name: application application_application_module; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.application
+    ADD CONSTRAINT application_application_module FOREIGN KEY (module_id) REFERENCES public.application(application_id);
+
+
+--
+-- Name: application application_application_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.application
+    ADD CONSTRAINT application_application_type FOREIGN KEY (application_type_id) REFERENCES public.application_type(application_type_id);
+
+
+--
+-- Name: application application_permission; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.application
+    ADD CONSTRAINT application_permission FOREIGN KEY (permission_id) REFERENCES public.security_permission(permission_id);
+
+
+--
+-- Name: contest_contest_problem_new fk_contest_id_contest_contest_problem; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_contest_problem_new
+    ADD CONSTRAINT fk_contest_id_contest_contest_problem FOREIGN KEY (contest_id) REFERENCES public.contest_new(contest_id);
+
+
+--
+-- Name: contest_submission_new fk_contest_id_contest_submission; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_submission_new
+    ADD CONSTRAINT fk_contest_id_contest_submission FOREIGN KEY (contest_id) REFERENCES public.contest_new(contest_id);
+
+
+--
+-- Name: user_registration_contest_new fk_contest_id_user_registration_contest; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_registration_contest_new
+    ADD CONSTRAINT fk_contest_id_user_registration_contest FOREIGN KEY (contest_id) REFERENCES public.contest_new(contest_id);
+
+
+--
+-- Name: user_submission_contest_result_new fk_contest_id_user_submission_result; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_submission_contest_result_new
+    ADD CONSTRAINT fk_contest_id_user_submission_result FOREIGN KEY (contest_id) REFERENCES public.contest_new(contest_id);
+
+
+--
+-- Name: contest_problem_new fk_contest_problem; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_problem_new
+    ADD CONSTRAINT fk_contest_problem FOREIGN KEY (created_by_user_login_id) REFERENCES public.user_login(user_login_id);
+
+
+--
+-- Name: problem_source_code_new fk_contest_problem; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.problem_source_code_new
+    ADD CONSTRAINT fk_contest_problem FOREIGN KEY (contest_problem_id) REFERENCES public.contest_problem_new(problem_id);
+
+
+--
+-- Name: test_case_new fk_contest_problem_test_case_problem_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.test_case_new
+    ADD CONSTRAINT fk_contest_problem_test_case_problem_id FOREIGN KEY (contest_problem_id) REFERENCES public.contest_problem_new(problem_id);
+
+
+--
+-- Name: notifications fk_notification_user_login_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notifications
+    ADD CONSTRAINT fk_notification_user_login_id FOREIGN KEY (to_user) REFERENCES public.user_login(user_login_id);
+
+
+--
+-- Name: problem_submission_new fk_problem_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.problem_submission_new
+    ADD CONSTRAINT fk_problem_id FOREIGN KEY (problem_id) REFERENCES public.contest_problem_new(problem_id);
+
+
+--
+-- Name: contest_contest_problem_new fk_problem_id_contest_contest_problem; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_contest_problem_new
+    ADD CONSTRAINT fk_problem_id_contest_contest_problem FOREIGN KEY (problem_id) REFERENCES public.contest_problem_new(problem_id);
+
+
+--
+-- Name: contest_submission_new fk_problem_id_contest_submission; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_submission_new
+    ADD CONSTRAINT fk_problem_id_contest_submission FOREIGN KEY (problem_id) REFERENCES public.contest_problem_new(problem_id);
+
+
+--
+-- Name: user_register fk_register_status; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_register
+    ADD CONSTRAINT fk_register_status FOREIGN KEY (status_id) REFERENCES public.status_item(status_id);
+
+
+--
+-- Name: person fk_status_id_person; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.person
+    ADD CONSTRAINT fk_status_id_person FOREIGN KEY (status_id) REFERENCES public.status(status_id);
+
+
+--
+-- Name: contest_new fk_user_create_contest; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_new
+    ADD CONSTRAINT fk_user_create_contest FOREIGN KEY (user_create_id) REFERENCES public.user_login(user_login_id);
+
+
+--
+-- Name: user_registration_contest_new fk_user_id_user_registration_contest; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_registration_contest_new
+    ADD CONSTRAINT fk_user_id_user_registration_contest FOREIGN KEY (user_id) REFERENCES public.user_login(user_login_id);
+
+
+--
+-- Name: user_submission_contest_result_new fk_user_id_user_submission_result; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_submission_contest_result_new
+    ADD CONSTRAINT fk_user_id_user_submission_result FOREIGN KEY (user_id) REFERENCES public.user_login(user_login_id);
+
+
+--
+-- Name: problem_submission_new fk_user_login_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.problem_submission_new
+    ADD CONSTRAINT fk_user_login_id FOREIGN KEY (submitted_by_user_login_id) REFERENCES public.user_login(user_login_id);
+
+
+--
+-- Name: contest_submission_new fk_user_submission_id_contest_submission; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contest_submission_new
+    ADD CONSTRAINT fk_user_submission_id_contest_submission FOREIGN KEY (user_submission_id) REFERENCES public.user_login(user_login_id);
+
+
+--
+-- Name: user_login pk_person_id_user_login; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_login
+    ADD CONSTRAINT pk_person_id_user_login FOREIGN KEY (person_id) REFERENCES public.person(person_id);
+
+
+--
+-- Name: security_group_permission sec_grp_perm_grp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.security_group_permission
+    ADD CONSTRAINT sec_grp_perm_grp FOREIGN KEY (group_id) REFERENCES public.security_group(group_id);
+
+
+--
+-- Name: security_group_permission sec_grp_perm_perm; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.security_group_permission
+    ADD CONSTRAINT sec_grp_perm_perm FOREIGN KEY (permission_id) REFERENCES public.security_permission(permission_id);
+
+
+--
+-- Name: status status_to_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.status
+    ADD CONSTRAINT status_to_type FOREIGN KEY (status_type_id) REFERENCES public.status_type(status_type_id);
+
+
+--
+-- Name: status_type status_type_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.status_type
+    ADD CONSTRAINT status_type_parent FOREIGN KEY (parent_type_id) REFERENCES public.status_type(status_type_id);
+
+
+--
+-- Name: user_login_security_group user_secgrp_grp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_login_security_group
+    ADD CONSTRAINT user_secgrp_grp FOREIGN KEY (group_id) REFERENCES public.security_group(group_id);
+
+
+--
+-- Name: user_login_security_group user_secgrp_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_login_security_group
+    ADD CONSTRAINT user_secgrp_user FOREIGN KEY (user_login_id) REFERENCES public.user_login(user_login_id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

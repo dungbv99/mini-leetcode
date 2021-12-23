@@ -242,6 +242,7 @@ export default function SolvingContest(){
                 </TableBody>
               </Table>
             </TableContainer>
+            <br/>
             <Button
               variant="contained"
               color="light"
@@ -250,7 +251,7 @@ export default function SolvingContest(){
                 submitContest();
               }}
               // style={{position}}
-              style={{marginLeft:"20px"}}
+              style={{marginLeft:"90%"}}
             >
               Submit
             </Button>
