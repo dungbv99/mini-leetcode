@@ -35,7 +35,6 @@ services:
     container_name: leetcode-docker-service
     image: docker:dind
     privileged: true
-    restart: always
     environment:
       - DOCKER_TLS_CERTDIR=
 
