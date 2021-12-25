@@ -111,36 +111,55 @@ public class DockerClientBase {
             containerSet.add(container.names().get(0));
         }
         for (Constants.DockerContainer dockerContainer : Constants.DockerContainer.values()){
+            Map<String,String> m = new HashMap<>();
+            m.put("names", "leetcode");
             if(!containerSet.contains(dockerContainer.getValue())){
-                ContainerConfig containerConfig = ContainerConfig.builder().build();
+                ContainerConfig containerConfig;
                 switch (dockerContainer){
                     case GCC:
                         containerConfig = ContainerConfig.builder()
                                 .image(Constants.DockerImage.GCC.getValue())
                                 .cmd("sh", "-c", "while :; do sleep 1; done")
+                                .labels(m)
+                                .attachStdout(true)
+                                .attachStdin(true)
                                 .build();
+                        dockerClient.createContainer(containerConfig, "gcc");
                         break;
                     case JAVA:
                         containerConfig = ContainerConfig.builder()
                                 .image(Constants.DockerImage.JAVA.getValue())
                                 .cmd("sh", "-c", "while :; do sleep 1; done")
+                                .labels(m)
+                                .attachStdout(true)
+                                .attachStdin(true)
                                 .build();
-                        dockerClient.createContainer(containerConfig);
+                        dockerClient.createContainer(containerConfig, "java");
+
                         break;
                     case PYTHON3:
                         containerConfig = ContainerConfig.builder()
                                 .image(Constants.DockerImage.PYTHON3.getValue())
                                 .cmd("sh", "-c", "while :; do sleep 1; done")
+                                .labels(m)
+                                .attachStdout(true)
+                                .attachStdin(true)
                                 .build();
+                        dockerClient.createContainer(containerConfig, "python3");
+
                         break;
                     case GOLANG:
                         containerConfig = ContainerConfig.builder()
                                 .image(Constants.DockerImage.GOLANG.getValue())
                                 .cmd("sh", "-c", "while :; do sleep 1; done")
+                                .labels(m)
+                                .attachStdout(true)
+                                .attachStdin(true)
                                 .build();
+                        dockerClient.createContainer(containerConfig, "golang");
+
                         break;
                 }
-                dockerClient.createContainer(containerConfig);
             }
         }
 
