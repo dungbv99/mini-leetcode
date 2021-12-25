@@ -122,6 +122,7 @@ public class DockerClientBase {
                                 .cmd("sh", "-c", "while :; do sleep 1; done")
                                 .labels(m)
                                 .attachStdout(true)
+                                .workingDir("/workdir")
                                 .attachStdin(true)
                                 .build();
                         dockerClient.createContainer(containerConfig, "gcc");
@@ -132,6 +133,7 @@ public class DockerClientBase {
                                 .cmd("sh", "-c", "while :; do sleep 1; done")
                                 .labels(m)
                                 .attachStdout(true)
+                                .workingDir("/workdir")
                                 .attachStdin(true)
                                 .build();
                         dockerClient.createContainer(containerConfig, "java");
@@ -143,6 +145,7 @@ public class DockerClientBase {
                                 .cmd("sh", "-c", "while :; do sleep 1; done")
                                 .labels(m)
                                 .attachStdout(true)
+                                .workingDir("/workdir")
                                 .attachStdin(true)
                                 .build();
                         dockerClient.createContainer(containerConfig, "python3");
@@ -153,6 +156,7 @@ public class DockerClientBase {
                                 .image(Constants.DockerImage.GOLANG.getValue())
                                 .cmd("sh", "-c", "while :; do sleep 1; done")
                                 .labels(m)
+                                .workingDir("/workdir")
                                 .attachStdout(true)
                                 .attachStdin(true)
                                 .build();
