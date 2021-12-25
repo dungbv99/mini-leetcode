@@ -47,15 +47,15 @@ Demo account:
 - password: sscm@123456
 
 #### Environment variable:
-| ENV                | Description                               | Example                                                        |
-|--------------------|-------------------------------------------|----------------------------------------------------------------|
-| DOCKER_SERVER_HOST | point to your docker service              | `http://103.56.158.222:12375` or `unix:///var/run/docker.sock` |
-| SQL_DB_USER        | Postgres user                             | postgres                                                       |
-| POSTGRES_DB        | Postgres database                         | leetcode                                                       |
-| SQL_DB_HOST           | Host of postgres                          | localhost                                                      |
-| SQL_DB_PORT              | Port of postgres                          | 5432                                                           |
-| REDIS_HOST                | Host of redis                             | localhost                                                      |
-|REDIS_PORT| Port of redis                             | 6379                                                           |
-|REACT_APP_BACKEND_URL| Host of backend server setup in front end | http://localhost:8080/api                                      |
-|SERVICE_HOST| Host of backend server                    | localhost                                                      |
-|SERVICE_PORT| Port of backend server                    | 8080                                                           |
+| ENV                   | Description                               | Example                                                        |
+|-----------------------|-------------------------------------------|----------------------------------------------------------------|
+| DOCKER_SERVER_HOST    | point to your docker service              | `http://103.56.158.222:12375` or `unix:///var/run/docker.sock` |
+| SQL_DB_USER           | Postgres user                             | `postgres`                                                     |
+| POSTGRES_DB           | Postgres database                         | `leetcode`                                                     |
+| SQL_DB_HOST           | Host of postgres                          | `localhost`                                                    |
+| SQL_DB_PORT           | Port of postgres                          | `5432`                                                         |
+| REDIS_HOST            | Host of redis                             | `localhost`                                                    |
+| REDIS_PORT            | Port of redis                             | `6379`                                                         |
+| REACT_APP_BACKEND_URL | Host of backend server setup in front end | `http://localhost:8080/api`                                    |
+| SERVICE_HOST          | Host of backend server                    | `localhost`                                                    |
+| SERVICE_PORT          | Port of backend server                    | `8080`                                                         |
