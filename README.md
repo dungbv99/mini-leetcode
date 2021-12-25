@@ -42,7 +42,7 @@ cd to `Frontend/mini-leetcode-frontend` and execute:
  - Install dependency: `npm install`
  - Run project: `npm start`
 
-Demo account you can use:
+Demo account:
 - username: admin
 - password: sscm@123456
 
