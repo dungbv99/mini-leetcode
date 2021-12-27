@@ -26,7 +26,7 @@ Clone source and run command:
 It will take about 15 minutes to down build images and run container. 
 
 ### Setup project and run:
-#### start require service:
+#### Start requisite service:
 - redis
 - postgres 
 - docker
