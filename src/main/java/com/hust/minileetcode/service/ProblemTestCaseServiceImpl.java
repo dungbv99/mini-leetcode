@@ -394,6 +394,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
             }
             List<ProblemEntity> problemEntities = getContestProblemsFromListContestId(modelUpdateContest.getProblemIds());
             ContestEntity contestEntity = ContestEntity.builder()
+                    .contestId(contestId)
                     .contestName(modelUpdateContest.getContestName())
                     .contestSolvingTime(modelUpdateContest.getContestSolvingTime())
                     .problems(problemEntities)
