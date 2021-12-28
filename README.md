@@ -1,6 +1,6 @@
 # Leetcode-clone #
 
-Clone [leecode problem website](!https://leetcode.com/problemset/all/) support gcc, java golang anh python3.
+Clone [leecode problem website](https://leetcode.com/problemset/all/) support gcc, java golang anh python3.
 
 Support feature: create problem, contest, teacher management contest and student join and solve contest.
 

@@ -169,6 +169,12 @@ public class ContestProblemController {
         return ResponseEntity.status(200).body(null);
     }
 
+    @PostMapping("/edit-contest/{contestId}")
+    public ResponseEntity<?> editContest(@RequestBody ModelUpdateContest modelUpdateContest, Principal principal, @PathVariable("contestId") String contestId) throws Exception {
+        log.info("edit contest modelUpdateContest {}",modelUpdateContest );
+        problemTestCaseService.updateContest(modelUpdateContest, principal.getName(), contestId);
+        return ResponseEntity.status(200).body(null);
+    }
     @GetMapping("/get-contest-paging")
     public ResponseEntity<?> getContestPaging(Pageable pageable, @Param("sortBy") String sortBy){
         log.info("getContestPaging sortBy {} pageable {}", sortBy, pageable);
