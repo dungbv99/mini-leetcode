@@ -281,7 +281,7 @@ export default function EditContest(props){
 
     request(
       "get",
-      "/get-contest-detail/"+contestId,
+      "/get-contest-detail-teacher/"+contestId,
       (res) =>{
         setContestTime(res.data.contestTime);
         let arr = [];

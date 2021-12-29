@@ -104,7 +104,7 @@ export function ContestManager(){
   useEffect(() =>{
     request(
       "get",
-      "/get-contest-detail/"+contestId,
+      "/get-contest-detail-teacher/"+contestId,
       (res)=>{
         setContestTime(res.data.contestTime);
         setProblems(res.data.list);

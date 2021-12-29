@@ -173,10 +173,8 @@ export default function ProblemDetail(props){
       (res) =>{
         console.log("ressss ", res);
         problemSubmissionList.push(res.data);
-        // setSubmissionStatus(res.data.status);
-        // setSubmissionPoint(res.data.result);
-        setLoadSubmission(false);
         setTestCaseResult(res.data);
+        setLoadSubmission(false);
       },
       {},
       body

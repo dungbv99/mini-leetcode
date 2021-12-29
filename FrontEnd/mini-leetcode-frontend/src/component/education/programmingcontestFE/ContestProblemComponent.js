@@ -27,11 +27,6 @@ export function ContestProblemComponent(props){
   const computerLanguageListDefault = ["CPP", "GOLANG", "JAVA", "PYTHON3"];
   const [source, setSource] = useState("");
   const [screenHeight, setScreenHeight] = useState((window.innerHeight-180) + "px");
-
-
-
-
-
   const [showConsole, setShowConsole] = useState(false);
   const [timeLimit, setTimeLimit] = useState(false);
   const [compileError, setCompileError] = useState(false);

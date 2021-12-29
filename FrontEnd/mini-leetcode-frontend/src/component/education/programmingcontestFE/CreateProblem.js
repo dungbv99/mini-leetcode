@@ -99,6 +99,7 @@ function CreateProblem(){
   const [showCompile, setShowCompile] = useState(false);
   const [statusSuccessful, setStatusSuccessful] = useState(false);
   const [showSubmitSuccess, setShowSubmitSuccess] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
   const onChangeEditorStateDescription = (editorState) => {
     console.log(problemDescriptions);
     setEditorStateDescription(editorState);
@@ -129,19 +130,7 @@ function CreateProblem(){
       source: codeSolution,
       computerLanguage: languageSolution
     }
-    // authPost(dispatch, token, "/check-compile", body).then(
-    //   (res) =>{
-    //     console.log("res", res);
-    //     if(res.status == "Successful"){
-    //       setShowCompile(true);
-    //       setShowSubmitWarming(false);
-    //       setStatusSuccessful(true);
-    //     }else{
-    //       setShowCompile(true);
-    //       setStatusSuccessful(false);
-    //     }
-    //   }
-    // );
+
     request(
       "post",
       API_URL+"/check-compile",
@@ -180,6 +169,7 @@ function CreateProblem(){
       correctSolutionLanguage: languageSolution,
       solution: solution,
       correctSolutionSourceCode: codeSolution,
+      isPublic: isPublic,
     }
     request(
       "post",
@@ -289,6 +279,29 @@ function CreateProblem(){
                     </MenuItem>
                   ))}
                 </TextField>
+
+
+                <TextField
+                  autoFocus
+                  // required
+                  select
+                  id="categoryId"
+                  label="Category ID"
+                  placeholder="Category ID"
+                  onChange={(event) => {
+                    setIsPublic(event.target.value);
+                  }}
+                  value={isPublic}
+                >
+
+                  <MenuItem key={"true"} value={true}>
+                    {"true"}
+                  </MenuItem>
+                  <MenuItem key={"false"} value={false}>
+                    {"false"}
+                  </MenuItem>
+                </TextField>
+
               </div>
             </form>
             <form className={descriptionClass.root} noValidate autoComplete="off">
