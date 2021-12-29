@@ -11,6 +11,8 @@ import com.hust.minileetcode.rest.service.NotificationsService;
 import com.hust.minileetcode.utils.ComputerLanguage;
 import com.hust.minileetcode.utils.TempDir;
 import com.hust.minileetcode.constants.Constants;
+import com.hust.minileetcode.utils.stringhandler.ContestSubmission;
+import com.hust.minileetcode.utils.stringhandler.StringHandler;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -558,117 +560,154 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         List<TestCaseEntity> testCaseEntityList = testCaseRepo.findAllByProblem(problemEntity);
         String tempName = tempDir.createRandomScriptFileName(userName+"-"+modelContestSubmission.getContestId()+"-"+modelContestSubmission.getProblemId());
         String response = submission(modelContestSubmission.getSource(), modelContestSubmission.getLanguage(), tempName, testCaseEntityList, "language not found", problemEntity.getTimeLimit());
-        log.info("response {}", response);
-        response = response.substring(0, response.length()-1);
-        int lastIndex = response.lastIndexOf("\n");
-        String status = response.substring(lastIndex);
-        log.info("status {}", status);
-        if(status.contains("Compile Error")) {
-            log.info("return problem submission compile error");
-//            ProblemSubmissionEntity p = ProblemSubmissionEntity.builder()
-//                    .score(0)
-//                    .userLogin(userLogin)
-//                    .problem(problemEntity)
-//                    .sourceCode(modelContestSubmission.getSource())
-//                    .status(status)
-//                    .testCasePass(0+"/"+ testCaseEntityList.size())
-//                    .sourceCodeLanguages(modelContestSubmission.getLanguage())
-//                    .build();
-//            ProblemSubmissionEntity p = problemSubmissionRepo.save(problemSubmissionEntity);
-            ContestSubmissionEntity c = ContestSubmissionEntity.builder()
-                    .contest(contestEntity)
-                    .status(status)
-                    .point(0)
-                    .runtime(0L)
-                    .contest(contestEntity)
-                    .problem(problemEntity)
-                    .userLogin(userLogin)
-                    .testCasePass(0+"/"+ testCaseEntityList.size())
-                    .sourceCode(modelContestSubmission.getSource())
-                    .sourceCodeLanguage(modelContestSubmission.getLanguage())
-//                .problemSubmission(p)
-                    .createdAt(new Date())
-                    .build();
-            c = contestSubmissionRepo.save(c);
-            return ModelContestSubmissionResponse.builder()
-                    .status(status)
-                    .testCasePass(c.getTestCasePass())
-                    .runtime(c.getRuntime())
-                    .memoryUsage(c.getMemoryUsage())
-                    .problemName(problemEntity.getProblemName())
-                    .contestSubmissionID(c.getContestSubmissionId())
-                    .submittedAt(c.getCreatedAt())
-                    .score(0)
-                    .build();
-        }
-        response = response.substring(0, lastIndex);
-        log.info("response 2222 {}", response.length());
-        int runTimeIndex = response.lastIndexOf("\n");
-        log.info("runTimeIndex {}", runTimeIndex);
-        String runtimeString = response.substring(runTimeIndex+1);
-        log.info("runtime {}", runtimeString);
-        Long runtime = Long.parseLong(runtimeString);
-        response = response.substring(0, runTimeIndex);
-        String []ans = response.split("testcasedone\n");
-        for(int i = 0; i < ans.length; i++){
-            log.info("ans i {}", ans[i]);
-        }
-        status = null;
-        int cnt = 0;
-        int score = 0;
-        for(int i = 0; i < testCaseEntityList.size(); i++){
-            if(!testCaseEntityList.get(i).getCorrectAnswer().equals(ans[i])){
-                if(status == null && ans[i].contains("Time Limit Exceeded")){
-                    status = "Time Limit Exceeded";
-                }else{
-                    status = "Wrong Answer";
-                }
-            }else{
-                score = testCaseEntityList.get(i).getTestCasePoint();
-                cnt++;
-            }
-        }
 
-        if(status == null){
-            status = "Accept";
-        }
-        log.info("pass {}/{}", cnt, testCaseEntityList.size());
-//        ProblemSubmissionEntity p = ProblemSubmissionEntity.builder()
-//                .score(score)
-//                .userLogin(userLogin)
-//                .problem(problemEntity)
-//                .sourceCode(modelContestSubmission.getSource())
-//                .status(status)
-//                .testCasePass(cnt+"/"+ testCaseEntityList.size())
-//                .sourceCodeLanguages(modelContestSubmission.getLanguage())
-//                .build();
-//        ProblemSubmissionEntity p = problemSubmissionRepo.save(problemSubmissionEntity);
-
+        List<String> testCaseAns = testCaseEntityList.stream().map(TestCaseEntity::getCorrectAnswer).collect(Collectors.toList());
+        List<Integer> points = testCaseEntityList.stream().map(TestCaseEntity::getTestCasePoint).collect(Collectors.toList());
+        ContestSubmission contestSubmission = StringHandler.handleContestResponse(response, testCaseAns, points);
         ContestSubmissionEntity c = ContestSubmissionEntity.builder()
                 .contest(contestEntity)
-                .status(status)
-                .point(score)
+                .status(contestSubmission.getStatus())
+                .point(contestSubmission.getScore())
                 .contest(contestEntity)
                 .problem(problemEntity)
                 .userLogin(userLogin)
-                .testCasePass(cnt+"/"+ testCaseEntityList.size())
+                .testCasePass(contestSubmission.getTestCasePass())
                 .sourceCode(modelContestSubmission.getSource())
                 .sourceCodeLanguage(modelContestSubmission.getLanguage())
-                .runtime(runtime)
+                .runtime(contestSubmission.getRuntime())
                 .createdAt(new Date())
                 .build();
         c = contestSubmissionRepo.save(c);
         log.info("c {}", c.getRuntime());
         return ModelContestSubmissionResponse.builder()
-                .status(status)
+                .status(contestSubmission.getStatus())
                 .testCasePass(c.getTestCasePass())
-                .runtime(runtime)
+                .runtime(contestSubmission.getRuntime())
                 .memoryUsage(c.getMemoryUsage())
                 .problemName(problemEntity.getProblemName())
                 .contestSubmissionID(c.getContestSubmissionId())
                 .submittedAt(c.getCreatedAt())
-                .score(score)
+                .score(contestSubmission.getScore())
                 .build();
+
+//        if(contestSubmission.getStatus().equals("Compile Error")){
+//            ContestSubmissionEntity c = ContestSubmissionEntity.builder()
+//                    .contest(contestEntity)
+//                    .status(contestSubmission.getStatus())
+//                    .point(0)
+//                    .runtime(0L)
+//                    .contest(contestEntity)
+//                    .problem(problemEntity)
+//                    .userLogin(userLogin)
+//                    .testCasePass(0+"/"+ testCaseEntityList.size())
+//                    .sourceCode(modelContestSubmission.getSource())
+//                    .sourceCodeLanguage(modelContestSubmission.getLanguage())
+//                    .createdAt(new Date())
+//                    .build();
+//            c = contestSubmissionRepo.save(c);
+//            return ModelContestSubmissionResponse.builder()
+//                    .status(contestSubmission.getStatus())
+//                    .testCasePass(c.getTestCasePass())
+//                    .runtime(c.getRuntime())
+//                    .memoryUsage(c.getMemoryUsage())
+//                    .problemName(problemEntity.getProblemName())
+//                    .contestSubmissionID(c.getContestSubmissionId())
+//                    .submittedAt(c.getCreatedAt())
+//                    .score(0)
+//                    .build();
+//        }
+//
+//        log.info("response {}", response);
+//        response = response.substring(0, response.length()-1);
+//        int lastIndex = response.lastIndexOf("\n");
+//        String status = response.substring(lastIndex);
+//        log.info("status {}", status);
+//        if(status.contains("Compile Error")) {
+//            log.info("return problem submission compile error");
+//            ContestSubmissionEntity c = ContestSubmissionEntity.builder()
+//                    .contest(contestEntity)
+//                    .status(status)
+//                    .point(0)
+//                    .runtime(0L)
+//                    .contest(contestEntity)
+//                    .problem(problemEntity)
+//                    .userLogin(userLogin)
+//                    .testCasePass(0+"/"+ testCaseEntityList.size())
+//                    .sourceCode(modelContestSubmission.getSource())
+//                    .sourceCodeLanguage(modelContestSubmission.getLanguage())
+////                .problemSubmission(p)
+//                    .createdAt(new Date())
+//                    .build();
+//            c = contestSubmissionRepo.save(c);
+//            return ModelContestSubmissionResponse.builder()
+//                    .status(status)
+//                    .testCasePass(c.getTestCasePass())
+//                    .runtime(c.getRuntime())
+//                    .memoryUsage(c.getMemoryUsage())
+//                    .problemName(problemEntity.getProblemName())
+//                    .contestSubmissionID(c.getContestSubmissionId())
+//                    .submittedAt(c.getCreatedAt())
+//                    .score(0)
+//                    .build();
+//        }
+//        response = response.substring(0, lastIndex);
+//        log.info("response 2222 {}", response.length());
+//        int runTimeIndex = response.lastIndexOf("\n");
+//        log.info("runTimeIndex {}", runTimeIndex);
+//        String runtimeString = response.substring(runTimeIndex+1);
+//        log.info("runtime {}", runtimeString);
+//        Long runtime = Long.parseLong(runtimeString);
+//        response = response.substring(0, runTimeIndex);
+//        String []ans = response.split("testcasedone\n");
+//        for(int i = 0; i < ans.length; i++){
+//            log.info("ans i {}", ans[i]);
+//        }
+//        status = null;
+//        int cnt = 0;
+//        int score = 0;
+//        for(int i = 0; i < testCaseEntityList.size(); i++){
+//            if(!testCaseEntityList.get(i).getCorrectAnswer().equals(ans[i])){
+//                if(status == null && ans[i].contains("Time Limit Exceeded")){
+//                    status = "Time Limit Exceeded";
+//                }else{
+//                    status = "Wrong Answer";
+//                }
+//            }else{
+//                score = testCaseEntityList.get(i).getTestCasePoint();
+//                cnt++;
+//            }
+//        }
+//
+//        if(status == null){
+//            status = "Accept";
+//        }
+//        log.info("pass {}/{}", cnt, testCaseEntityList.size());
+//
+//        ContestSubmissionEntity c = ContestSubmissionEntity.builder()
+//                .contest(contestEntity)
+//                .status(status)
+//                .point(score)
+//                .contest(contestEntity)
+//                .problem(problemEntity)
+//                .userLogin(userLogin)
+//                .testCasePass(cnt+"/"+ testCaseEntityList.size())
+//                .sourceCode(modelContestSubmission.getSource())
+//                .sourceCodeLanguage(modelContestSubmission.getLanguage())
+//                .runtime(runtime)
+//                .createdAt(new Date())
+//                .build();
+//        c = contestSubmissionRepo.save(c);
+//        log.info("c {}", c.getRuntime());
+//        return ModelContestSubmissionResponse.builder()
+//                .status(status)
+//                .testCasePass(c.getTestCasePass())
+//                .runtime(runtime)
+//                .memoryUsage(c.getMemoryUsage())
+//                .problemName(problemEntity.getProblemName())
+//                .contestSubmissionID(c.getContestSubmissionId())
+//                .submittedAt(c.getCreatedAt())
+//                .score(score)
+//                .build();
     }
 
     @Override
