@@ -11,4 +11,5 @@ public class ModelGetProblemDetailResponse {
     private String levelId;
     private int levelOrder;
     private String problemDescription;
+    private boolean unauthorized;
 }

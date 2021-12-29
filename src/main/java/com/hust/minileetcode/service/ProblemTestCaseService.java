@@ -6,10 +6,8 @@ import com.hust.minileetcode.entity.TestCaseEntity;
 import com.hust.minileetcode.entity.UserSubmissionContestResultNativeEntity;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
-import com.hust.minileetcode.repo.UserSubmissionContestResultNativeRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 
 import java.util.UUID;
 
@@ -55,7 +53,10 @@ public interface ProblemTestCaseService {
 
     ModelGetContestPageResponse getContestPaging(Pageable pageable);
 
-    ModelGetContestDetailResponse getContestDetailByContestId(String contestId, String userName) throws MiniLeetCodeException;
+    ModelGetContestDetailResponse getContestDetailByContestIdAndTeacher(String contestId, String userName);
+
+    ModelGetContestDetailResponse getContestSolvingDetailByContestId(String contestId, String userName);
+
 
     ModelContestSubmissionResponse submitContestProblem(ModelContestSubmission modelContestSubmission, String userName) throws Exception;
 

@@ -12,4 +12,5 @@ public class ModelGetContestDetailResponse {
     private String contestName;
     private int contestTime;
     private List<ModelGetProblemDetailResponse> list;
+    private boolean unauthorized;
 }

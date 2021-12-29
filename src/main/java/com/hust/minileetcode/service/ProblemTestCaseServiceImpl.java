@@ -432,14 +432,19 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public ModelGetContestDetailResponse getContestDetailByContestId(String contestId, String userName) throws MiniLeetCodeException {
+    public ModelGetContestDetailResponse getContestDetailByContestIdAndTeacher(String contestId, String userName){
         UserLogin userLogin = userLoginRepo.findByUserLoginId(userName);
-        ContestEntity contest = contestRepo.findContestByContestId(contestId);
-        UserRegistrationContestEntity userRegistrationContest = userRegistrationContestRepo.findUserRegistrationContestEntityByContestAndUserLoginAndStatus(contest, userLogin, Constants.RegistrationType.SUCCESSFUL.getValue());
-        if(userRegistrationContest == null){
-            throw new MiniLeetCodeException("user not register contest");
+        ContestEntity contestEntity = contestRepo.findContestEntityByContestIdAndUserCreatedContest(contestId, userLogin);
+        if(contestEntity == null){
+            log.info("user does not create contest");
+            return ModelGetContestDetailResponse.builder()
+                    .unauthorized(true)
+                    .build();
         }
-        ContestEntity contestEntity = contestRepo.findContestByContestId(contestId);
+        return getModelGetContestDetailResponse(contestId, contestEntity);
+    }
+
+    private ModelGetContestDetailResponse getModelGetContestDetailResponse(String contestId, ContestEntity contestEntity) {
         List<ModelGetProblemDetailResponse> problems = new ArrayList<>();
         contestEntity.getProblems().forEach(contestProblem -> {
             ModelGetProblemDetailResponse p = ModelGetProblemDetailResponse.builder()
@@ -456,7 +461,24 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .contestName(contestEntity.getContestName())
                 .contestTime(contestEntity.getContestSolvingTime())
                 .list(problems)
+                .unauthorized(true)
                 .build();
+    }
+
+    @Override
+    public ModelGetContestDetailResponse getContestSolvingDetailByContestId(String contestId, String userName) {
+        UserLogin userLogin = userLoginRepo.findByUserLoginId(userName);
+        ContestEntity contestEntity = contestRepo.findContestByContestId(contestId);
+        UserRegistrationContestEntity userRegistrationContest = userRegistrationContestRepo.findUserRegistrationContestEntityByContestAndUserLoginAndStatus(contestEntity, userLogin, Constants.RegistrationType.SUCCESSFUL.getValue());
+        log.info("userRegistrationContest {}", userRegistrationContest);
+
+        if(userRegistrationContest == null){
+            log.info("unauthorized");
+            return ModelGetContestDetailResponse.builder()
+                    .unauthorized(true)
+                    .build();
+        }
+        return getModelGetContestDetailResponse(contestId, contestEntity);
     }
 
     @Override
