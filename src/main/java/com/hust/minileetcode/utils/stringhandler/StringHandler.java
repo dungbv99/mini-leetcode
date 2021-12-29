@@ -52,7 +52,7 @@ public class StringHandler {
                 .runtime(runtime)
                 .score(score)
                 .status(status)
-                .testCasePass(cnt+"/"+testCaseEntityList.size())
+                .testCasePass(cnt+"/"+testCaseAns.size())
                 .build();
     }
 }
