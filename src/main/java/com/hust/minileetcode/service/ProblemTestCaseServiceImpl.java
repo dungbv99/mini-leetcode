@@ -461,7 +461,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .contestName(contestEntity.getContestName())
                 .contestTime(contestEntity.getContestSolvingTime())
                 .list(problems)
-                .unauthorized(true)
+                .unauthorized(false)
                 .build();
     }
 
