@@ -480,6 +480,8 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         ProblemSubmission problemSubmission = StringHandler.handleContestResponse(response, correctAns, points);
         log.info("problemSubmission {}", problemSubmission);
         ProblemSubmissionEntity p = ProblemSubmissionEntity.builder()
+                .problem(problemEntity)
+                .
                 .score(problemSubmission.getScore())
                 .userLogin(userLogin)
                 .testCasePass(problemSubmission.getTestCasePass())
