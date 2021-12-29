@@ -34,7 +34,7 @@ export default function ContestRunTestCase(props){
         <div>
 
           <Typography variant={"h4"}>
-            Run Test All Result
+            Submit Result
           </Typography>
           <Typography variant={"h6"}>
             {submitResult.problemName}

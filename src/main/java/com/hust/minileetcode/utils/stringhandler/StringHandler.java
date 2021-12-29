@@ -1,21 +1,19 @@
 package com.hust.minileetcode.utils.stringhandler;
 
-import com.hust.minileetcode.entity.TestCaseEntity;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 public class StringHandler {
-    public static ContestSubmission handleContestResponse(String response, List<String> testCaseAns, List<Integer> points ){
+    public static ProblemSubmission handleContestResponse(String response, List<String> testCaseAns, List<Integer> points ){
         log.info("response {}", response);
         response = response.substring(0, response.length()-1);
         int lastIndex = response.lastIndexOf("\n");
         String status = response.substring(lastIndex);
         log.info("status {}", status);
         if(status.contains("Compile Error")){
-            return ContestSubmission.builder()
+            return ProblemSubmission.builder()
                     .score(0)
                     .runtime(0L)
                     .testCasePass(0+"/"+testCaseAns.size())
@@ -48,7 +46,7 @@ public class StringHandler {
         if(status == null){
             status = "Accept";
         }
-        return ContestSubmission.builder()
+        return ProblemSubmission.builder()
                 .runtime(runtime)
                 .score(score)
                 .status(status)

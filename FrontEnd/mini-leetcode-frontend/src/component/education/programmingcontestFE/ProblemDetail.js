@@ -24,6 +24,7 @@ import SplitPane from "react-split-pane";
 import {request} from "./Request";
 import {API_URL} from "../../../config/config";
 import {getExtension} from "./lib";
+import ContestRunTestCase from "./ContestRunTestCase";
 
 TabPanelVertical.propTypes = {
   children: PropTypes.node,
@@ -97,7 +98,7 @@ export default function ProblemDetail(props){
   const [submissionStatus, setSubmissionStatus] = useState();
   const [submissionPoint, setSubmissionPoint] = useState();
   const [loadSubmission, setLoadSubmission] = useState(false);
-
+  const [testCaseResult, setTestCaseResult] = useState();
   const onInputChange = (input) =>{
     setInput(input);
   }
@@ -170,10 +171,12 @@ export default function ProblemDetail(props){
       "post",
       API_URL+"/problem-details-submission/"+problemId,
       (res) =>{
+        console.log("ressss ", res);
         problemSubmissionList.push(res.data);
-        setSubmissionStatus(res.data.status);
-        setSubmissionPoint(res.data.result);
+        // setSubmissionStatus(res.data.status);
+        // setSubmissionPoint(res.data.result);
         setLoadSubmission(false);
+        setTestCaseResult(res.data);
       },
       {},
       body
@@ -253,12 +256,18 @@ export default function ProblemDetail(props){
             </TabPanelVertical>
             <TabPanelVertical value={value} index={3}>
               <ScrollBox style={{width: '95%',  height:(window.innerHeight-130) + "px"}}>
-                <SubmissionExecute
+                {/*<SubmissionExecute*/}
+                {/*  show={showShowSubmissionExecute}*/}
+                {/*  loadSubmission={loadSubmission}*/}
+                {/*  point={submissionPoint}*/}
+                {/*  status={submissionStatus}*/}
+                {/*/>*/}
+                <ContestRunTestCase
+                  load={loadSubmission}
                   show={showShowSubmissionExecute}
-                  loadSubmission={loadSubmission}
-                  point={submissionPoint}
-                  status={submissionStatus}
-                />
+                  testCaseResult={testCaseResult}/>
+
+
                 <ProblemSubmission
                   show={showShowSubmissionExecute}
                   submitted={submitted}

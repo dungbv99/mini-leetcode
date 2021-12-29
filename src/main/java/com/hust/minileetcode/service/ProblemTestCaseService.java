@@ -43,7 +43,7 @@ public interface ProblemTestCaseService {
 
     TestCaseEntity saveTestCase(String problemId, ModelSaveTestcase modelSaveTestcase);
 
-    ModelProblemSubmissionResponse problemDetailSubmission(ModelProblemDetailSubmission modelProblemDetailSubmission, String problemId, String userName) throws Exception;
+    ModelContestSubmissionResponse problemDetailSubmission(ModelProblemDetailSubmission modelProblemDetailSubmission, String problemId, String userName) throws Exception;
 
     ListProblemSubmissionResponse getListProblemSubmissionResponse(String problemId, String userId) throws Exception;
 
