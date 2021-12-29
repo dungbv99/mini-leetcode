@@ -478,6 +478,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         List<String> correctAns = testCaseEntityList.stream().map(TestCaseEntity::getCorrectAnswer).collect(Collectors.toList());
         List<Integer> points = testCaseEntityList.stream().map(TestCaseEntity::getTestCasePoint).collect(Collectors.toList());
         ProblemSubmission problemSubmission = StringHandler.handleContestResponse(response, correctAns, points);
+        log.info("problemSubmission {}", problemSubmission);
         ProblemSubmissionEntity p = ProblemSubmissionEntity.builder()
                 .score(problemSubmission.getScore())
                 .userLogin(userLogin)

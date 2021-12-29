@@ -110,6 +110,7 @@ public class DockerClientBase {
         for (Container container : listContainer){
             containerSet.add(container.names().get(0));
         }
+        log.info("containerSet {}", containerSet);
         for (Constants.DockerContainer dockerContainer : Constants.DockerContainer.values()){
             Map<String,String> m = new HashMap<>();
             m.put("names", "leetcode");
