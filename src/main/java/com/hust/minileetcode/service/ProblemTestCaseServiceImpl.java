@@ -481,7 +481,6 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         log.info("problemSubmission {}", problemSubmission);
         ProblemSubmissionEntity p = ProblemSubmissionEntity.builder()
                 .problem(problemEntity)
-                .
                 .score(problemSubmission.getScore())
                 .userLogin(userLogin)
                 .testCasePass(problemSubmission.getTestCasePass())
