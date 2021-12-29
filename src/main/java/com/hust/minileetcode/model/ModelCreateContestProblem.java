@@ -18,4 +18,5 @@ public class ModelCreateContestProblem {
     private String correctSolutionSourceCode;
     private String correctSolutionLanguage;
     private String solution;
+    private Boolean isPublic;
 }

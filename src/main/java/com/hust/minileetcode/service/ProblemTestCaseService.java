@@ -55,7 +55,7 @@ public interface ProblemTestCaseService {
 
     ModelGetContestPageResponse getContestPaging(Pageable pageable);
 
-    ModelGetContestDetailResponse getContestDetailByContestId(String contestId);
+    ModelGetContestDetailResponse getContestDetailByContestId(String contestId, String userName) throws MiniLeetCodeException;
 
     ModelContestSubmissionResponse submitContestProblem(ModelContestSubmission modelContestSubmission, String userName) throws Exception;
 

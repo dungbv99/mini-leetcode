@@ -188,9 +188,9 @@ public class ContestProblemController {
     }
 
     @GetMapping("/get-contest-detail/{contestId}")
-    public ResponseEntity<?> getContestDetail(@PathVariable("contestId") String contestId){
+    public ResponseEntity<?> getContestDetail(@PathVariable("contestId") String contestId, Principal principal) throws MiniLeetCodeException {
         log.info("getContestDetail constestid {}", contestId);
-        ModelGetContestDetailResponse response = problemTestCaseService.getContestDetailByContestId(contestId);
+        ModelGetContestDetailResponse response = problemTestCaseService.getContestDetailByContestId(contestId, principal.getName());
         return ResponseEntity.status(200).body(response);
     }
 

@@ -1,6 +1,5 @@
 package com.hust.minileetcode.docker;
 
-import com.hust.minileetcode.MiniLeetcodeApplication;
 import com.hust.minileetcode.constants.Constants;
 import com.hust.minileetcode.utils.ComputerLanguage.Languages;
 import com.spotify.docker.client.DefaultDockerClient;
@@ -10,10 +9,6 @@ import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.spotify.docker.client.DockerClient.*;
@@ -30,7 +25,7 @@ public class DockerClientBase {
 
     private static DockerClient dockerClient;
 
-    private static HashMap<String , String> m = new HashMap<>();
+    private static final HashMap<String , String> m = new HashMap<>();
 
 
     public DockerClientBase() {
@@ -48,8 +43,8 @@ public class DockerClientBase {
             containerExist();
         } catch (Exception e){
             e.printStackTrace();
-            System.exit(0);
-//            throw new Exception(e.getMessage());
+//            System.exit(0);
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -59,31 +54,24 @@ public class DockerClientBase {
                 ListContainersParam.filter("label", "names=leetcode")
         );
         for(Container container : listContainerStart){
-            m.put(container.names().get(0), container.id());
+            m.put(Objects.requireNonNull(container.names()).get(0), container.id());
         }
         List<Container> listContainersStop = dockerClient.listContainers(
                 ListContainersParam.withStatusExited(),
                 ListContainersParam.filter("label", "names=leetcode"));
         for(Container container : listContainersStop){
-            m.put(container.names().get(0), container.id());
+            m.put(Objects.requireNonNull(container.names()).get(0), container.id());
             dockerClient.startContainer(container.id());
         }
         List<Container> listContainersCreated = dockerClient.listContainers(
                 ListContainersParam.withStatusCreated(),
                 ListContainersParam.filter("label", "names=leetcode"));
         for(Container container : listContainersCreated){
-            m.put(container.names().get(0), container.id());
+            m.put(Objects.requireNonNull(container.names()).get(0), container.id());
             dockerClient.startContainer(container.id());
         }
-        log.info("{}",m.toString());
-//        String containerId = m.get("/gcc");
-//        String[] runCommand = {"sh", "-c", "while :; do sleep 1; done"};
-//        ExecCreation runExecCreation = dockerClient.execCreate(
-//                containerId, runCommand, DockerClient.ExecCreateParam.attachStdout(),
-//                DockerClient.ExecCreateParam.attachStderr());
-//        LogStream output = dockerClient.execStart(runExecCreation.id());
-//        String execOutput = output.readFully();
-//        System.out.println("exec output " + execOutput);
+        log.info("{}", m);
+
 
     }
 
@@ -108,7 +96,7 @@ public class DockerClientBase {
 
         Set<String> containerSet = new HashSet<>();
         for (Container container : listContainer){
-            containerSet.add(container.names().get(0));
+            containerSet.add(Objects.requireNonNull(container.names()).get(0));
         }
         log.info("containerSet {}", containerSet);
         for (Constants.DockerContainer dockerContainer : Constants.DockerContainer.values()){
@@ -171,7 +159,7 @@ public class DockerClientBase {
     }
 
     public String createGccContainer() throws DockerException, InterruptedException {
-        Map<String,String> m = new HashMap<String,String>();
+        Map<String,String> m = new HashMap<>();
         m.put("names", "leetcode");
         ContainerConfig gccContainerConfig = ContainerConfig.builder()
                     .image("gcc:8.5-buster")
@@ -185,10 +173,6 @@ public class DockerClientBase {
         ContainerCreation gccCreation = dockerClient.createContainer(gccContainerConfig, "gcc");
         dockerClient.startContainer(gccCreation.id());
         return gccCreation.id();
-    }
-
-    public DockerClient getDockerClient(){
-        return dockerClient;
     }
 
     public String runExecutable(Languages languages, String dirName) throws DockerException, InterruptedException, IOException {
@@ -216,7 +200,6 @@ public class DockerClientBase {
                 containerId, runCommand, DockerClient.ExecCreateParam.attachStdout(),
                 DockerClient.ExecCreateParam.attachStderr());
         LogStream output = dockerClient.execStart(runExecCreation.id());
-        String execOutput = output.readFully();
-        return execOutput;
+        return output.readFully();
     }
 }
