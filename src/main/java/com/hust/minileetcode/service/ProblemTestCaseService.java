@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public interface ProblemTestCaseService {
 
-    void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception;
+    void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws MiniLeetCodeException;
 
     ProblemEntity updateContestProblem(ModelCreateContestProblem modelCreateContestProblem, String problemId) throws Exception;
 
@@ -23,7 +23,7 @@ public interface ProblemTestCaseService {
 
     TestCaseEntity updateTestCase(ModelCreateTestCase modelCreateTestCase, UUID testCaseId) throws Exception;
 
-    Page<ProblemEntity> getContestProblemPaging(Pageable pageable) throws Exception;
+    Page<ProblemEntity> getContestProblemPaging(Pageable pageable);
 
     ProblemEntity findContestProblemByProblemId(String problemId) throws Exception;
 
@@ -77,5 +77,7 @@ public interface ProblemTestCaseService {
     ModelGetContestPageResponse getNotRegisteredContestByUser(Pageable pageable, String userName);
 
     Page<UserSubmissionContestResultNativeEntity> getRankingByContestId(Pageable pageable, String contestId);
+
+    Page<ProblemEntity> getPublicProblemPaging(Pageable pageable);
 
 }

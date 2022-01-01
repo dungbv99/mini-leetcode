@@ -49,7 +49,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private UserSubmissionContestResultNativePagingRepo userSubmissionContestResultNativePagingRepo;
 
     @Override
-    public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws Exception {
+    public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws MiniLeetCodeException {
         if(problemRepo.findByProblemId(modelCreateContestProblem.getProblemId()) != null){
             throw new MiniLeetCodeException("problem id already exist");
         }
@@ -159,13 +159,8 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public Page<ProblemEntity> getContestProblemPaging(Pageable pageable) throws Exception {
-        try {
-            return problemPagingAndSortingRepo.findAll(pageable);
-        }catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
-
+    public Page<ProblemEntity> getContestProblemPaging(Pageable pageable){
+        return problemPagingAndSortingRepo.findAll(pageable);
     }
 
     @Override
@@ -690,6 +685,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     @Override
     public Page<UserSubmissionContestResultNativeEntity> getRankingByContestId(Pageable pageable, String contestId) {
         return userSubmissionContestResultNativePagingRepo.findAllByContestId(pageable, contestId);
+    }
+
+    @Override
+    public Page<ProblemEntity> getPublicProblemPaging(Pageable pageable) {
+        return problemPagingAndSortingRepo.findAllByPublicIs(pageable, true);
     }
 
     private ModelGetContestPageResponse getModelGetContestPageResponse(Page<ContestEntity> contestPage) {

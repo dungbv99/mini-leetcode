@@ -29,16 +29,10 @@ public class ContestProblemController {
     ProblemTestCaseService problemTestCaseService;
 
     @PostMapping("/create-problem")
-    public ResponseEntity<?> createContestProblem(@RequestBody ModelCreateContestProblem modelCreateContestProblem) throws Exception{
-        System.out.println(modelCreateContestProblem.toString());
-        try {
-            problemTestCaseService.createContestProblem(modelCreateContestProblem);
-            return ResponseEntity.status(200).body(null);
-        } catch (Exception e) {
-            log.info("err ");
-            System.out.println(e.getMessage());
-            throw new Exception(e.toString());
-        }
+    public ResponseEntity<?> createContestProblem(@RequestBody ModelCreateContestProblem modelCreateContestProblem) throws MiniLeetCodeException {
+        log.info("create pronblem {}", modelCreateContestProblem);
+        problemTestCaseService.createContestProblem(modelCreateContestProblem);
+        return ResponseEntity.status(200).body(null);
     }
 
     @PostMapping("/update-contest-problem/{problemId}")
@@ -82,22 +76,17 @@ public class ContestProblemController {
     }
 
     @GetMapping("/get-contest-problem-paging")
-    public ResponseEntity<?> getContestProblemPaging(Pageable pageable, @Param("sortBy") String sortBy, @Param("desc") String desc) throws Exception {
+    public ResponseEntity<?> getContestProblemPaging(Pageable pageable, @Param("sortBy") String sortBy, @Param("desc") String desc){
         log.info("getContestProblemPaging pageable {}", pageable);
         log.info("sortBy {}", sortBy);
-        try {
-            if(sortBy != null){
-                if(desc != null)
-                    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy).descending());
-                else
-                    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy).ascending());
-            }
-            Page<ProblemEntity> contestProblemPage = problemTestCaseService.getContestProblemPaging(pageable);
-            return ResponseEntity.status(200).body(contestProblemPage);
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new Exception(e.toString());
+        if(sortBy != null){
+            if(desc != null)
+                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy).descending());
+            else
+                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sortBy).ascending());
         }
+        Page<ProblemEntity> contestProblemPage = problemTestCaseService.getContestProblemPaging(pageable);
+        return ResponseEntity.status(200).body(contestProblemPage);
     }
 
     @PostMapping("/ide/{computerLanguage}")
@@ -307,6 +296,12 @@ public class ContestProblemController {
         log.info("/recalculate-ranking/ contestid {}", contestId);
         problemTestCaseService.calculateContestResult(contestId);
         return ResponseEntity.status(200).body(null);
+    }
+
+    @GetMapping("/get-problem-public-paging")
+    public ResponseEntity<?> getProblemPublicPaging(Pageable pageable){
+        Page<ProblemEntity> page = problemTestCaseService.getPublicProblemPaging(pageable);
+        return ResponseEntity.status(200).body(page);
     }
 
 }
