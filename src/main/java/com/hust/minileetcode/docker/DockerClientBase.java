@@ -93,7 +93,7 @@ public class DockerClientBase {
                 ListContainersParam.filter("label", "names=leetcode")
         );
 
-
+        log.info("list container {}", listContainer);
         Set<String> containerSet = new HashSet<>();
         for (Container container : listContainer){
             containerSet.add(Objects.requireNonNull(container.names()).get(0));
