@@ -90,6 +90,7 @@ public class DockerClientBase {
         }
 
         List<Container> listContainer = dockerClient.listContainers(
+                ListContainersParam.allContainers(),
                 ListContainersParam.filter("label", "names=leetcode")
         );
 
