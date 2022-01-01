@@ -67,7 +67,7 @@ public class ProblemEntity {
     private Date createdAt;
 
     @Column(name = "is_public")
-    private boolean isPublic;
+    private boolean isPublicProblem;
 //    @OneToMany(mappedBy = "contestProblem")
 //    private Set<TestCase> testCases;
 //    @JoinTable(name = "contest_problem_test_case",

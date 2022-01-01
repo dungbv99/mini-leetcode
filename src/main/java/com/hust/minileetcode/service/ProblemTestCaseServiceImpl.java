@@ -65,7 +65,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .correctSolutionSourceCode(modelCreateContestProblem.getCorrectSolutionSourceCode())
                 .solution(modelCreateContestProblem.getSolution())
                 .createdAt(new Date())
-                .isPublic(modelCreateContestProblem.getIsPublic())
+                .isPublicProblem(modelCreateContestProblem.getIsPublic())
                 .levelOrder(constants.getMapLevelOrder().get(modelCreateContestProblem.getLevelId()))
                 .build();
         problemRepo.save(problemEntity);
