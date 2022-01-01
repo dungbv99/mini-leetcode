@@ -12,5 +12,6 @@ public interface ProblemPagingAndSortingRepo extends PagingAndSortingRepository<
     @Query("select p.problemName from ProblemEntity p")
     ArrayList<String> getProblemNamePaging(Pageable pageable);
 
-    Page<ProblemEntity> findAllByPublicIs(Pageable pageable, boolean pub);
+    @Query(value = "select p from ProblemEntity p where p.isPublic = true ")
+    Page<ProblemEntity> findAllByPublicIs(Pageable pageable);
 }

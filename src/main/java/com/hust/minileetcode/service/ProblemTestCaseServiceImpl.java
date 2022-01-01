@@ -689,7 +689,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     @Override
     public Page<ProblemEntity> getPublicProblemPaging(Pageable pageable) {
-        return problemPagingAndSortingRepo.findAllByPublicIs(pageable, true);
+        return problemPagingAndSortingRepo.findAllByPublicIs(pageable);
     }
 
     private ModelGetContestPageResponse getModelGetContestPageResponse(Page<ContestEntity> contestPage) {
