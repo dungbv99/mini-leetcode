@@ -692,6 +692,36 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         return problemPagingAndSortingRepo.findAllByPublicIs(pageable);
     }
 
+    @Override
+    public List<ModelGetTestCase> getTestCaseByProblem(String problemId) {
+        ProblemEntity problem = problemRepo.findByProblemId(problemId);
+        List<TestCaseEntity> testCases = testCaseRepo.findAllByProblem(problem);
+        return testCases.stream().map(this::convertToModelGetTestCase).collect(Collectors.toList());
+    }
+
+    private ModelGetTestCase convertToModelGetTestCase(TestCaseEntity testCaseEntity){
+        boolean viewMore = false;
+        String correctAns = testCaseEntity.getCorrectAnswer();
+        String testCase = testCaseEntity.getTestCase();
+        int point = testCaseEntity.getTestCasePoint();
+
+        if(correctAns.length() > 20){
+            viewMore = true;
+            correctAns = correctAns.substring(0,17);
+            correctAns += "...";
+        }
+        if(testCase.length() > 20){
+            viewMore = true;
+            testCase = testCase.substring(0,17);
+            testCase += "...";
+        }
+        return ModelGetTestCase.builder()
+                .correctAns(correctAns)
+                .testCase(testCase)
+                .point(point)
+                .build();
+    }
+
     private ModelGetContestPageResponse getModelGetContestPageResponse(Page<ContestEntity> contestPage) {
         List<ModelGetContestResponse> lists = new ArrayList<>();
         if(contestPage != null){

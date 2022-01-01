@@ -19,6 +19,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -304,4 +305,9 @@ public class ContestProblemController {
         return ResponseEntity.status(200).body(page);
     }
 
+    @GetMapping("/get-test-case-list-by-problem/{problemId}")
+    public ResponseEntity<?> getTestCaseListByProblem(@PathVariable("problemId") String problemId){
+        List<ModelGetTestCase> list = problemTestCaseService.getTestCaseByProblem(problemId);
+        return ResponseEntity.status(200).body(list);
+    }
 }

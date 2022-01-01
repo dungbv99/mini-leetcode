@@ -9,6 +9,7 @@ import com.hust.minileetcode.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ProblemTestCaseService {
@@ -80,4 +81,5 @@ public interface ProblemTestCaseService {
 
     Page<ProblemEntity> getPublicProblemPaging(Pageable pageable);
 
+    List<ModelGetTestCase> getTestCaseByProblem(String problemId);
 }
