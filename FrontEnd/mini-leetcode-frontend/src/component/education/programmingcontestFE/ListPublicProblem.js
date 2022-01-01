@@ -9,7 +9,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
 import {getColorLevel, StyledTableCell, StyledTableRow} from "./lib";
 
-function ListProblem(){
+export default function ListPublicProblem(){
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPage] = useState(0);
@@ -32,7 +32,7 @@ function ListProblem(){
     console.log("p ", page);
     request(
       "get",
-      API_URL+"/get-contest-problem-paging?size="+pageSize+"&page="+(page-1),
+      API_URL+"/get-problem-public-paging?size="+pageSize+"&page="+(page-1),
       (res)=>{
         console.log("problem list", res.data);
         setTotalPage(res.data.totalPages);
@@ -138,4 +138,3 @@ function ListProblem(){
     </div>
   )
 }
-export default ListProblem;

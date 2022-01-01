@@ -87,5 +87,13 @@ export const ProgrammingContestMenuStudent = {
       text: "IDE",
       child: [],
     },
+    {
+      id: "MENU_STUDENT",
+      path: "/programming-contest/student-public-problem",
+      isPublic: false,
+      icon: null,
+      text: "Practical Problem",
+      child: [],
+    },
   ],
 }
