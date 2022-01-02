@@ -15,22 +15,20 @@ import {SubmitWarming} from "./SubmitWarming";
 import {SubmitSuccess} from "./SubmitSuccess";
 import {successNoti, warningNoti} from "../../../utils/notification";
 import {request} from "./Request";
+import { useHistory } from "react-router-dom";
 
 
-export default function CreateTestCase(props){
+export default function EditTestCase(props){
+  const history = useHistory();
   const [value, setValue] = useState(0);
   const [input, setInput] = useState();
   const [result, setResult] = useState();
   const [screenHeight, setScreenHeight] = useState((window.innerHeight-300)/2 + "px");
-  const {problemId} = useParams();
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
-  const [problem, setProblem] = useState();
+  const {problemId, testCaseId} = useParams();
   const [description, setDescription] = useState();
   const [solution, setSolution] = useState();
   const [load, setLoad] = useState(false);
   const [checkTestcaseResult, setCheckTestcaseResult] = useState(false);
-  const [showSubmitWarming, setShowSubmitWarming] = useState(false);
   const [point, setPoint] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -42,8 +40,6 @@ export default function CreateTestCase(props){
     let body = {
       testcase: input,
     }
-
-
     request(
       "POST",
       API_URL+"/get-test-case-result/"+problemId,
@@ -52,7 +48,6 @@ export default function CreateTestCase(props){
         setLoad(false);
         setResult(res.data.result);
         setCheckTestcaseResult(true);
-        setShowSubmitWarming(false);
       },
       {},
       body
@@ -74,34 +69,38 @@ export default function CreateTestCase(props){
 
     request(
       "POST",
-      API_URL+"/save-test-case/"+problemId,
+      API_URL+"/update-test-case/"+testCaseId,
+
       (res) =>{
-        console.log("res", res);
-        // setShowSubmitSuccess(true);
         successNoti("Your test case is saved", true);
+
+        history.goBack();
       },
       {},
       body
-    ).then();
-
+    ).then(() => history.back);
 
 
   }
 
   useEffect(() =>{
-    console.log("problemId ", problemId);
-    console.log("token ", token);
+
     request(
       "GET",
-      API_URL+"/problem-details/"+problemId,
-      (res) =>{
-        console.log("res ", res);
-        setProblem(res);
-        setDescription(res.data.problemDescription);
-        setSolution(res.data.solution);
-      },
-    ).then();
-  },[])
+      API_URL+"/get-test-case-detail/"+testCaseId,
+      (res) => {
+        console.log("res", res)
+        setDescription(res.data.problemDescription)
+        setSolution(res.data.problemSolution);
+        setInput(res.data.testCase);
+        setResult(res.data.correctAns);
+        setPoint(res.data.point);
+      }
+    ).then(() => {
+      console.log("problemId", problemId);
+      console.log("testCaseId", testCaseId);
+    });
+  },[testCaseId])
 
   return(
     <div>
@@ -140,7 +139,7 @@ export default function CreateTestCase(props){
 
           <TabPanelVertical value={value} index={1}>
             <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
-                <Markup content={solution} />
+              <Markup content={solution} />
             </ScrollBox>
           </TabPanelVertical>
 
@@ -156,6 +155,7 @@ export default function CreateTestCase(props){
             id="point"
             label="Point"
             placeholder="Point"
+            value={point}
             onChange={(event) => {
               setPoint(event.target.value);
             }}
@@ -171,6 +171,7 @@ export default function CreateTestCase(props){
               setInput(value);
             }}
             autoFocus={false}
+            value={input}
           />
           <br/><br/>
           <Typography variant={"h5"}>
@@ -198,13 +199,7 @@ export default function CreateTestCase(props){
           >
             save test case
           </Button>
-          {/*<SubmitWarming*/}
-          {/*  showSubmitWarming={showSubmitWarming}*/}
-          {/*  content={"You must test your test case result before save"}/>*/}
-          {/*<SubmitSuccess*/}
-          {/*  showSubmitSuccess={showSubmitSuccess}*/}
-          {/*  content={"Your test case is saved"}*/}
-          {/*  />*/}
+
         </Grid>
       </Grid>
 

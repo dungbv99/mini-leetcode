@@ -10,13 +10,13 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Editor, } from "react-draft-wysiwyg";
 import { ContentState, convertToRaw, EditorState } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import {authPost} from "../../../api";
-import {Button} from "@material-ui/core";
+import {Button, TableHead} from "@material-ui/core";
 import draftToHtml from "draftjs-to-html";
 import {API_URL} from "../../../config/config";
 import {cpp, cppLanguage} from '@codemirror/lang-cpp';
@@ -31,8 +31,13 @@ import {CompileStatus} from "./CompileStatus";
 import {SubmitSuccess} from "./SubmitSuccess";
 import {useParams} from "react-router";
 import {request} from "./Request";
-import {sleep} from "./lib";
+import {sleep, StyledTableCell, StyledTableRow} from "./lib";
 import htmlToDraft from "html-to-draftjs";
+import Paper from "@material-ui/core/Paper";
+import TableContainer from "@mui/material/TableContainer";
+import Table from "@mui/material/Table";
+import TableRow from "@material-ui/core/TableRow";
+import TableBody from "@mui/material/TableBody";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -103,6 +108,8 @@ function EditProblem(){
   const [showCompile, setShowCompile] = useState(false);
   const [statusSuccessful, setStatusSuccessful] = useState(false);
   const [showSubmitSuccess, setShowSubmitSuccess] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
+  const [testCases, setTestCases] = useState([]);
 
   useEffect( () =>{
     console.log("problemid ", problemId);
@@ -120,6 +127,7 @@ function EditProblem(){
         setMemoryLimit(res.data.memoryLimit);
         setCodeSolution(res.data.correctSolutionSourceCode);
         setTimeLimit(res.data.timeLimit);
+        setIsPublic(res.data.publicProblem);
         let problemDescriptionHtml = htmlToDraft(res.data.problemDescription);
         let {contentBlocks, entityMap} = problemDescriptionHtml;
         let contentDescriptionState = ContentState.createFromBlockArray(contentBlocks, entityMap);
@@ -136,6 +144,18 @@ function EditProblem(){
       },
       {}
     ).then ();
+
+
+    request(
+      "GET",
+      API_URL+"/get-test-case-list-by-problem/"+problemId,
+
+      (res) =>{
+        console.log("res", res.data);
+        setTestCases(res.data);
+      },
+      {}
+    )
   }, [problemId]);
 
   const onChangeEditorStateDescription = (editorState) => {
@@ -322,6 +342,27 @@ function EditProblem(){
                     </MenuItem>
                   ))}
                 </TextField>
+
+                <TextField
+                  autoFocus
+                  // required
+                  select
+                  id="categoryId"
+                  label="Category ID"
+                  placeholder="Category ID"
+                  onChange={(event) => {
+                    setIsPublic(event.target.value);
+                  }}
+                  value={isPublic}
+                >
+                  <MenuItem key={"true"} value={true}>
+                    {"true"}
+                  </MenuItem>
+                  <MenuItem key={"false"} value={false}>
+                    {"false"}
+                  </MenuItem>
+                </TextField>
+
               </div>
             </form>
             <form className={descriptionClass.root} noValidate autoComplete="off">
@@ -396,6 +437,68 @@ function EditProblem(){
             >
               Check Solution Compile
             </Button>
+            <SubmitWarming
+              showSubmitWarming={showSubmitWarming}
+              content={"Your source must be pass compile process"}
+            />
+          </CardActions>
+
+          <Typography>
+            <h2>Test case</h2>
+          </Typography>
+
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 750 }} aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell></StyledTableCell>
+                  <StyledTableCell align="left">TestCase</StyledTableCell>
+                  <StyledTableCell align="left">Correct Answer</StyledTableCell>
+                  <StyledTableCell align="left">Point</StyledTableCell>
+                  <StyledTableCell align="left">Edit</StyledTableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {
+                  testCases.map((testCase, idx) => (
+                    <StyledTableRow>
+                      <StyledTableCell component="th" scope="row">
+                        {idx}
+                      </StyledTableCell>
+                      <StyledTableCell align="left">
+                        {testCase.testCase}
+                      </StyledTableCell>
+                      <StyledTableCell align="left">
+                        {testCase.correctAns}
+                      </StyledTableCell>
+                      <StyledTableCell align="left">
+                        {testCase.point}
+                      </StyledTableCell>
+                      <StyledTableCell align="left">
+                        <Link to={"/programming-contest/edit-testcase/"+problemId+"/"+testCase.testCaseId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
+                          <Button
+                            variant="contained"
+                            color="light"
+                          >
+                            Edit
+                          </Button>
+                        </Link>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                    ))
+                }
+
+              </TableBody>
+
+            </Table>
+          </TableContainer>
+
+
+
+
+
+          <CardActions>
             <Button
               variant="contained"
               color="light"
@@ -404,10 +507,7 @@ function EditProblem(){
             >
               Save
             </Button>
-            <SubmitWarming
-              showSubmitWarming={showSubmitWarming}
-              content={"Your source must be pass compile process"}
-            />
+
             <SubmitSuccess
               showSubmitSuccess={showSubmitSuccess}
               content={"You have saved problem"}/>

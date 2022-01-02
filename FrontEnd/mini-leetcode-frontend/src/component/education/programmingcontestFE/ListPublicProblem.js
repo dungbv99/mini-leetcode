@@ -57,8 +57,6 @@ export default function ListPublicProblem(){
                 <StyledTableCell align="left">Title</StyledTableCell>
                 <StyledTableCell align="left">Solution</StyledTableCell>
                 <StyledTableCell align="left">Difficulty</StyledTableCell>
-                <StyledTableCell align="left">Add Testcase</StyledTableCell>
-                <StyledTableCell align="left">Edit</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -80,17 +78,6 @@ export default function ListPublicProblem(){
 
                   <StyledTableCell align="left">
                     <span style={{color:getColorLevel(`${problem.levelId}`)}}>{`${problem.levelId}`}</span>
-                  </StyledTableCell>
-
-                  <StyledTableCell align="left">
-                    <Link to={"/programming-contest/problem-detail-create-test-case/"+problem.problemId}  style={{ textDecoration: 'none', color:"black"}} >
-                      ADD
-                    </Link>
-                  </StyledTableCell>
-                  <StyledTableCell align="left">
-                    <Link to={"/programming-contest/edit-problem/"+problem.problemId}  style={{ textDecoration: 'none', color:"black", cursor:""}} >
-                      Edit
-                    </Link>
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
