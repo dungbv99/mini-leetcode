@@ -708,6 +708,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 .correctAns(correctAns)
                 .testCase(testCase)
                 .point(point)
+                .testCaseId(testCaseEntity.getTestCaseId())
                 .build();
     }
 
