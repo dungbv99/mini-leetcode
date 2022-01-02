@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import {ScrollBox} from "react-scroll-box";
 import {a11yProps, TabPanelVertical} from "./TabPanel";
 import CodeMirror from "@uiw/react-codemirror";
-import {useParams} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {authGet, authPost} from "../../../api";
 import {useDispatch, useSelector} from "react-redux";
 import { Markup } from 'interweave';
@@ -18,14 +18,13 @@ import {request} from "./Request";
 
 
 export default function CreateTestCase(props){
+  const history = useHistory();
   const [value, setValue] = useState(0);
   const [input, setInput] = useState();
   const [result, setResult] = useState();
   const [screenHeight, setScreenHeight] = useState((window.innerHeight-300)/2 + "px");
   const {problemId} = useParams();
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
-  const [problem, setProblem] = useState();
   const [description, setDescription] = useState();
   const [solution, setSolution] = useState();
   const [load, setLoad] = useState(false);
@@ -78,6 +77,7 @@ export default function CreateTestCase(props){
       (res) =>{
         console.log("res", res);
         // setShowSubmitSuccess(true);
+        history.goBack();
         successNoti("Your test case is saved", true);
       },
       {},
@@ -96,7 +96,6 @@ export default function CreateTestCase(props){
       API_URL+"/problem-details/"+problemId,
       (res) =>{
         console.log("res ", res);
-        setProblem(res);
         setDescription(res.data.problemDescription);
         setSolution(res.data.solution);
       },
