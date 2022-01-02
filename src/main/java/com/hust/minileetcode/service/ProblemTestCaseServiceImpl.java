@@ -119,46 +119,6 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public TestCaseEntity createTestCase(ModelCreateTestCase modelCreateTestCase, String problemId) throws Exception {
-        try {
-            ProblemEntity problemEntity = problemRepo.findByProblemId(problemId);
-            String solution = problemEntity.getCorrectSolutionSourceCode();
-            String tempName = tempDir.createRandomScriptFileName(problemId+"-solution");
-            String response = runCode(solution, problemEntity.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), problemEntity.getTimeLimit(), "Language Not Found");
-            TestCaseEntity testCaseEntity = TestCaseEntity.builder()
-                    .problem(problemEntity)
-                    .testCase(modelCreateTestCase.getTestCase())
-                    .testCasePoint(modelCreateTestCase.getTestCasePoint())
-                    .correctAnswer(response)
-                    .build();
-            testCaseRepo.save(testCaseEntity);
-            return testCaseEntity;
-        }catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
-
-    }
-
-    @Override
-    public TestCaseEntity updateTestCase(ModelCreateTestCase modelCreateTestCase, UUID testCaseId) throws Exception {
-        try {
-            TestCaseEntity testCaseEntity = testCaseRepo.findTestCaseByTestCaseId(testCaseId);
-            if(testCaseEntity == null){
-                throw new Exception("testcase not found");
-            }
-            ProblemEntity problemEntity = testCaseEntity.getProblem();
-            String solution = problemEntity.getCorrectSolutionSourceCode();
-            String tempName = tempDir.createRandomScriptFileName(problemEntity.getProblemId()+"-solution");
-            String response = runCode(solution, problemEntity.getCorrectSolutionLanguage(), tempName, modelCreateTestCase.getTestCase(), problemEntity.getTimeLimit(), "Language Not Found");
-            testCaseEntity.setTestCase(modelCreateTestCase.getTestCase());
-            testCaseEntity.setCorrectAnswer(response);
-            return testCaseEntity;
-        }catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
     public Page<ProblemEntity> getContestProblemPaging(Pageable pageable){
         return problemPagingAndSortingRepo.findAll(pageable);
     }
@@ -697,6 +657,35 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         ProblemEntity problem = problemRepo.findByProblemId(problemId);
         List<TestCaseEntity> testCases = testCaseRepo.findAllByProblem(problem);
         return testCases.stream().map(this::convertToModelGetTestCase).collect(Collectors.toList());
+    }
+
+    @Override
+    public ModelGetTestCaseDetail getTestCaseDetail(UUID testCaseId) throws MiniLeetCodeException {
+        TestCaseEntity testCase = testCaseRepo.findTestCaseByTestCaseId(testCaseId);
+        if(testCase == null){
+            throw new MiniLeetCodeException("testcase not found");
+        }
+        return ModelGetTestCaseDetail.builder()
+                .testCaseId(testCaseId)
+                .correctAns(testCase.getCorrectAnswer())
+                .testCase(testCase.getTestCase())
+                .point(testCase.getTestCasePoint())
+                .problemSolution(testCase.getProblem().getSolution())
+                .problemDescription(testCase.getProblem().getProblemDescription())
+                .build();
+    }
+
+    @Override
+    public void editTestCase(UUID testCaseId, ModelSaveTestcase modelSaveTestcase) throws MiniLeetCodeException {
+        TestCaseEntity testCase = testCaseRepo.findTestCaseByTestCaseId(testCaseId);
+        if(testCase == null){
+            throw new MiniLeetCodeException("test case not found");
+        }
+
+        testCase.setTestCase(modelSaveTestcase.getInput());
+        testCase.setCorrectAnswer(modelSaveTestcase.getResult());
+        testCase.setTestCasePoint(modelSaveTestcase.getPoint());
+        testCaseRepo.save(testCase);
     }
 
     private ModelGetTestCase convertToModelGetTestCase(TestCaseEntity testCaseEntity){

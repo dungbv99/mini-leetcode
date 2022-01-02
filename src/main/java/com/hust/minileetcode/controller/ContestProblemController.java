@@ -55,11 +55,6 @@ public class ContestProblemController {
             }
     }
 
-    @PostMapping("/update-test-case-and-generate-answer/{problemId}")
-    public ResponseEntity<?> createTestCase(@RequestBody ModelCreateTestCase modelCreateTestCase, @PathVariable("problemId") String problemId) throws Exception{
-        TestCaseEntity testCaseEntity = problemTestCaseService.createTestCase(modelCreateTestCase, problemId);
-        return ResponseEntity.status(200).body(testCaseEntity);
-    }
 
     @PostMapping("/get-test-case-result/{problemId}")
     public ResponseEntity<?> getTestCaseResult(@PathVariable("problemId") String problemId, @RequestBody ModelGetTestCaseResult testCaseResult, Principal principal) throws Exception {
@@ -70,11 +65,7 @@ public class ContestProblemController {
         return ResponseEntity.status(200).body(resp);
     }
 
-    @PostMapping("/edit-test-case/{testCaseId}")
-    public ResponseEntity<?> editTestCase(@PathVariable("testCaseId") UUID testCaseId, @RequestBody ModelCreateTestCase modelCreateTestCase) throws Exception {
-        TestCaseEntity testCaseEntity = problemTestCaseService.updateTestCase(modelCreateTestCase, testCaseId);
-        return ResponseEntity.status(200).body(testCaseEntity);
-    }
+
 
     @GetMapping("/get-contest-problem-paging")
     public ResponseEntity<?> getContestProblemPaging(Pageable pageable, @Param("sortBy") String sortBy, @Param("desc") String desc){
@@ -309,5 +300,17 @@ public class ContestProblemController {
     public ResponseEntity<?> getTestCaseListByProblem(@PathVariable("problemId") String problemId){
         List<ModelGetTestCase> list = problemTestCaseService.getTestCaseByProblem(problemId);
         return ResponseEntity.status(200).body(list);
+    }
+
+    @GetMapping("/get-test-case-detail/{testCaseId}")
+    public ResponseEntity<?> getTestCaseDetail(@PathVariable("testCaseId") UUID testCaseId) throws MiniLeetCodeException {
+        ModelGetTestCaseDetail resp = problemTestCaseService.getTestCaseDetail(testCaseId);
+        return ResponseEntity.status(200).body(resp);
+    }
+
+    @PostMapping("/update-test-case/{testCaseId}")
+    public ResponseEntity<?> updateDateTestCase(@PathVariable("testCaseId") UUID testCaseId, @RequestBody ModelSaveTestcase modelSaveTestcase) throws MiniLeetCodeException {
+        problemTestCaseService.editTestCase(testCaseId, modelSaveTestcase);
+        return ResponseEntity.status(200).body(null);
     }
 }

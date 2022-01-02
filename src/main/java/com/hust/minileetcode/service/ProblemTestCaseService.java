@@ -20,10 +20,6 @@ public interface ProblemTestCaseService {
 
     void updateProblemSourceCode(ModelAddProblemLanguageSourceCode modelAddProblemLanguageSourceCode, String problemId);
 
-    TestCaseEntity createTestCase(ModelCreateTestCase modelCreateTestCase, String problemId) throws Exception;
-
-    TestCaseEntity updateTestCase(ModelCreateTestCase modelCreateTestCase, UUID testCaseId) throws Exception;
-
     Page<ProblemEntity> getContestProblemPaging(Pageable pageable);
 
     ProblemEntity findContestProblemByProblemId(String problemId) throws Exception;
@@ -82,4 +78,8 @@ public interface ProblemTestCaseService {
     Page<ProblemEntity> getPublicProblemPaging(Pageable pageable);
 
     List<ModelGetTestCase> getTestCaseByProblem(String problemId);
+
+    ModelGetTestCaseDetail getTestCaseDetail(UUID testCaseId) throws MiniLeetCodeException;
+
+    void editTestCase(UUID testCaseId, ModelSaveTestcase modelSaveTestcase) throws MiniLeetCodeException;
 }

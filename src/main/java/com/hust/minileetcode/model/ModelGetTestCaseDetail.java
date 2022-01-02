@@ -7,14 +7,17 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 @Builder
-public class ModelGetTestCase {
-    private boolean viewMore;
-    private String testCase;
-    private String correctAns;
-    private int point;
+@AllArgsConstructor
+@NoArgsConstructor
+public class ModelGetTestCaseDetail {
     private UUID testCaseId;
+    private String problemId;
+    private String correctAns;
+    private String testCase;
+    private String problemDescription;
+    private String problemSolution;
+    private int point;
+
 }
