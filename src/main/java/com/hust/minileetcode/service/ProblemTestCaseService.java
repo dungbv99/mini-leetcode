@@ -69,6 +69,8 @@ public interface ProblemTestCaseService {
 
     ListModelUserRegisteredContestInfo getListUserRegisterContestPendingPaging(Pageable pageable, String contestId);
 
+    ListModelUserRegisteredContestInfo searchUser(Pageable pageable, String contestId, String keyword);
+
     ModelGetContestPageResponse getRegisteredContestByUser(Pageable pageable, String userName);
 
     ModelGetContestPageResponse getNotRegisteredContestByUser(Pageable pageable, String userName);

@@ -14,15 +14,17 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserRegistrationContestPagingAndSortingRepo extends PagingAndSortingRepository<UserRegistrationContestEntity, UUID> {
-    @Query("select new com.hust.minileetcode.model.ModelUserRegisteredClassInfo(ul.email, ul.userLoginId, p.middleName, p.firstName, p.lastName) from UserRegistrationContestEntity urce " +
+    @Query("select new com.hust.minileetcode.model.ModelUserRegisteredClassInfo(ul.email, ul.userLoginId, p.middleName, p.firstName, p.lastName, urce.status) from UserRegistrationContestEntity urce " +
             "inner join ContestEntity ce on urce.status =:status and urce.contest = :contest and urce.contest = ce " +
             "inner join UserLogin ul on urce.userLogin = ul " +
             "inner join Person p on ul.person = p")
     Page<ModelUserRegisteredClassInfo> getAllUserRegisteredByContestAndStatusInfo(Pageable pageable, @Param("contest") ContestEntity contest, @Param("status") String status);
 
-    List<UserRegistrationContestEntity> findUserRegistrationContestEntityByContest(Pageable pageable,ContestEntity contest);
-
-    List<UserRegistrationContestEntity> findUserRegistrationContestEntityByContestAndStatus(Pageable pageable, ContestEntity contest, String status);
+    @Query("select new com.hust.minileetcode.model.ModelUserRegisteredClassInfo(ul.email, ul.userLoginId, p.middleName, p.firstName, p.lastName, urce.status) from UserRegistrationContestEntity urce " +
+            "inner join ContestEntity ce on  urce.contest = :contest and urce.contest = ce " +
+            "inner join UserLogin ul on urce.userLogin = ul and (ul.userLoginId like %:keyword% or ul.email like %:keyword%) " +
+            "inner join Person p on ul.person = p")
+    Page<ModelUserRegisteredClassInfo> searchUser(Pageable pageable, @Param("contest") ContestEntity contest, @Param("keyword") String keyword);
 
     @Query("select ce from ContestEntity ce where ce in (select urce.contest from UserRegistrationContestEntity urce where urce.userLogin = :userLogin and urce.status = 'SUCCESSFUL')")
     Page<ContestEntity> getContestByUserAndStatusSuccessful(Pageable pageable, @Param("userLogin") UserLogin userLogin);

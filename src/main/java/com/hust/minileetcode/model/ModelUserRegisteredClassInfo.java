@@ -16,6 +16,7 @@ public class ModelUserRegisteredClassInfo {
     private String middleName;
     private String firstName;
     private String lastName;
+    private String status;
 
 //    public ModelUserRegisteredClassInfo(String email, String userName, String middleName, String firstName, String lastName) {
 //        this.email = email;

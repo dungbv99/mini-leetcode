@@ -221,6 +221,19 @@ public class ContestProblemController {
     }
 
     @Secured("ROLE_TEACHER")
+    @GetMapping("/search-user/{contestId}")
+    public ResponseEntity<?> searchUser(@PathVariable("contestId") String contestId, Pageable pageable, @Param("keyword") String keyword){
+        if(keyword == null){
+            keyword = "";
+        }
+        ListModelUserRegisteredContestInfo resp = problemTestCaseService.searchUser(pageable, contestId, keyword);
+        return ResponseEntity.status(200).body(resp);
+
+    }
+
+
+
+    @Secured("ROLE_TEACHER")
     @PostMapping("/techer-manager-student-register-contest")
     public ResponseEntity<?> teacherManagerStudentRegisterContest(Principal principal, @RequestBody ModelTeacherManageStudentRegisterContest request) throws MiniLeetCodeException {
         log.info("teacherManagerStudentRegisterContest");
@@ -313,4 +326,5 @@ public class ContestProblemController {
         problemTestCaseService.editTestCase(testCaseId, modelSaveTestcase);
         return ResponseEntity.status(200).body(null);
     }
+
 }

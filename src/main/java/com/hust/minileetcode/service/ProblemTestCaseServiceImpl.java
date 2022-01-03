@@ -610,7 +610,6 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     @Override
     public ListModelUserRegisteredContestInfo getListUserRegisterContestSuccessfulPaging(Pageable pageable, String contestId) {
         ContestEntity contest = contestRepo.findContestByContestId(contestId);
-//        List<UserRegistrationContestEntity> list = userRegistrationContestPagingAndSortingRepo.findUserRegistrationContestEntityByContest(pageable, contest);
         Page<ModelUserRegisteredClassInfo> list = userRegistrationContestPagingAndSortingRepo.getAllUserRegisteredByContestAndStatusInfo(pageable,contest, Constants.RegistrationType.SUCCESSFUL.getValue());
         return ListModelUserRegisteredContestInfo.builder()
                 .contents(list)
@@ -621,12 +620,19 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     public ListModelUserRegisteredContestInfo getListUserRegisterContestPendingPaging(Pageable pageable, String contestId) {
         ContestEntity contest = contestRepo.findContestByContestId(contestId);
         Page<ModelUserRegisteredClassInfo> list = userRegistrationContestPagingAndSortingRepo.getAllUserRegisteredByContestAndStatusInfo(pageable,contest, Constants.RegistrationType.PENDING.getValue());
-//        log.info("list pending {}", list.size());
-//        List<UserRegistrationContestEntity> list1 = userRegistrationContestPagingAndSortingRepo.findUserRegistrationContestEntityByContestAndStatus(pageable, contest, Constants.RegistrationType.PENDING.getValue());
-//        log.info("lllll {}", list1.size());
         return ListModelUserRegisteredContestInfo.builder()
                 .contents(list)
-                .build();    }
+                .build();
+    }
+
+    @Override
+    public ListModelUserRegisteredContestInfo searchUser(Pageable pageable, String contestId, String keyword) {
+        ContestEntity contest = contestRepo.findContestByContestId(contestId);
+        Page<ModelUserRegisteredClassInfo> list = userRegistrationContestPagingAndSortingRepo.searchUser(pageable,contest, keyword);
+        return ListModelUserRegisteredContestInfo.builder()
+                .contents(list)
+                .build();
+    }
 
     @Override
     public ModelGetContestPageResponse getRegisteredContestByUser(Pageable pageable, String userName) {
