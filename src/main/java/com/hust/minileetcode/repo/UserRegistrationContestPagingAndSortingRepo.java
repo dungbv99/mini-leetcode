@@ -21,7 +21,7 @@ public interface UserRegistrationContestPagingAndSortingRepo extends PagingAndSo
     Page<ModelUserRegisteredClassInfo> getAllUserRegisteredByContestAndStatusInfo(Pageable pageable, @Param("contest") ContestEntity contest, @Param("status") String status);
 
     @Query("select new com.hust.minileetcode.model.ModelUserRegisteredClassInfo(ul.email, ul.userLoginId, p.middleName, p.firstName, p.lastName, urce.status) from UserLogin ul " +
-            "inner join Person p on ul.person = p and  (ul.userLoginId like %:keyword% or ul.email like %:keyword%) left join UserRegistrationContestEntity urce")
+            "inner join Person p on ul.person = p and  (ul.userLoginId like %:keyword% or ul.email like %:keyword%) left join UserRegistrationContestEntity urce on ul = urce.userLogin and urce.contest = :contest")
     Page<ModelUserRegisteredClassInfo> searchUser(Pageable pageable, @Param("contest") ContestEntity contest, @Param("keyword") String keyword);
 
     @Query("select ce from ContestEntity ce where ce in (select urce.contest from UserRegistrationContestEntity urce where urce.userLogin = :userLogin and urce.status = 'SUCCESSFUL')")
