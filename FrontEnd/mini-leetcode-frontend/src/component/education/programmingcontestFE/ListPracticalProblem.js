@@ -7,15 +7,47 @@ import {request} from "./Request";
 import {API_URL} from "../../../config/config";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
-import {getColorLevel, StyledTableCell, StyledTableRow} from "./lib";
+import {
+  getColorLevel,
+  Search,
+  SearchIconWrapper,
+  styleBase,
+  StyledInputBase,
+  StyledTableCell,
+  StyledTableRow
+} from "./lib";
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import SearchIcon from '@mui/icons-material/Search';
+import {InputBase} from "@mui/material";
+import {makeStyles} from "@material-ui/core/styles";
 
-export default function ListPublicProblem(){
+const useStyles = makeStyles((theme) => ({
+  searchStyle:{
+    color: 'inherit',
+    '& .MuiInputBase-input': {
+      padding: theme.spacing(1, 1, 1, 0),
+      // vertical padding + font size from searchIcon
+      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+      transition: theme.transitions.create('width'),
+      width: '100%',
+      [theme.breakpoints.up('md')]: {
+        width: '20ch',
+      },
+    },
+  }
+}));
+
+
+export default function ListPracticalProblem(){
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPage] = useState(0);
   const pageSizes = [20,50, 100];
   const [contestProblems, setContestProblems] = useState([])
 
+  const classes = useStyles();
 
 
   const handlePageChange = (event, value) => {
@@ -41,6 +73,7 @@ export default function ListPublicProblem(){
     ).then();
   }
 
+
   useEffect(() => {
     console.log("use effect");
     getProblemContestList().then();
@@ -48,7 +81,31 @@ export default function ListPublicProblem(){
 
   return (
     <div>
+      <Box sx={{ flexGrow: 1, marginBottom: 2 }}>
+        <AppBar position="static" color={"transparent"}>
+          <Toolbar>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <InputBase
+                style={{paddingLeft:50}}
+                placeholder={"search..."}
+                onChange={(event) =>{
+
+                }}
+              />
+
+
+            </Search>
+          </Toolbar>
+        </AppBar>
+      </Box>
+
       <div>
+
+
+
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 750 }} aria-label="customized table">
             <TableHead>
