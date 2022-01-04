@@ -327,4 +327,11 @@ public class ContestProblemController {
         return ResponseEntity.status(200).body(null);
     }
 
+    @PostMapping("/add-user-to-contest")
+    public ResponseEntity<?> addUserContest(@RequestBody ModelAddUserToContest modelAddUserToContest){
+        return ResponseEntity.status(200).body(null);
+    }
+
+
+
 }
