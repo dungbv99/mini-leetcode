@@ -44,7 +44,7 @@ public class DockerClientBase {
         } catch (Exception e){
             e.printStackTrace();
 //            System.exit(0);
-//            throw new Exception(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 
