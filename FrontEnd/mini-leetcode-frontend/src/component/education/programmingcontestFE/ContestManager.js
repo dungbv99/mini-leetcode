@@ -447,6 +447,8 @@ export function ContestManager(){
                 <StyledTableCell align="center">Full Name</StyledTableCell>
                 <StyledTableCell align="center">Email</StyledTableCell>
                 <StyledTableCell align="center">Status</StyledTableCell>
+                <StyledTableCell align="center">Add</StyledTableCell>
+                <StyledTableCell align="center">Delete</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -479,15 +481,155 @@ export function ContestManager(){
                       }
 
                     </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      {
+                        s.status === "PENDING"?
+                          <Button
+                            variant="contained"
+                            color="light"
+                            onClick={() => {
+                              let body = {
+                                contestId: contestId,
+                                userId: s.userName,
+                                status: "SUCCESSES"
+                              }
+                              request(
+                                "post",
+                                "/techer-manager-student-register-contest",
+                                ()=>{
+                                  successful.push(s);
+                                  // setSuccessful(successful)
+                                  // setSuccessful(successful)
+                                  pendings.splice(index,1);
+                                  // setPendings(pendings);
+                                  console.log("successful ", successful);
+                                  console.log("pendings ", pendings);
+                                  setLoad(false);
+                                  setLoad(true);
+                                },
+                                {}
+                                ,
+                                body
+
+                              ).then()
+                            }}
+                          >
+                            Approve
+                          </Button> :
+                          s.status !== "SUCCESSFUL" ?
+                            <Button
+                              variant="contained"
+                              color="light"
+                              style={{marginLeft:"45px"}}
+                              onClick={() => {
+                                let body={
+                                  contestId:contestId,
+                                  userId:s.userName,
+                                }
+                                successful.push(s);
+                                request(
+                                  "POST",
+                                  API_URL+"/add-user-to-contest",
+                                  {},
+                                  {},
+                                  body
+                                ).then(
+                                  () =>{
+                                    setLoad(false);
+                                    setLoad(true);
+                                    searchUser(keyword);
+                                  }
+                                )
+                              }}
+                            >
+                              ADD
+                            </Button>
+                            :
+                            <div></div>
+
+                      }
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      {
+                        s.status === "SUCCESSFUL" ?
+                          <Button
+                            variant="contained"
+                            color="light"
+                            style={{marginLeft:"45px"}}
+                            onClick={() => {
+                              let body={
+                                contestId:contestId,
+                                userId:s.userName,
+                              }
+
+                              request(
+                                "POST",
+                                API_URL+"/delete-user-contest",
+                                {},
+                                {},
+                                body
+                              ).then(
+                                () =>{
+                                  setLoad(false);
+                                  setLoad(true);
+                                  searchUser(keyword);
+                                }
+                              )
+                            }}
+                          >
+                            DELETE
+                          </Button>
+                          :
+                          <div></div>
+                      }
+                    </StyledTableCell>
                   </StyledTableRow>
                 ))
               }
             </TableBody>
           </Table>
         </TableContainer>
-      
-      
-      
+
+        <br/><br/>
+        <Grid container spacing={12}>
+          <Grid item xs={6}>
+
+            <TextField
+              variant={"outlined"}
+              autoFocus
+              size={"small"}
+              required
+              select
+              id="pageSize"
+              value={pageSearchSize}
+              onChange={handlePageSearchSizeChange}
+            >
+              {pageSizes.map((item) => (
+                <MenuItem key={item} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+
+          <Grid item >
+            <Pagination
+              className="my-3"
+              count={totalPageSearch}
+              page={pageSearch}
+              siblingCount={1}
+              boundaryCount={1}
+              variant="outlined"
+              shape="rounded"
+              onChange={(event, value) =>{
+                setPageSearch(value);
+                searchUser();
+              }}
+            />
+          </Grid>
+        </Grid>
       
         <br/><br/>
       </div>
