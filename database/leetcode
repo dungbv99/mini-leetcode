@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.1 (Debian 14.1-1.pgdg110+1)
--- Dumped by pg_dump version 14.1 (Debian 14.1-1.pgdg110+1)
+-- Dumped from database version 13.4 (Debian 13.4-1.pgdg100+1)
+-- Dumped by pg_dump version 13.4 (Debian 13.4-1.pgdg100+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -112,7 +112,8 @@ CREATE TABLE public.contest_problem_new (
     solution text,
     level_order integer,
     correct_solution_source_code text,
-    correct_solution_language character varying(10)
+    correct_solution_language character varying(10),
+    is_public boolean
 );
 
 
@@ -473,6 +474,9 @@ contest1	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
 contest2	ADD 2 NUMBER	2021-12-05 00:00:00	2021-12-05 00:00:00
 contest2	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
 contest2	tru 2 so	2021-12-05 00:00:00	2021-12-05 00:00:00
+ww	ADD 2 NUMBER	2021-12-28 00:00:00	2021-12-28 00:00:00
+ww	multiple 2 number	2021-12-28 00:00:00	2021-12-28 00:00:00
+111	multiple 2 number	2021-12-29 00:00:00	2021-12-29 00:00:00
 \.
 
 
@@ -490,6 +494,8 @@ test6	test6	90	admin	f	f	2021-12-04 00:00:00	\N
 test7	test7	75	admin	f	f	2021-12-04 00:00:00	\N
 contest1	contest1	20	admin	f	f	2021-12-05 00:00:00	\N
 contest2	contest2	1	admin	f	f	2021-12-05 00:00:00	\N
+ww	www	0	admin	f	f	2021-12-28 00:00:00	\N
+111	222	20	admin	f	f	2021-12-29 00:00:00	\N
 \.
 
 
@@ -497,10 +503,10 @@ contest2	contest2	1	admin	f	f	2021-12-05 00:00:00	\N
 -- Data for Name: contest_problem_new; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.contest_problem_new (problem_id, problem_name, problem_description, created_by_user_login_id, time_limit, memory_limit, level_id, category_id, last_updated_stamp, created_stamp, solution, level_order, correct_solution_source_code, correct_solution_language) FROM stdin;
-ADD 2 NUMBER	ADD 2 NUMBER	<p>ADD 2 NUMBER</p>\n	\N	1	1	easy	\N	2021-12-01 00:00:00	2021-12-01 11:48:35.681	<p></p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  cout << "1";\n}	CPP
-multiple 2 number	multiple 2 number	<p>give 2 number a and b</p>\n<p>return a*b</p>\n	\N	1	1	easy	\N	2021-12-05 00:00:00	2021-12-05 09:09:19.303	<p></p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a;\n  int b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP
-tru 2 so	\N	<p>1</p>\n	\N	1	1	easy	\N	2021-12-05 00:00:00	2021-12-05 20:51:32.392	<p>1</p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a-b;\n}	CPP
+COPY public.contest_problem_new (problem_id, problem_name, problem_description, created_by_user_login_id, time_limit, memory_limit, level_id, category_id, last_updated_stamp, created_stamp, solution, level_order, correct_solution_source_code, correct_solution_language, is_public) FROM stdin;
+multiple 2 number	multiple 2 number	<p>give 2 number a and b</p>\n<p>return a*b</p>\n	\N	1	1	easy	\N	2021-12-05 00:00:00	2021-12-05 09:09:19.303	<p></p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a;\n  int b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	t
+tru 2 so	\N	<p>1</p>\n	\N	1	1	easy	\N	2021-12-05 00:00:00	2021-12-05 20:51:32.392	<p>1</p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a-b;\n}	CPP	t
+ADD 2 NUMBER	ADD 2 NUMBER	<p>ADD 2 NUMBER</p>\n	\N	1	1	easy	\N	2021-12-01 00:00:00	2021-12-01 11:48:35.681	<p></p>\n	1	#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n  int a, b;\n  cin >> a >>b ;\n  cout << a+b;\n}	CPP	t
 \.
 
 
@@ -523,6 +529,16 @@ cd0bb3e9-3aa9-449c-bcc9-d28ca1b1a4da	contest1	multiple 2 number	admin	Accept	10	
 c98bd571-7c31-4138-bab3-d1e84c79b873	contest1	multiple 2 number	admin	Accept	0	4/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a , b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	\N	0	\N	2021-12-05
 c0b2a85c-dd8b-4023-9439-d5fa167ec3d5	contest1	multiple 2 number	test5	\nCompile Error	0	0/4	#include<bit/stdc++.h>\nusing namespace  std;\n\nint main(){\n  int a , b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	\N	0	\N	2021-12-05
 e561dca7-dfc8-4293-80fe-1d95bc808dc1	contest1	multiple 2 number	test5	Accept	0	4/4	#include<bits/stdc++.h>\nusing namespace  std;\n\nint main(){\n  int a , b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	\N	0	\N	2021-12-05
+1f353a21-69bc-4fe8-93ca-608fdc0d9935	111	multiple 2 number	admin	Accept	10	4/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	15	0	\N	2021-12-29
+cfb055f8-67c7-422e-9a32-4c07e602e0e9	111	multiple 2 number	admin	Accept	10	4/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	13	0	\N	2021-12-29
+82bfaf5b-229b-464f-9c45-1babac0f1d62	111	multiple 2 number	admin	Wrong Answer	0	0/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a;\n}	CPP	12	0	\N	2021-12-29
+3cfd57e2-6176-4468-8afb-408b059a9cab	111	multiple 2 number	admin	Wrong Answer	0	1/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << 2;\n}	CPP	13	0	\N	2021-12-29
+a1089151-0182-4a6a-a8f2-c8ab1db77ce6	111	multiple 2 number	admin	Compile Error	0	0/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << 2\n}	CPP	0	0	\N	2021-12-29
+acabd7f0-28e5-4e80-a12d-ba7ed1fc7dc4	111	multiple 2 number	admin	Compile Error	0	0/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << 2\n}	CPP	0	0	\N	2021-12-29
+349bc9da-b28a-44ef-b044-4a5ed7b3166c	111	multiple 2 number	admin	Accept	10	4/4	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	13	0	\N	2021-12-29
+37924c2a-e751-4a22-996b-0cbf99639325	contest2	tru 2 so	test5	Compile Error	0	0/0		CPP	0	0	\N	2021-12-29
+6295deaf-47aa-458b-ad4b-eb9fe26a0ca2	contest2	ADD 2 NUMBER	test5	Compile Error	0	0/0		CPP	0	0	\N	2021-12-29
+33b9b576-385e-448b-ae92-7a39f95bca95	contest2	multiple 2 number	test5	Compile Error	0	0/4		CPP	0	0	\N	2021-12-29
 \.
 
 
@@ -584,6 +600,12 @@ c48c5247-4407-4a8a-9748-271f3e816c73	test5 register contest contest1	test5	admin
 7ee7242d-0955-4648-9de9-d938d399704b	Your register contest contest1 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-05 20:48:39.786	2021-12-05 20:48:39.786
 08b1dce3-62de-48b0-b16d-58a04b912242	test5 register contest contest2	test5	admin	/programming-contest/contest-manager/contest2#pending	NOTIFICATION_READ	2021-12-05 20:52:10.367	2021-12-05 20:52:06.499
 1a772384-3b81-48b0-a9e3-969300e86fde	Your register contest contest2 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2021-12-05 20:52:14.769	2021-12-05 20:52:14.769
+44e6ab51-7ea3-428d-ab1b-26f76934c1d3	admin register contest 111	admin	admin	/programming-contest/contest-manager/111#pending	NOTIFICATION_READ	2021-12-29 10:59:32.648	2021-12-29 10:59:30.459
+6caa4ceb-af88-4430-b12b-98f7ac1aca7a	Your register contest 111 is approved 	admin	admin	\N	NOTIFICATION_CREATED	2021-12-29 10:59:34.858	2021-12-29 10:59:34.858
+b19592bf-32ac-4c00-90e9-4339ec1bf9c2	admin register contest test3	admin	admin	/programming-contest/contest-manager/test3#pending	NOTIFICATION_READ	2022-01-04 10:11:13.797	2022-01-04 10:11:06.817
+d3632784-787e-405c-a351-2ea0bbf1f76b	test5 register contest test3	test5	admin	/programming-contest/contest-manager/test3#pending	NOTIFICATION_CREATED	2022-01-04 10:13:02.527	2022-01-04 10:13:02.527
+43481541-8bc9-4c22-aa66-70a7169f2a8c	Your register contest test3 is approved 	admin	admin	\N	NOTIFICATION_READ	2022-01-04 10:13:11.46	2022-01-04 10:11:18.521
+f4ed35e4-082a-4677-9b25-8eb119901adc	Your register contest test3 is approved 	admin	test5	\N	NOTIFICATION_CREATED	2022-01-04 10:51:05.677	2022-01-04 10:51:05.677
 \.
 
 
@@ -612,6 +634,18 @@ COPY public.problem_source_code_new (problem_source_code_id, base_source, main_s
 
 COPY public.problem_submission_new (problem_submission_id, problem_id, submitted_by_user_login_id, source_code, source_code_language, status, score, runtime, memory_usage, test_case_pass, created_stamp) FROM stdin;
 e8d88feb-2112-4dd5-a352-e6cd7b1627c9	ADD 2 NUMBER	admin	\N	CPP	\nCompile Error	0	\N	0	0/0	05/12/2021 08:59:50
+b85bfd4a-928c-4add-9689-a660944f142e	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >>a >>b;\n  cout << a*b;\n}	CPP	Accept	10	\N	0	4/4	29/12/2021 11:20:14
+401a1392-3f15-457e-b99f-729fe52b4ae1	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	Accept	10	\N	0	4/4	29/12/2021 11:43:39
+a2734892-31cf-4954-878b-b22df569a6c3	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	Accept	10	\N	0	4/4	29/12/2021 11:50:02
+063d54eb-f036-46c8-91e8-40fe15fa0f8a	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	Accept	10	\N	0	4/4	29/12/2021 11:51:16
+4cf85eee-c77a-4689-bf88-91e82170d050	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	Accept	10	\N	0	4/4	29/12/2021 11:52:45
+9341c27a-4c79-4818-9e30-cde3bb673ba0	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	Accept	10	\N	0	4/4	29/12/2021 11:54:31
+a0bb6960-085f-4c8f-889b-a7e4dc088824	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	Accept	10	\N	0	4/4	29/12/2021 11:54:52
+24d91599-8033-4aab-a7b6-a5c3735caa92	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	Accept	10	\N	0	4/4	29/12/2021 11:55:27
+5f5c2217-2e69-4df3-9105-ec742d3ea72e	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	Accept	10	\N	0	4/4	29/12/2021 12:00:29
+de978ae9-c4a4-451c-b251-e6e3651320f2	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	Accept	10	13	0	4/4	29/12/2021 14:16:47
+32ba5b3d-252b-4aee-a5ff-c17286332121	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	Accept	10	13	0	4/4	29/12/2021 14:17:48
+51eeb484-b1f6-4d7a-9a0e-f1eeb1c7cde9	multiple 2 number	admin	#include<bits/stdc++.h>\nusing namespace std;\n\nint main(){\n  int a, b;\n  cin >> a >> b;\n  cout << a*b;\n}	CPP	Accept	10	13	0	4/4	29/12/2021 14:18:52
 \.
 
 
@@ -709,10 +743,11 @@ f361ef02-5188-11ec-9621-0242ac110002	3	3	7
 --
 
 COPY public.test_case_new (test_case_id, test_case_point, test_case, correct_answer, contest_problem_id, last_updated_stamp, created_stamp) FROM stdin;
-0f6a020c-c377-46ab-8d7f-e1489ed864a3	0	1 2	2	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
 416942bd-5382-48ff-ae4e-665a8679073c	0	2 3	6	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
 4e176d08-7419-475e-831d-3c8dc3d90abf	0	3 4	12	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
 089ee5c4-dc2c-4694-87f2-77b11006a99a	10	6 7	42	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+0f6a020c-c377-46ab-8d7f-e1489ed864a3	10	9 10	90	multiple 2 number	2021-12-05 00:00:00	2021-12-05 00:00:00
+9e1caf59-05c5-4daa-9d15-098e39e00f6d	10	11 12	132	multiple 2 number	2022-01-02 00:00:00	2022-01-02 00:00:00
 \.
 
 
@@ -765,6 +800,10 @@ f0b1f09f-2afd-40cb-81cb-aec56e76e08f	admin	contest1	SUCCESSFUL
 02b72142-31a2-48c2-bb43-689786f8c3cd	admin	test2	SUCCESSFUL
 dabf8177-4795-437e-8763-b42786b0a738	test5	contest1	SUCCESSFUL
 a55a09c8-a1e1-4d58-bf91-118c9fed4bb2	test5	contest2	SUCCESSFUL
+77a92f45-e3f9-455c-993e-51be6b16dd2f	admin	111	SUCCESSFUL
+675da64a-62f5-435e-b52c-817b2fc1f4d1	admin	test3	SUCCESSFUL
+41194e7b-9256-46d9-8510-efa35c45a136	test5	test3	SUCCESSFUL
+61d52f94-9d64-4af8-84c1-72eca535c5f0	test2	test3	SUCCESSFUL
 \.
 
 
