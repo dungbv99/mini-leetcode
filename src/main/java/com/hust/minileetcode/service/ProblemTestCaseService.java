@@ -84,4 +84,8 @@ public interface ProblemTestCaseService {
     ModelGetTestCaseDetail getTestCaseDetail(UUID testCaseId) throws MiniLeetCodeException;
 
     void editTestCase(UUID testCaseId, ModelSaveTestcase modelSaveTestcase) throws MiniLeetCodeException;
+
+    void addUserToContest(ModelAddUserToContest modelAddUserToContest);
+
+    void deleteUserContest(ModelAddUserToContest modelAddUserToContest) throws MiniLeetCodeException;
 }

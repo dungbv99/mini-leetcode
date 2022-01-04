@@ -694,6 +694,33 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         testCaseRepo.save(testCase);
     }
 
+    @Override
+    public void addUserToContest(ModelAddUserToContest modelAddUserToContest) {
+        UserRegistrationContestEntity userRegistrationContest = userRegistrationContestRepo.findUserRegistrationContestEntityByContestIdAndUserId(modelAddUserToContest.getContestId(), modelAddUserToContest.getUserId());
+        if(userRegistrationContest == null) {
+            userRegistrationContestRepo.save(UserRegistrationContestEntity.builder()
+                    .contestId(modelAddUserToContest.getContestId())
+                    .userId(modelAddUserToContest.getUserId())
+                    .status(Constants.RegistrationType.SUCCESSFUL.getValue())
+                    .build());
+        }else{
+            userRegistrationContest.setStatus(Constants.RegistrationType.SUCCESSFUL.getValue());
+            userRegistrationContestRepo.save(userRegistrationContest);
+        }
+
+    }
+
+    @Override
+    public void deleteUserContest(ModelAddUserToContest modelAddUserToContest) throws MiniLeetCodeException {
+        UserRegistrationContestEntity userRegistrationContest = userRegistrationContestRepo.findUserRegistrationContestEntityByContestIdAndUserId(modelAddUserToContest.getContestId(), modelAddUserToContest.getUserId());
+        if(userRegistrationContest == null){
+            throw new MiniLeetCodeException("user not register contest");
+        }
+
+        userRegistrationContest.setStatus(Constants.RegistrationType.FAILED.getValue());
+        userRegistrationContestRepo.delete(userRegistrationContest);
+    }
+
     private ModelGetTestCase convertToModelGetTestCase(TestCaseEntity testCaseEntity){
         boolean viewMore = false;
         String correctAns = testCaseEntity.getCorrectAnswer();

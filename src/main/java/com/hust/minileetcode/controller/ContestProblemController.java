@@ -329,6 +329,13 @@ public class ContestProblemController {
 
     @PostMapping("/add-user-to-contest")
     public ResponseEntity<?> addUserContest(@RequestBody ModelAddUserToContest modelAddUserToContest){
+        problemTestCaseService.addUserToContest(modelAddUserToContest);
+        return ResponseEntity.status(200).body(null);
+    }
+
+    @PostMapping("/delete-user-contest")
+    public ResponseEntity<?> deleteUserFromContest(@RequestBody ModelAddUserToContest modelAddUserToContest) throws MiniLeetCodeException {
+        problemTestCaseService.deleteUserContest(modelAddUserToContest);
         return ResponseEntity.status(200).body(null);
     }
 
