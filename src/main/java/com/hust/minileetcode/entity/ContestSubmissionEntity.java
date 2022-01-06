@@ -1,6 +1,5 @@
 package com.hust.minileetcode.entity;
 
-import com.hust.minileetcode.rest.entity.UserLogin;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,17 +20,26 @@ public class ContestSubmissionEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID contestSubmissionId;
 
-    @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private ProblemEntity problem;
+//    @JoinColumn(name = "problem_id", referencedColumnName = "problem_id")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private ProblemEntity problem;
 
-    @JoinColumn(name = "contest_id", referencedColumnName = "contest_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private ContestEntity contest;
+    @Column(name = "problem_id")
+    private String problemId;
 
-    @JoinColumn(name = "user_submission_id", referencedColumnName = "user_login_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private UserLogin userLogin;
+//    @JoinColumn(name = "contest_id", referencedColumnName = "contest_id")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private ContestEntity contest;
+
+    @Column(name = "contest_id")
+    private String contestId;
+
+//    @JoinColumn(name = "user_submission_id", referencedColumnName = "user_login_id")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private UserLogin userLogin;
+
+    @Column(name = "user_submission_id")
+    private String userId;
 
 //    @JoinColumn(name = "problem_submission_id", referencedColumnName = "problem_submission_id")
 //    @OneToOne

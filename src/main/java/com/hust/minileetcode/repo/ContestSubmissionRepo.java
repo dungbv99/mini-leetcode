@@ -27,5 +27,4 @@ public interface ContestSubmissionRepo extends JpaRepository<ContestSubmissionEn
             nativeQuery = true
     )
     List<Object[]> calculatorContest(@Param("contest_id") String contest_id);
-
 }

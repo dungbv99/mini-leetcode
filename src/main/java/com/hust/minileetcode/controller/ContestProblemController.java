@@ -1,5 +1,6 @@
 package com.hust.minileetcode.controller;
 
+import com.hust.minileetcode.entity.ContestSubmissionEntity;
 import com.hust.minileetcode.entity.ProblemEntity;
 import com.hust.minileetcode.entity.TestCaseEntity;
 import com.hust.minileetcode.entity.UserSubmissionContestResultNativeEntity;
@@ -337,6 +338,12 @@ public class ContestProblemController {
     public ResponseEntity<?> deleteUserFromContest(@RequestBody ModelAddUserToContest modelAddUserToContest) throws MiniLeetCodeException {
         problemTestCaseService.deleteUserContest(modelAddUserToContest);
         return ResponseEntity.status(200).body(null);
+    }
+
+    @GetMapping("/get-contest-submission-paging/{contestId}")
+    public ResponseEntity<?> getContestSubmissionPaging(@PathVariable("contestId") String contestId, Pageable pageable){
+        Page<ContestSubmissionEntity> page = problemTestCaseService.findContestSubmissionByContestIdPaging(pageable, contestId);
+        return ResponseEntity.status(200).body(page);
     }
 
 

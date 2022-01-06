@@ -1,9 +1,6 @@
 package com.hust.minileetcode.service;
 
-import com.hust.minileetcode.entity.ContestEntity;
-import com.hust.minileetcode.entity.ProblemEntity;
-import com.hust.minileetcode.entity.TestCaseEntity;
-import com.hust.minileetcode.entity.UserSubmissionContestResultNativeEntity;
+import com.hust.minileetcode.entity.*;
 import com.hust.minileetcode.exception.MiniLeetCodeException;
 import com.hust.minileetcode.model.*;
 import org.springframework.data.domain.Page;
@@ -88,4 +85,6 @@ public interface ProblemTestCaseService {
     void addUserToContest(ModelAddUserToContest modelAddUserToContest);
 
     void deleteUserContest(ModelAddUserToContest modelAddUserToContest) throws MiniLeetCodeException;
+
+    Page<ContestSubmissionEntity> findContestSubmissionByContestIdPaging(Pageable pageable, String contestId);
 }

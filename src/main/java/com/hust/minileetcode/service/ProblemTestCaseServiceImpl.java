@@ -47,6 +47,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     private UserSubmissionContestResultNativeRepo userSubmissionContestResultNativeRepo;
     private UserRegistrationContestPagingAndSortingRepo userRegistrationContestPagingAndSortingRepo;
     private UserSubmissionContestResultNativePagingRepo userSubmissionContestResultNativePagingRepo;
+    private ContestSubmissionPagingAndSortingRepo contestSubmissionPagingAndSortingRepo;
 
     @Override
     public void createContestProblem(ModelCreateContestProblem modelCreateContestProblem) throws MiniLeetCodeException {
@@ -484,8 +485,6 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         log.info("submitContestProblem");
         log.info("modelContestSubmission {}", modelContestSubmission);
         ProblemEntity problemEntity = problemRepo.findByProblemId(modelContestSubmission.getProblemId());
-        UserLogin userLogin = userLoginRepo.findByUserLoginId(userName);
-        ContestEntity contestEntity = contestRepo.findContestByContestId(modelContestSubmission.getContestId());
         UserRegistrationContestEntity userRegistrationContest = userRegistrationContestRepo.findUserRegistrationContestEntityByContestIdAndUserIdAndStatus(modelContestSubmission.getContestId(), userName, Constants.RegistrationType.SUCCESSFUL.getValue());
         log.info("userRegistrationContest {}", userRegistrationContest);
         if(userRegistrationContest == null){
@@ -499,12 +498,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         List<Integer> points = testCaseEntityList.stream().map(TestCaseEntity::getTestCasePoint).collect(Collectors.toList());
         ProblemSubmission problemSubmission = StringHandler.handleContestResponse(response, testCaseAns, points);
         ContestSubmissionEntity c = ContestSubmissionEntity.builder()
-                .contest(contestEntity)
+                .contestId(modelContestSubmission.getContestId())
                 .status(problemSubmission.getStatus())
                 .point(problemSubmission.getScore())
-                .contest(contestEntity)
-                .problem(problemEntity)
-                .userLogin(userLogin)
+                .problemId(modelContestSubmission.getProblemId())
+                .userId(userName)
                 .testCasePass(problemSubmission.getTestCasePass())
                 .sourceCode(modelContestSubmission.getSource())
                 .sourceCodeLanguage(modelContestSubmission.getLanguage())
@@ -719,6 +717,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
         userRegistrationContest.setStatus(Constants.RegistrationType.FAILED.getValue());
         userRegistrationContestRepo.delete(userRegistrationContest);
+    }
+
+    @Override
+    public Page<ContestSubmissionEntity> findContestSubmissionByContestIdPaging(Pageable pageable, String contestId) {
+        return contestSubmissionPagingAndSortingRepo.findAllByContestId(pageable, contestId);
     }
 
     private ModelGetTestCase convertToModelGetTestCase(TestCaseEntity testCaseEntity){
