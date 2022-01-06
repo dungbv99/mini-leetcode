@@ -342,7 +342,9 @@ public class ContestProblemController {
 
     @GetMapping("/get-contest-submission-paging/{contestId}")
     public ResponseEntity<?> getContestSubmissionPaging(@PathVariable("contestId") String contestId, Pageable pageable){
+        log.info("getContestSubmissionPaging");
         Page<ContestSubmissionEntity> page = problemTestCaseService.findContestSubmissionByContestIdPaging(pageable, contestId);
+        log.info("page {}", page);
         return ResponseEntity.status(200).body(page);
     }
 
