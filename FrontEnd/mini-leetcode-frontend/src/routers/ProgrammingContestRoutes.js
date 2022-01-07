@@ -17,6 +17,7 @@ import {Test} from "../component/education/programmingcontestFE/Test";
 import EditContest from "../component/education/programmingcontestFE/EditContest";
 import ListPracticalProblem from "../component/education/programmingcontestFE/ListPracticalProblem";
 import EditTestCase from "../component/education/programmingcontestFE/EditTestCase";
+import ContestProblemSubmissionDetail from "../component/education/programmingcontestFE/ContestProblemSubmissionDetail";
 
 export default function ProgrammingContestRoutes(){
   let { path } = useRouteMatch();
@@ -95,6 +96,11 @@ export default function ProgrammingContestRoutes(){
           component={EditTestCase}
           path={`${path}/edit-testcase/:problemId/:testCaseId`}
         />
+
+        <Route
+          component={ContestProblemSubmissionDetail}
+          path={`${path}/contest-problem-submission-detail/:problemSubmissionId`}
+          />
       </Switch>
     </div>
   )

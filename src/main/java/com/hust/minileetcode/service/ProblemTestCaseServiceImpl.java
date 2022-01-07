@@ -724,6 +724,11 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         return contestSubmissionPagingAndSortingRepo.findAllByContestId(pageable, contestId);
     }
 
+    @Override
+    public ContestSubmissionEntity getContestSubmissionDetail(UUID submissionId) {
+        return contestSubmissionRepo.findContestSubmissionEntityByContestSubmissionId(submissionId);
+    }
+
     private ModelGetTestCase convertToModelGetTestCase(TestCaseEntity testCaseEntity){
         boolean viewMore = false;
         String correctAns = testCaseEntity.getCorrectAnswer();

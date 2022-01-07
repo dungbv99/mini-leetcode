@@ -6,19 +6,29 @@ import Typography from "@mui/material/Typography";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
 import Table from "@mui/material/Table";
-import {Button, Grid, MenuItem, TableHead, TextField} from "@material-ui/core";
+import {Button, Grid, MenuItem, Tab, TableHead, Tabs, TextField} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
-import {getColorLevel, getColorRegisterStatus, Search, SearchIconWrapper, StyledTableCell, StyledTableRow} from "./lib";
+import {
+  getColorLevel,
+  getColorRegisterStatus,
+  getStatusColor,
+  Search,
+  SearchIconWrapper,
+  StyledTableCell,
+  StyledTableRow
+} from "./lib";
 import TableBody from "@mui/material/TableBody";
 import Pagination from "@material-ui/lab/Pagination";
 import {API_URL} from "../../../config/config";
-import {successNoti} from "../../../utils/notification";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import SearchIcon from "@mui/icons-material/Search";
 import {InputBase} from "@mui/material";
-// import { HashLink } from 'react-router-hash-link';
+import {a11yProps, TabPanelVertical} from "./TabPanel";
+import {ScrollBox} from "react-scroll-box";
+import {Markup} from "interweave";
+
 
 
 export function ContestManager(){
@@ -48,6 +58,22 @@ export function ContestManager(){
   const [pageSearch, setPageSearch] = useState(1);
   const [keyword, setKeyword]= useState("");
 
+  const [contestSubmissions, setContestSubmissions] = useState([]);
+  const [pageSubmissionSize, setPageSubmissionSize] = useState(50);
+  const [totalPageSubmission, setTotalPageSubmission] = useState(0);
+  const [pageSubmission, setPageSubmission] = useState(1);
+
+
+  const [value, setValue] = useState(0);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const handlePageSubmissionSizeChange = (event) => {
+    setPageSubmissionSize(event.target.value);
+    setPageSubmission(1);
+  }
+
   const handlePageSearchSizeChange = (event) => {
     setPageSearchSize(event.target.value);
     setPageSearch(1);
@@ -69,10 +95,19 @@ export function ContestManager(){
     setPageSuccessful(1);
   }
 
-  async function searchUser(){
 
+  function getSubmission(){
+    request(
+      "get",
+      "/get-contest-submission-paging/"+contestId+"?size="+pageSubmissionSize+"&page="+(pageSubmission-1),
+      (res)=>{
+        console.log("res submission", res.data);
+        setContestSubmissions(res.data.content);
+        console.log("contest submission", contestSubmissions);
+        setTotalPageSubmission(res.data.totalPages);
+      }
+    ).then();
   }
-
 
   function getUserPending(){
     request(
@@ -113,7 +148,7 @@ export function ContestManager(){
   function recalculatedRanking(){
     request(
       "post",
-        API_URL+"/recalculate-ranking/"+contestId
+      API_URL+"/recalculate-ranking/"+contestId
     ).then(() =>{
       getRanking();
     })
@@ -147,452 +182,92 @@ export function ContestManager(){
     getUserSuccessful()
     getRanking();
     searchUser(keyword);
+    getSubmission();
   },[])
 
 
 
   return(
     <div>
-      <Typography variant="h4" component="h2">
-        Contest: {contestName}
-      </Typography>
-      <Typography variant="h5" component="h2">
-        Time Limit: {timeLimit} minutes
-      </Typography>
-      <Typography variant="h5" component="h2" style={{marginTop:10, marginBottom:10}}>
-        List Problem
-      </Typography>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        indicatorColor={"primary"}
+        autoFocus
+        style={{
+          width:"100%",
+          display:"inline-table",
+          border: "1px solid transparent ",
+          position: "relative",
+          borderBottom:"none",
 
-      <TableContainer component={Paper}>
-        <Table sx={{minWidth:window.innerWidth-500}}  aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell></StyledTableCell>
-              <StyledTableCell >Question</StyledTableCell>
-              <StyledTableCell align="center">Level</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {problems.map((problem, index) =>(
-              <StyledTableRow>
-                <StyledTableCell>
-                  <b>{index+1}</b>
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  <b>{problem.problemName}</b>
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row" align="center">
-                  <span style={{color:getColorLevel(`${problem.levelId}`)}}> <b>{`${problem.levelId}`} </b> </span>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
+        }}
+        // variant={"fullWidth"}
+        aria-label="basic tabs example"
+      >
+        <Tab label="Contest Detail" {...a11yProps(0)} style={{width:"25%"}} />
+        <Tab label="List User" {...a11yProps(1)} style={{width:"25%"}}/>
+        <Tab label="Register User" {...a11yProps(2)} style={{width:"25%"}}/>
+        <Tab label="Add User" {...a11yProps(3)} style={{width:"25%"}}/>
+        <Tab label="Ranking" {...a11yProps(4)} style={{width:"25%"}}/>
+        <Tab label="User Submission" {...a11yProps(5)} style={{width:"25%"}}/>
+      </Tabs>
 
-
-
-
-
-
-        </Table>
-      </TableContainer>
-
-
-      <section id={"#registered"}>
-        <Typography variant="h5" component="h2" style={{marginTop:10, marginBottom:10}}>
-          List Student Registered Contest
+      <TabPanelVertical value={value} index={0}>
+        <Typography variant="h4" component="h2">
+          Contest: {contestName}
         </Typography>
-      </section>
-      <RegisteredTable
-        successful={successful}
-        pageSuccessful={pageSuccessful}
-        pageSuccessfulSize={pageSuccessfulSize}
-        load={load}
-      />
+        <Typography variant="h5" component="h2">
+          Time Limit: {timeLimit} minutes
+        </Typography>
+        <Typography variant="h5" component="h2" style={{marginTop:10, marginBottom:10}}>
+          List Problem
+        </Typography>
 
-
-      <br></br>
-      <Grid container spacing={12}>
-        <Grid item xs={6}>
-
-          <TextField
-            variant={"outlined"}
-            autoFocus
-            size={"small"}
-            required
-            select
-            id="pageSize"
-            value={pageSuccessfulSize}
-            onChange={handlePageSuccessfulSizeChange}
-          >
-            {pageSizes.map((item) => (
-              <MenuItem key={item} value={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
-
-        <Grid item >
-          <Pagination
-            className="my-3"
-            count={totalPageSuccessful}
-            page={pageSuccessful}
-            siblingCount={1}
-            boundaryCount={1}
-            variant="outlined"
-            shape="rounded"
-            onChange={(event, value) =>{
-              setPageSuccessful(value);
-
-            }}
-          />
-        </Grid>
-      </Grid>
-
-
-      {
-        pendings.length > 0 ?
-          <div>
-            <section id={"#pending"}>
-              <Typography variant="h5" component="h2" style={{marginTop:10, marginBottom:10}}>
-                List Student Request
-              </Typography>
-            </section>
-            <TableContainer component={Paper}>
-              <Table sx={{minWidth:window.innerWidth-500}}  aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell></StyledTableCell>
-                    <StyledTableCell align="center">User Name</StyledTableCell>
-                    <StyledTableCell align="center">Full Name</StyledTableCell>
-                    <StyledTableCell align="center">Email</StyledTableCell>
-                    <StyledTableCell align="center">Approve</StyledTableCell>
-                    <StyledTableCell align="center">Reject</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {
-                    pendings.map((s, index) =>(
-                      <StyledTableRow>
-                        <StyledTableCell>
-                          <b>{index+1+(pagePending-1)*pageSuccessfulSize}</b>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                          <b>{s.userName}</b>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                          <b>{s.firstName}{" "}{s.middleName}{" "}{s.lastName}</b>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                          <b>{s.email}</b>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                          <Button
-                            variant="contained"
-                            color="light"
-                            onClick={() => {
-                              let body = {
-                                contestId: contestId,
-                                userId: s.userName,
-                                status: "SUCCESSES"
-                              }
-                              request(
-                                "post",
-                                "/techer-manager-student-register-contest",
-                                ()=>{
-                                  successful.push(s);
-                                  // setSuccessful(successful)
-                                  // setSuccessful(successful)
-                                  pendings.splice(index,1);
-                                  // setPendings(pendings);
-                                  console.log("successful ", successful);
-                                  console.log("pendings ", pendings);
-                                  setLoad(false);
-                                  setLoad(true);
-                                },
-                                {}
-                                ,
-                                body
-
-                              ).then()
-                            }}
-                          >
-                            Approve
-                          </Button>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                          <Button
-                            variant="contained"
-                            color="light"
-                            onClick={() => {
-                              let body = {
-                                contestId: contestId,
-                                userId: s.userName,
-                                status: "FAILED"
-                              }
-                              request(
-                                "post",
-                                "/techer-manager-student-register-contest",
-                                ()=>{
-                                  pendings.splice(index,1);
-                                  setLoad(false);
-                                  setLoad(true)
-                                },
-                                {}
-                                ,
-                                body
-
-                              ).then()
-                            }}
-                          >
-                            Reject
-                          </Button>
-                        </StyledTableCell>
-
-                      </StyledTableRow>
-                    ))
-                  }
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            <br></br>
-            <Grid container spacing={12}>
-              <Grid item xs={6}>
-
-                <TextField
-                  variant={"outlined"}
-                  autoFocus
-                  size={"small"}
-                  required
-                  select
-                  id="pageSize"
-                  value={pagePendingSize}
-                  onChange={handlePagePendingSizeChange}
-                >
-                  {pageSizes.map((item) => (
-                    <MenuItem key={item} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item >
-                <Pagination
-                  className="my-3"
-                  count={totalPagePending}
-                  page={pagePending}
-                  siblingCount={1}
-                  boundaryCount={1}
-                  variant="outlined"
-                  shape="rounded"
-                  onChange={(event, value) =>{
-                    setPagePending(value);
-                    getUserPending();
-                  }}
-                />
-              </Grid>
-            </Grid>
-          </div>
-
-          :
-          <div></div>
-      }
-
-
-      <br/><br/><br/>
-
-
-
-
-      <div>
-        <section id={"#ranking"}>
-          <Typography variant="h5" component="h2" style={{marginTop:10, marginBottom:10}}>
-            Add Member
-          </Typography>
-        </section>
-      
-        <Box sx={{ flexGrow: 1, marginBottom: 2 }}>
-          <AppBar position="static" color={"transparent"}>
-            <Toolbar>
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <InputBase
-                  style={{paddingLeft:50}}
-                  placeholder={"search..."}
-                  onChange={(event) =>{
-                    searchUser(event.target.value);
-                  }}
-                />
-              </Search>
-            </Toolbar>
-          </AppBar>
-        </Box>
-      
-      
         <TableContainer component={Paper}>
           <Table sx={{minWidth:window.innerWidth-500}}  aria-label="customized table">
             <TableHead>
               <TableRow>
-                <StyledTableCell align="center"></StyledTableCell>
-                <StyledTableCell align="center">User Name</StyledTableCell>
-                <StyledTableCell align="center">Full Name</StyledTableCell>
-                <StyledTableCell align="center">Email</StyledTableCell>
-                <StyledTableCell align="center">Status</StyledTableCell>
-                <StyledTableCell align="center">Add</StyledTableCell>
-                <StyledTableCell align="center">Delete</StyledTableCell>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell >Question</StyledTableCell>
+                <StyledTableCell align="center">Level</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {
-                searchUsers.map((s, index) =>(
-                  <StyledTableRow>
-                    <StyledTableCell>
-                      <b>{index+1+(pageSuccessful-1)*pageSuccessfulSize}</b>
-                    </StyledTableCell>
-      
-                    <StyledTableCell align="center">
-                      <b>{s.userName}</b>
-      
-                    </StyledTableCell>
-      
-                    <StyledTableCell align="center">
-                      <b>{s.firstName}{" "}{s.middleName}{" "}{s.lastName}</b>
-      
-                    </StyledTableCell>
-      
-                    <StyledTableCell align="center">
-                      <b>{s.email}</b>
-                    </StyledTableCell>
-      
-                    <StyledTableCell align="center">
-                      {
-                        s.status != null ?
-                          <b><span style={{color:getColorRegisterStatus(`${s.status}`)}}>{`${s.status}`}</span></b>:
-                          <b><span style={{color:getColorRegisterStatus('NOT REGISTER')}}>NOT REGISTER</span></b>
-                      }
-
-                    </StyledTableCell>
-
-                    <StyledTableCell align="center">
-                      {
-                        s.status === "PENDING"?
-                          <Button
-                            variant="contained"
-                            color="light"
-                            onClick={() => {
-                              let body = {
-                                contestId: contestId,
-                                userId: s.userName,
-                                status: "SUCCESSES"
-                              }
-                              request(
-                                "post",
-                                "/techer-manager-student-register-contest",
-                                ()=>{
-                                  successful.push(s);
-                                  // setSuccessful(successful)
-                                  // setSuccessful(successful)
-                                  pendings.splice(index,1);
-                                  // setPendings(pendings);
-                                  console.log("successful ", successful);
-                                  console.log("pendings ", pendings);
-                                  setLoad(false);
-                                  setLoad(true);
-                                },
-                                {}
-                                ,
-                                body
-
-                              ).then()
-                            }}
-                          >
-                            Approve
-                          </Button> :
-                          s.status !== "SUCCESSFUL" ?
-                            <Button
-                              variant="contained"
-                              color="light"
-                              style={{marginLeft:"45px"}}
-                              onClick={() => {
-                                let body={
-                                  contestId:contestId,
-                                  userId:s.userName,
-                                }
-                                successful.push(s);
-                                request(
-                                  "POST",
-                                  API_URL+"/add-user-to-contest",
-                                  {},
-                                  {},
-                                  body
-                                ).then(
-                                  () =>{
-                                    setLoad(false);
-                                    setLoad(true);
-                                    searchUser(keyword);
-                                  }
-                                )
-                              }}
-                            >
-                              ADD
-                            </Button>
-                            :
-                            <div></div>
-
-                      }
-                    </StyledTableCell>
-
-                    <StyledTableCell align="center">
-                      {
-                        s.status === "SUCCESSFUL" ?
-                          <Button
-                            variant="contained"
-                            color="light"
-                            style={{marginLeft:"45px"}}
-                            onClick={() => {
-                              let body={
-                                contestId:contestId,
-                                userId:s.userName,
-                              }
-
-                              request(
-                                "POST",
-                                API_URL+"/delete-user-contest",
-                                {},
-                                {},
-                                body
-                              ).then(
-                                () =>{
-                                  setLoad(false);
-                                  setLoad(true);
-                                  searchUser(keyword);
-                                }
-                              )
-                            }}
-                          >
-                            DELETE
-                          </Button>
-                          :
-                          <div></div>
-                      }
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))
-              }
+              {problems.map((problem, index) =>(
+                <StyledTableRow>
+                  <StyledTableCell>
+                    <b>{index+1}</b>
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row">
+                    <b>{problem.problemName}</b>
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row" align="center">
+                    <span style={{color:getColorLevel(`${problem.levelId}`)}}> <b>{`${problem.levelId}`} </b> </span>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
+      </TabPanelVertical>
 
-        <br/><br/>
+
+      <TabPanelVertical value={value} index={1}>
+        <section id={"#registered"}>
+          <Typography variant="h5" component="h2" style={{marginTop:10, marginBottom:10}}>
+            List Student Registered Contest
+          </Typography>
+        </section>
+        <RegisteredTable
+          successful={successful}
+          pageSuccessful={pageSuccessful}
+          pageSuccessfulSize={pageSuccessfulSize}
+          load={load}
+        />
+
+
+        <br></br>
         <Grid container spacing={12}>
           <Grid item xs={6}>
 
@@ -603,8 +278,8 @@ export function ContestManager(){
               required
               select
               id="pageSize"
-              value={pageSearchSize}
-              onChange={handlePageSearchSizeChange}
+              value={pageSuccessfulSize}
+              onChange={handlePageSuccessfulSizeChange}
             >
               {pageSizes.map((item) => (
                 <MenuItem key={item} value={item}>
@@ -617,134 +292,606 @@ export function ContestManager(){
           <Grid item >
             <Pagination
               className="my-3"
-              count={totalPageSearch}
-              page={pageSearch}
+              count={totalPageSuccessful}
+              page={pageSuccessful}
               siblingCount={1}
               boundaryCount={1}
               variant="outlined"
               shape="rounded"
               onChange={(event, value) =>{
-                setPageSearch(value);
-                searchUser();
+                setPageSuccessful(value);
+
               }}
             />
           </Grid>
         </Grid>
-      
-        <br/><br/>
-      </div>
+      </TabPanelVertical>
 
+      <TabPanelVertical value={value} index={2}>
+        <div>
+          <section id={"#pending"}>
+            <Typography variant="h5" component="h2" style={{marginTop:10, marginBottom:10}}>
+              List Student Request
+            </Typography>
+          </section>
+          <TableContainer component={Paper}>
+            <Table sx={{minWidth:window.innerWidth-500}}  aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell></StyledTableCell>
+                  <StyledTableCell align="center">User Name</StyledTableCell>
+                  <StyledTableCell align="center">Full Name</StyledTableCell>
+                  <StyledTableCell align="center">Email</StyledTableCell>
+                  <StyledTableCell align="center">Approve</StyledTableCell>
+                  <StyledTableCell align="center">Reject</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  pendings.map((s, index) =>(
+                    <StyledTableRow>
+                      <StyledTableCell>
+                        <b>{index+1+(pagePending-1)*pageSuccessfulSize}</b>
+                      </StyledTableCell>
 
+                      <StyledTableCell align="center">
+                        <b>{s.userName}</b>
+                      </StyledTableCell>
 
+                      <StyledTableCell align="center">
+                        <b>{s.firstName}{" "}{s.middleName}{" "}{s.lastName}</b>
+                      </StyledTableCell>
 
-      {
-        ranking.length > 0 ?
-          <div>
-            <section id={"#ranking"}>
-              <Typography variant="h5" component="h2" style={{marginTop:10, marginBottom:10}}>
-                Contest Ranking
-              </Typography>
-            </section>
+                      <StyledTableCell align="center">
+                        <b>{s.email}</b>
+                      </StyledTableCell>
 
+                      <StyledTableCell align="center">
+                        <Button
+                          variant="contained"
+                          color="light"
+                          onClick={() => {
+                            let body = {
+                              contestId: contestId,
+                              userId: s.userName,
+                              status: "SUCCESSES"
+                            }
+                            request(
+                              "post",
+                              "/techer-manager-student-register-contest",
+                              ()=>{
+                                successful.push(s);
+                                // setSuccessful(successful)
+                                // setSuccessful(successful)
+                                pendings.splice(index,1);
+                                // setPendings(pendings);
+                                console.log("successful ", successful);
+                                console.log("pendings ", pendings);
+                                setLoad(false);
+                                setLoad(true);
+                              },
+                              {}
+                              ,
+                              body
 
-            <TableContainer component={Paper}>
-              <Table sx={{minWidth:window.innerWidth-500}}  aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell align="center"></StyledTableCell>
-                    <StyledTableCell align="center">User Name</StyledTableCell>
-                    <StyledTableCell align="center">Full Name</StyledTableCell>
-                    <StyledTableCell align="center">Email</StyledTableCell>
-                    <StyledTableCell align="center">Point</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {
-                    ranking.map((s, index) =>(
-                      <StyledTableRow>
-                        <StyledTableCell>
-                          <b>{index+1+(pageSuccessful-1)*pageSuccessfulSize}</b>
-                        </StyledTableCell>
+                            ).then()
+                          }}
+                        >
+                          Approve
+                        </Button>
+                      </StyledTableCell>
 
-                        <StyledTableCell align="center">
-                          <b>{s.userId}</b>
+                      <StyledTableCell align="center">
+                        <Button
+                          variant="contained"
+                          color="light"
+                          onClick={() => {
+                            let body = {
+                              contestId: contestId,
+                              userId: s.userName,
+                              status: "FAILED"
+                            }
+                            request(
+                              "post",
+                              "/techer-manager-student-register-contest",
+                              ()=>{
+                                pendings.splice(index,1);
+                                setLoad(false);
+                                setLoad(true)
+                              },
+                              {}
+                              ,
+                              body
 
-                        </StyledTableCell>
+                            ).then()
+                          }}
+                        >
+                          Reject
+                        </Button>
+                      </StyledTableCell>
 
-                        <StyledTableCell align="center">
-                          <b>{s.fullName}</b>
+                    </StyledTableRow>
+                  ))
+                }
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-                        </StyledTableCell>
+          <br></br>
+          <Grid container spacing={12}>
+            <Grid item xs={6}>
 
-                        <StyledTableCell align="center">
-                          <b>{s.email}</b>
-                        </StyledTableCell>
-
-                        <StyledTableCell align="center">
-                          <b>{s.point}</b>
-                        </StyledTableCell>
-
-                      </StyledTableRow>
-                    ))
-                  }
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-
-            <br></br>
-            <Grid container spacing={12}>
-              <Grid item xs={6}>
-
-                <TextField
-                  variant={"outlined"}
-                  autoFocus
-                  size={"small"}
-                  required
-                  select
-                  id="pageSize"
-                  value={pageRankingSize}
-                  onChange={handlePageRankingSizeChange}
-                >
-                  {pageSizes.map((item) => (
-                    <MenuItem key={item} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item >
-                <Pagination
-                  className="my-3"
-                  count={totalPageRanking}
-                  page={pageRanking}
-                  siblingCount={1}
-                  boundaryCount={1}
-                  variant="outlined"
-                  shape="rounded"
-                  onChange={(event, value) =>{
-                    setPageRanking(value);
-                    getRanking();
-                  }}
-                />
-              </Grid>
+              <TextField
+                variant={"outlined"}
+                autoFocus
+                size={"small"}
+                required
+                select
+                id="pageSize"
+                value={pagePendingSize}
+                onChange={handlePagePendingSizeChange}
+              >
+                {pageSizes.map((item) => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Grid>
 
+            <Grid item >
+              <Pagination
+                className="my-3"
+                count={totalPagePending}
+                page={pagePending}
+                siblingCount={1}
+                boundaryCount={1}
+                variant="outlined"
+                shape="rounded"
+                onChange={(event, value) =>{
+                  setPagePending(value);
+                  getUserPending();
+                }}
+              />
+            </Grid>
+          </Grid>
+        </div>
+      </TabPanelVertical>
 
-            <Button
-              variant="contained"
-              color="light"
-              style={{marginLeft:"45px"}}
-              onClick={recalculatedRanking}
+
+
+      <TabPanelVertical value={value} index={3}>
+        <div>
+          <section id={"#search"}>
+            <Typography variant="h5" component="h2" style={{marginTop:10, marginBottom:10}}>
+              Add Member
+            </Typography>
+          </section>
+
+          <Box sx={{ flexGrow: 1, marginBottom: 2 }}>
+            <AppBar position="static" color={"transparent"}>
+              <Toolbar>
+                <Search>
+                  <SearchIconWrapper>
+                    <SearchIcon />
+                  </SearchIconWrapper>
+                  <InputBase
+                    style={{paddingLeft:50}}
+                    placeholder={"search..."}
+                    onChange={(event) =>{
+                      setKeyword(event.target.value);
+                      searchUser(event.target.value);
+                    }}
+                  />
+                </Search>
+              </Toolbar>
+            </AppBar>
+          </Box>
+
+
+          <TableContainer component={Paper}>
+            <Table sx={{minWidth:window.innerWidth-500}}  aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="center"></StyledTableCell>
+                  <StyledTableCell align="center">User Name</StyledTableCell>
+                  <StyledTableCell align="center">Full Name</StyledTableCell>
+                  <StyledTableCell align="center">Email</StyledTableCell>
+                  <StyledTableCell align="center">Status</StyledTableCell>
+                  <StyledTableCell align="center">Add</StyledTableCell>
+                  <StyledTableCell align="center">Delete</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  searchUsers.map((s, index) =>(
+                    <StyledTableRow>
+                      <StyledTableCell>
+                        <b>{index+1+(pageSuccessful-1)*pageSuccessfulSize}</b>
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <b>{s.userName}</b>
+
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <b>{s.firstName}{" "}{s.middleName}{" "}{s.lastName}</b>
+
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <b>{s.email}</b>
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        {
+                          s.status != null ?
+                            <b><span style={{color:getColorRegisterStatus(`${s.status}`)}}>{`${s.status}`}</span></b>:
+                            <b><span style={{color:getColorRegisterStatus('NOT REGISTER')}}>NOT REGISTER</span></b>
+                        }
+
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        {
+                          s.status === "PENDING"?
+                            <Button
+                              variant="contained"
+                              color="light"
+                              onClick={() => {
+                                let body = {
+                                  contestId: contestId,
+                                  userId: s.userName,
+                                  status: "SUCCESSES"
+                                }
+                                request(
+                                  "post",
+                                  "/techer-manager-student-register-contest",
+                                  ()=>{
+                                    successful.push(s);
+                                    // setSuccessful(successful)
+                                    // setSuccessful(successful)
+                                    pendings.splice(index,1);
+                                    // setPendings(pendings);
+                                    console.log("successful ", successful);
+                                    console.log("pendings ", pendings);
+                                    setLoad(false);
+                                    setLoad(true);
+                                  },
+                                  {}
+                                  ,
+                                  body
+
+                                ).then()
+                              }}
+                            >
+                              Approve
+                            </Button> :
+                            s.status !== "SUCCESSFUL" ?
+                              <Button
+                                variant="contained"
+                                color="light"
+                                style={{marginLeft:"45px"}}
+                                onClick={() => {
+                                  let body={
+                                    contestId:contestId,
+                                    userId:s.userName,
+                                  }
+                                  successful.push(s);
+                                  request(
+                                    "POST",
+                                    API_URL+"/add-user-to-contest",
+                                    {},
+                                    {},
+                                    body
+                                  ).then(
+                                    () =>{
+                                      setLoad(false);
+                                      setLoad(true);
+                                      searchUser(keyword);
+                                    }
+                                  )
+                                }}
+                              >
+                                ADD
+                              </Button>
+                              :
+                              <div></div>
+
+                        }
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        {
+                          s.status === "SUCCESSFUL" ?
+                            <Button
+                              variant="contained"
+                              color="light"
+                              style={{marginLeft:"45px"}}
+                              onClick={() => {
+                                let body={
+                                  contestId:contestId,
+                                  userId:s.userName,
+                                }
+
+                                request(
+                                  "POST",
+                                  API_URL+"/delete-user-contest",
+                                  {},
+                                  {},
+                                  body
+                                ).then(
+                                  () =>{
+                                    setLoad(false);
+                                    setLoad(true);
+                                    searchUser(keyword);
+                                  }
+                                )
+                              }}
+                            >
+                              DELETE
+                            </Button>
+                            :
+                            <div></div>
+                        }
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))
+                }
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <br/><br/>
+          <Grid container spacing={12}>
+            <Grid item xs={6}>
+
+              <TextField
+                variant={"outlined"}
+                autoFocus
+                size={"small"}
+                required
+                select
+                id="pageSize"
+                value={pageSearchSize}
+                onChange={handlePageSearchSizeChange}
+              >
+                {pageSizes.map((item) => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item >
+              <Pagination
+                className="my-3"
+                count={totalPageSearch}
+                page={pageSearch}
+                siblingCount={1}
+                boundaryCount={1}
+                variant="outlined"
+                shape="rounded"
+                onChange={(event, value) =>{
+                  setPageSearch(value);
+                  searchUser();
+                }}
+              />
+            </Grid>
+          </Grid>
+
+          <br/><br/>
+        </div>
+      </TabPanelVertical>
+
+
+
+      <TabPanelVertical value={value} index={4}>
+        <div>
+          <section id={"#ranking"}>
+            <Typography variant="h5" component="h2" style={{marginTop:10, marginBottom:10}}>
+              Contest Ranking
+            </Typography>
+          </section>
+
+
+          <TableContainer component={Paper}>
+            <Table sx={{minWidth:window.innerWidth-500}}  aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="center"></StyledTableCell>
+                  <StyledTableCell align="center">User Name</StyledTableCell>
+                  <StyledTableCell align="center">Full Name</StyledTableCell>
+                  <StyledTableCell align="center">Email</StyledTableCell>
+                  <StyledTableCell align="center">Point</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  ranking.map((s, index) =>(
+                    <StyledTableRow>
+                      <StyledTableCell>
+                        <b>{index+1+(pageSuccessful-1)*pageSuccessfulSize}</b>
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <b>{s.userId}</b>
+
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <b>{s.fullName}</b>
+
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <b>{s.email}</b>
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        <b>{s.point}</b>
+                      </StyledTableCell>
+
+                    </StyledTableRow>
+                  ))
+                }
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+
+          <br></br>
+          <Grid container spacing={12}>
+            <Grid item xs={6}>
+
+              <TextField
+                variant={"outlined"}
+                autoFocus
+                size={"small"}
+                required
+                select
+                id="pageSize"
+                value={pageRankingSize}
+                onChange={handlePageRankingSizeChange}
+              >
+                {pageSizes.map((item) => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item >
+              <Pagination
+                className="my-3"
+                count={totalPageRanking}
+                page={pageRanking}
+                siblingCount={1}
+                boundaryCount={1}
+                variant="outlined"
+                shape="rounded"
+                onChange={(event, value) =>{
+                  setPageRanking(value);
+                  getRanking();
+                }}
+              />
+            </Grid>
+          </Grid>
+
+
+          <Button
+            variant="contained"
+            color="light"
+            style={{marginLeft:"45px"}}
+            onClick={recalculatedRanking}
+          >
+            Recalculate Ranking
+          </Button>
+        </div>
+
+      </TabPanelVertical>
+
+      <TabPanelVertical value={value} index={5}>
+        <section id={"#submission"}>
+          <Typography variant="h5" component="h2" style={{marginTop:10, marginBottom:10}}>
+            User Submission
+          </Typography>
+        </section>
+
+        <TableContainer component={Paper}>
+          <Table sx={{minWidth:window.innerWidth-500}}  aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell align="center">Submission Id</StyledTableCell>
+                <StyledTableCell align="center">User</StyledTableCell>
+                <StyledTableCell align="center">Problem Id</StyledTableCell>
+                <StyledTableCell align="center">Test Case Pass</StyledTableCell>
+                <StyledTableCell align="center">Lang</StyledTableCell>
+                <StyledTableCell align="center">Status</StyledTableCell>
+                <StyledTableCell align="center">Point</StyledTableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+
+              {
+                contestSubmissions.map((s) => (
+                  <StyledTableRow>
+                    <StyledTableCell align="center">
+                      <Link to={"/programming-contest/contest-problem-submission-detail/"+s.contestSubmissionId}  style={{ textDecoration: 'none', color:"blue", cursor:""}} >
+                        <b style={{color: "blue"}}>{s.contestSubmissionId}</b>
+                      </Link>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <b>{s.userId}</b>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <b>{s.problemId}</b>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <b>{s.testCasePass}</b>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <b>{s.sourceCodeLanguage}</b>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <b><span  style={{color:getStatusColor(`${s.status}`)}}>{`${s.status}`}</span></b>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <b>{s.point}</b>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))
+              }
+            </TableBody>
+
+          </Table>
+        </TableContainer>
+
+
+        <Grid container spacing={12}>
+          <Grid item xs={6}>
+
+            <TextField
+              variant={"outlined"}
+              autoFocus
+              size={"small"}
+              required
+              select
+              id="pageSize"
+              value={pageSubmissionSize}
+              onChange={handlePageSubmissionSizeChange}
             >
-              Recalculate Ranking
-            </Button>
-          </div>
-          :
-          <div></div>
+              {pageSizes.map((item) => (
+                <MenuItem key={item} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
 
-      }
+          <Grid item >
+            <Pagination
+              className="my-3"
+              count={totalPageSubmission}
+              page={pageSubmission}
+              siblingCount={1}
+              boundaryCount={1}
+              variant="outlined"
+              shape="rounded"
+              onChange={(event, value) =>{
+                setPageSubmission(value);
+                getSubmission();
+              }}
+            />
+          </Grid>
+        </Grid>
+      </TabPanelVertical>
+
+
 
     </div>
   );
