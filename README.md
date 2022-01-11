@@ -50,7 +50,7 @@ Demo service:
 #### Environment variable:
 | ENV                   | Description                               | Example                                                        |
 |-----------------------|-------------------------------------------|----------------------------------------------------------------|
-| DOCKER_SERVER_HOST    | point to your docker service              | `http://103.56.158.222:12375` or `unix:///var/run/docker.sock` |
+| DOCKER_SERVER_HOST    | point to your docker service              | `http://localhost:12375` or `unix:///var/run/docker.sock` |
 | SQL_DB_USER           | Postgres user                             | `postgres`                                                     |
 | POSTGRES_DB           | Postgres database                         | `leetcode`                                                     |
 | SQL_DB_HOST           | Host of postgres                          | `localhost`                                                    |
