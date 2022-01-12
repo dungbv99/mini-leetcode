@@ -67,11 +67,11 @@ public class JavaExecutor {
         String sourceSH = SHFileStart
                 + "mkdir -p " + tmpName +"\n"
                 + "cd " + tmpName +"\n"
-                + "cat <<EOF >> main"  + suffixes + "\n"
+                + "cat <<EOF >> Main"  + suffixes + "\n"
                 + source + "\n"
                 + "EOF" + "\n"
                 + buildCmd +"\n"
-                + "FILE=main" +"\n"
+                + "FILE=Main.class" +"\n"
                 +"if test -f \"$FILE\"; then" +"\n"
                 + genTestCase +"\n"
                 + "n=0\n"

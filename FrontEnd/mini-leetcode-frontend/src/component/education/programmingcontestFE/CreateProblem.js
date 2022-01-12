@@ -281,9 +281,9 @@ function CreateProblem() {
                   autoFocus
                   // required
                   select
-                  id="categoryId"
-                  label="Category ID"
-                  placeholder="Category ID"
+                  id="Public Problem"
+                  label="Public Problem"
+                  placeholder="Public Problem"
                   onChange={(event) => {
                     setIsPublic(event.target.value);
                   }}
