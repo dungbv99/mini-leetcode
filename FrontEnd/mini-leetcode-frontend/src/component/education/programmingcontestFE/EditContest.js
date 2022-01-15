@@ -248,7 +248,7 @@ export default function EditContest(props){
   function handleSubmit(){
     let body = {
       contestName: contestName,
-      contestTime: contestTime,
+      contestSolvingTime: contestTime,
       problemIds: problemSelected,
     }
     request(
@@ -281,7 +281,7 @@ export default function EditContest(props){
 
     request(
       "get",
-      "/get-contest-detail-teacher/"+contestId,
+      "/get-contest-detail/"+contestId,
       (res) =>{
         setContestTime(res.data.contestTime);
         let arr = [];

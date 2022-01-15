@@ -228,7 +228,7 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
         output = output.substring(0, output.length()-1);
         int lastLinetIndexExpected = output.lastIndexOf("\n");
         output = output.substring(0, lastLinetIndexExpected);
-        output = output.replaceAll("\n", "");
+//        output = output.replaceAll("\n", "");
         log.info("output {}", output);
         return output;
     }
