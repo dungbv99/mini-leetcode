@@ -100,6 +100,7 @@ function CreateProblem() {
   const [statusSuccessful, setStatusSuccessful] = useState(false);
   const [showSubmitSuccess, setShowSubmitSuccess] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
+  const [compileMessage, setCompileMessage] = useState("");
   const onChangeEditorStateDescription = (editorState) => {
     console.log(problemDescriptions);
     setEditorStateDescription(editorState);
@@ -135,6 +136,7 @@ function CreateProblem() {
       "post",
       API_URL + "/check-compile",
       (res) => {
+        console.log("res check compile", res);
         if (res.data.status == "Successful") {
           setShowCompile(true);
           setShowSubmitWarming(false);
@@ -143,6 +145,7 @@ function CreateProblem() {
           setShowCompile(true);
           setStatusSuccessful(false);
         }
+        setCompileMessage(res.data.message);
       },
       {},
       body
@@ -359,10 +362,11 @@ function CreateProblem() {
               }}
               autoFocus={false}
             />
-
+            <br/>
             <CompileStatus
               showCompile={showCompile}
               statusSuccessful={statusSuccessful}
+              message={compileMessage}
             />
           </CardContent>
           <CardActions>

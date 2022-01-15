@@ -221,20 +221,29 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public String getTestCaseResult(String problemId, String userName, ModelGetTestCaseResult modelGetTestCaseResult) throws Exception {
+    public ModelGetTestCaseResultResponse getTestCaseResult(String problemId, String userName, ModelGetTestCaseResult modelGetTestCaseResult) throws Exception {
         ProblemEntity problemEntity = problemRepo.findByProblemId(problemId);
         String tempName = tempDir.createRandomScriptFileName(userName + "-" + problemEntity.getProblemName() + "-" + problemEntity.getCorrectSolutionLanguage());
         String output = runCode(problemEntity.getCorrectSolutionSourceCode(), problemEntity.getCorrectSolutionLanguage(), tempName, modelGetTestCaseResult.getTestcase(), problemEntity.getTimeLimit(), "Correct Solution Language Not Found");
+        if(output.contains("Time Limit Exceeded")){
+            return ModelGetTestCaseResultResponse.builder()
+                    .result("")
+                    .status("Time Limit Exceeded")
+                    .build();
+        }
         output = output.substring(0, output.length()-1);
         int lastLinetIndexExpected = output.lastIndexOf("\n");
         output = output.substring(0, lastLinetIndexExpected);
 //        output = output.replaceAll("\n", "");
         log.info("output {}", output);
-        return output;
+        return ModelGetTestCaseResultResponse.builder()
+                .result(output)
+                .status("ok")
+                .build();
     }
 
     @Override
-    public String checkCompile(ModelCheckCompile modelCheckCompile, String userName) throws Exception {
+    public ModelCheckCompileResponse checkCompile(ModelCheckCompile modelCheckCompile, String userName) throws Exception {
         String tempName = tempDir.createRandomScriptFileName(userName);
         String resp;
         switch (modelCheckCompile.getComputerLanguage()){
@@ -258,9 +267,16 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
                 throw new Exception("Language not found");
         }
         if(resp.contains("Successful")){
-            return "Successful";
+            return ModelCheckCompileResponse.builder()
+                    .status("Successful")
+                    .message("")
+                    .build();
+
         }else{
-            return "Compile Error";
+            return ModelCheckCompileResponse.builder()
+                    .status("Compile Error")
+                    .message(resp)
+                    .build();
         }
     }
 

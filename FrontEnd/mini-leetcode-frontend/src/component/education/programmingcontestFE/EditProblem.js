@@ -110,6 +110,7 @@ function EditProblem() {
   const [showSubmitSuccess, setShowSubmitSuccess] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
   const [testCases, setTestCases] = useState([]);
+  const [compileMessage, setCompileMessage] = useState("");
 
   useEffect(() => {
     console.log("problemid ", problemId);
@@ -194,19 +195,6 @@ function EditProblem() {
       source: codeSolution,
       computerLanguage: languageSolution,
     };
-    // authPost(dispatch, token, "/check-compile", body).then(
-    //   (res) =>{
-    //     console.log("res", res);
-    //     if(res.status == "Successful"){
-    //       setShowCompile(true);
-    //       setShowSubmitWarming(false);
-    //       setStatusSuccessful(true);
-    //     }else{
-    //       setShowCompile(true);
-    //       setStatusSuccessful(false);
-    //     }
-    //   }
-    // )
     request(
       "post",
       API_URL + "/check-compile",
@@ -219,6 +207,7 @@ function EditProblem() {
           setShowCompile(true);
           setStatusSuccessful(false);
         }
+        setCompileMessage(res.data.message);
       },
       {},
       body
@@ -429,9 +418,11 @@ function EditProblem() {
               autoFocus={false}
               value={codeSolution}
             />
+            <br/>
             <CompileStatus
               showCompile={showCompile}
               statusSuccessful={statusSuccessful}
+              message={compileMessage}
             />
           </CardContent>
           <CardActions>

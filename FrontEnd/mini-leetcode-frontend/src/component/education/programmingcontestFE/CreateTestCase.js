@@ -52,6 +52,9 @@ export default function CreateTestCase(props){
         setResult(res.data.result);
         setCheckTestcaseResult(true);
         setShowSubmitWarming(false);
+        if(res.data.status != "ok"){
+          warningNoti(res.data.status, false);
+        }
       },
       {},
       body
