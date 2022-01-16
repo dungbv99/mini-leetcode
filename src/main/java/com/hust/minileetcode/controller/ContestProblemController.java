@@ -48,12 +48,8 @@ public class ContestProblemController {
     public ResponseEntity<?> addProblemLanguageSourceCode(
             @PathVariable("problemId") String problemId,
             @RequestBody ModelAddProblemLanguageSourceCode modelAddProblemLanguageSourceCode) throws Exception{
-            try {
-                problemTestCaseService.updateProblemSourceCode(modelAddProblemLanguageSourceCode, problemId);
-                return ResponseEntity.status(200).body(null);
-            }catch (Exception e){
-                throw new Exception(e.toString());
-            }
+        problemTestCaseService.updateProblemSourceCode(modelAddProblemLanguageSourceCode, problemId);
+        return ResponseEntity.status(200).body(null);
     }
 
 
