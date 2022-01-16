@@ -1,5 +1,6 @@
 package com.hust.minileetcode.utils.executor;
 
+import com.hust.minileetcode.constants.Constants;
 import com.hust.minileetcode.entity.TestCaseEntity;
 
 import java.util.List;
@@ -80,7 +81,7 @@ public class JavaExecutor {
                 + "do\n"
                 + "f=\"testcase\"$n\".txt\"" +"\n"
                 + "cat $f | timeout " + timeout + "s" +" java Main" +"\n"
-                + "echo testcasedone\n"
+                + "echo " + Constants.SPLIT_TEST_CASE + "\n"
                 + "n=`expr $n + 1`\n"
                 + "done\n"
                 + "end=$(date +%s%N)\n"

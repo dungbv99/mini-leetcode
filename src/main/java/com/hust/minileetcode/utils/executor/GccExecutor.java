@@ -1,6 +1,7 @@
 package com.hust.minileetcode.utils.executor;
 
 
+import com.hust.minileetcode.constants.Constants;
 import com.hust.minileetcode.entity.TestCaseEntity;
 
 import java.util.List;
@@ -84,7 +85,7 @@ public class GccExecutor {
                 + "do\n"
                 + "f=\"testcase\"$n\".txt\"" +"\n"
                 + "cat $f | timeout " + timeLimit +"s " +"./main  || echo Time Limit Exceeded" + "\n"
-                + "echo testcasedone\n"
+                + "echo " + Constants.SPLIT_TEST_CASE +"\n"
                 + "n=`expr $n + 1`\n"
                 + "done\n"
                 + "end=$(date +%s%N)\n"

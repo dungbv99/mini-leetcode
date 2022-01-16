@@ -15,6 +15,8 @@ import java.util.Map;
 public class Constants {
     private Map<String, Integer> MapLevelOrder = new HashMap<>();
 
+    public static final String SPLIT_TEST_CASE = "adasdasdasdaasdadasdasdasdasdqdqwdwqdqwdqdwqdwqdqwdwqdqwdqwdqwdqwdqwdqwdqwdqwdqwdqwdqdqqddqwqwdqwdqwdqwdqwdqwdqwdqwdqwxzsfdhfgjgjlhlhkjfhseaegdtjfyutyfmfhgbfdhxfhfhgjfhjjhj";
+
     @Bean
     public void initConstants(){
         MapLevelOrder.put("easy", 1);

@@ -1,5 +1,6 @@
 package com.hust.minileetcode.utils.stringhandler;
 
+import com.hust.minileetcode.constants.Constants;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class StringHandler {
         String runtimeString = response.substring(runTimeIndex+1);
         Long runtime = Long.parseLong(runtimeString);
         response = response.substring(0, runTimeIndex);
-        String []ans = response.split("testcasedone\n");
+        String []ans = response.split(Constants.SPLIT_TEST_CASE);
 
         status = null;
         int cnt = 0;
