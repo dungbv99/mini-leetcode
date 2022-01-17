@@ -37,7 +37,7 @@ public class StringHandler {
             if(!a.equals(b)){
                 if(status == null && ans[i].contains("Time Limit Exceeded")){
                     status = "Time Limit Exceeded";
-                }else{
+                }else if(!ans[i].contains("Time Limit Exceeded")){
                     status = "Wrong Answer";
                 }
             }else{

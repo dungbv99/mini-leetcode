@@ -80,7 +80,7 @@ public class JavaExecutor {
                 + "while [ \"$n\" -lt " + testCases.size()+" ]"+"\n"
                 + "do\n"
                 + "f=\"testcase\"$n\".txt\"" +"\n"
-                + "cat $f | timeout " + timeout + "s" +" java Main" +"\n"
+                + "cat $f | timeout " + timeout + "s" +" java Main   || echo Time Limit Exceeded" +"\n"
                 + "echo " + Constants.SPLIT_TEST_CASE + "\n"
                 + "n=`expr $n + 1`\n"
                 + "done\n"

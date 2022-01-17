@@ -75,7 +75,7 @@ public class Python3Executor {
                 + "while [ \"$n\" -lt " + testCases.size()+" ]"+"\n"
                 + "do\n"
                 + "f=\"testcase\"$n\".txt\"" +"\n"
-                + "cat $f | timeout " + timeout + "s" +" python3 main.py " +"\n"
+                + "cat $f | timeout " + timeout + "s" +" python3 main.py || echo Time Limit Exceeded" +"\n"
                 + "echo " + Constants.SPLIT_TEST_CASE + "\n"
                 + "n=`expr $n + 1`\n"
                 + "done\n"
