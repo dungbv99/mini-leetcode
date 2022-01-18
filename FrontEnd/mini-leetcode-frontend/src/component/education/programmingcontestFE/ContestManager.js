@@ -817,6 +817,7 @@ export function ContestManager(){
                 <StyledTableCell align="center">Lang</StyledTableCell>
                 <StyledTableCell align="center">Status</StyledTableCell>
                 <StyledTableCell align="center">Point</StyledTableCell>
+                <StyledTableCell align="center">Submitted At</StyledTableCell>
               </TableRow>
             </TableHead>
 
@@ -847,6 +848,9 @@ export function ContestManager(){
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <b>{s.point}</b>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <b>{s.createAt}</b>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))

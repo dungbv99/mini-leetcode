@@ -9,6 +9,7 @@ import com.hust.minileetcode.rest.entity.UserLogin;
 import com.hust.minileetcode.rest.repo.UserLoginRepo;
 import com.hust.minileetcode.rest.service.NotificationsService;
 import com.hust.minileetcode.utils.ComputerLanguage;
+import com.hust.minileetcode.utils.DateTimeUtils;
 import com.hust.minileetcode.utils.TempDir;
 import com.hust.minileetcode.constants.Constants;
 import com.hust.minileetcode.utils.stringhandler.ProblemSubmission;
@@ -737,8 +738,18 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     }
 
     @Override
-    public Page<ContestSubmissionEntity> findContestSubmissionByContestIdPaging(Pageable pageable, String contestId) {
-        return contestSubmissionPagingAndSortingRepo.findAllByContestId(pageable, contestId);
+    public Page<ContestSubmission> findContestSubmissionByContestIdPaging(Pageable pageable, String contestId) {
+        return contestSubmissionPagingAndSortingRepo.findAllByContestId(pageable, contestId).map(contestSubmissionEntity -> ContestSubmission.builder()
+                .contestSubmissionId(contestSubmissionEntity.getContestSubmissionId())
+                .contestId(contestSubmissionEntity.getContestId())
+                .createAt(contestSubmissionEntity.getCreatedAt() != null ? DateTimeUtils.dateToString(contestSubmissionEntity.getCreatedAt(), DateTimeUtils.DateTimeFormat.DATE_TIME_ISO_FORMAT) : null)
+                .sourceCodeLanguage(contestSubmissionEntity.getSourceCodeLanguage())
+                .point(contestSubmissionEntity.getPoint())
+                .problemId(contestSubmissionEntity.getProblemId())
+                .testCasePass(contestSubmissionEntity.getTestCasePass())
+                .status(contestSubmissionEntity.getStatus())
+                .userId(contestSubmissionEntity.getUserId())
+                .build());
     }
 
     @Override
