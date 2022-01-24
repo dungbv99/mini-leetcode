@@ -26,8 +26,8 @@ public class ProblemEntity {
 //    @OneToMany(fetch = FetchType.LAZY)
 //    private List<ProblemSourceCode> problemSourceCode;
 
-    @OneToMany(mappedBy = "problem")
-    private Set<ProblemSourceCodeEntity> problemSourceCodes;
+//    @OneToMany(mappedBy = "problem")
+//    private Set<ProblemSourceCodeEntity> problemSourceCodes;
 
     @Column(name = "problem_name", unique = true)
     private String problemName;
