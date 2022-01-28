@@ -29,4 +29,6 @@ public interface ContestSubmissionRepo extends JpaRepository<ContestSubmissionEn
     List<Object[]> calculatorContest(@Param("contest_id") String contest_id);
 
     ContestSubmissionEntity findContestSubmissionEntityByContestSubmissionId(UUID contestSubmissionId);
+
+    void deleteAllByContestId(String contestId);
 }

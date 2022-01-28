@@ -29,14 +29,14 @@ export const ProgrammingContestMenuTeacher = {
       text: "Create Contest",
       child: [],
     },
-    {
-      id: "MENU_TEACHER",
-      path: "/programming-contest/list-contest",
-      isPublic: false,
-      icon: null,
-      text: "List Contest",
-      child: [],
-    },
+    // {
+    //   id: "MENU_TEACHER",
+    //   path: "/programming-contest/list-contest",
+    //   isPublic: false,
+    //   icon: null,
+    //   text: "List Contest",
+    //   child: [],
+    // },
     {
       id: "MENU_TEACHER",
       path: "/programming-contest/ide",

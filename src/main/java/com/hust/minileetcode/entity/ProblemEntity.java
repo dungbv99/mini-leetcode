@@ -35,9 +35,8 @@ public class ProblemEntity {
     @Column(name = "problem_description")
     private String problemDescription;
 
-//    @OneToOne
-//    @JoinColumn(name = "created_by_user_login_id", referencedColumnName = "user_login_id")
-//    private UserLogin userLogin;
+    @Column(name = "created_by_user_login_id")
+    private String userId;
 
     @Column(name = "time_limit")
     private int timeLimit;
