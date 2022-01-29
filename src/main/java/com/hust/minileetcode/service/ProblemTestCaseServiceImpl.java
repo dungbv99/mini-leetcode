@@ -796,6 +796,17 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
 
     }
 
+    @Override
+    @Transactional
+    public void deleteTestcase(UUID testcaseId, String userId) throws MiniLeetCodeException {
+        TestCaseEntity testCase = testCaseRepo.findTestCaseByTestCaseId(testcaseId);
+        ProblemEntity problem = problemRepo.findByProblemId(testCase.getProblemId());
+        if(!problem.getUserId().equals(userId)){
+            throw new MiniLeetCodeException("permission denied");
+        }
+        testCaseRepo.deleteTestCaseEntityByTestCaseId(testcaseId);
+    }
+
     private ModelGetTestCase convertToModelGetTestCase(TestCaseEntity testCaseEntity){
         boolean viewMore = false;
         String correctAns = testCaseEntity.getCorrectAnswer();

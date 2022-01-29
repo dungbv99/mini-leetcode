@@ -93,4 +93,6 @@ public interface ProblemTestCaseService {
     void deleteProblem(String problemId, String userId) throws MiniLeetCodeException;
 
     void deleteContest(String contestId, String userId) throws MiniLeetCodeException;
+
+    void deleteTestcase(UUID testcaseId, String userId) throws MiniLeetCodeException;
 }
