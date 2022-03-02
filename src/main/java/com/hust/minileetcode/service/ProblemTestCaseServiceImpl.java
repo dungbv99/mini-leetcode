@@ -150,9 +150,13 @@ public class ProblemTestCaseServiceImpl implements ProblemTestCaseService {
     @Override
     public String executableIDECode(ModelRunCodeFromIDE modelRunCodeFromIDE, String userName, String computerLanguage) throws Exception {
         String tempName = tempDir.createRandomScriptFileName(userName + "-" + computerLanguage);
-        String response = runCode(modelRunCodeFromIDE.getSource(), computerLanguage, tempName, modelRunCodeFromIDE.getInput(), 10, "Language Not Found");
+        String output = runCode(modelRunCodeFromIDE.getSource(), computerLanguage, tempName, modelRunCodeFromIDE.getInput(), 10, "Language Not Found");
+        output = output.substring(0, output.length()-1);
+
+        int lastLineIndexOutput = output.lastIndexOf("\n");
         tempDir.pushToConcurrentLinkedQueue(tempName);
-        return response;
+        output = output.substring(0, lastLineIndexOutput);
+        return output;
     }
 
     @Override

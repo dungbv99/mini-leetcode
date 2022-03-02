@@ -43,8 +43,8 @@ public class DockerClientBase {
             containerExist();
         } catch (Exception e){
             e.printStackTrace();
-//            System.exit(0);
-            throw new Exception(e.getMessage());
+            System.exit(0);
+//            throw new Exception(e.getMessage());
         }
     }
 
